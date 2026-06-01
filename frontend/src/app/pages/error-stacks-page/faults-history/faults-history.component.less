@@ -1,0 +1,146 @@
+@import "theme";
+
+app-faults-history {
+  display: block;
+
+  padding: @padding-md @padding-lg;
+
+  height: 100%;
+  max-width: 1000px;
+
+  .ant-empty {
+    margin-top: 90px;
+  }
+
+  nz-spin {
+    min-height: 400px;
+  }
+
+  app-faults-page-nav-switch {
+    display: block;
+    margin-bottom: @margin-sm;
+  }
+
+  .summary-items {
+    text-align: left;
+
+    .pagination-block {
+      padding: 0;
+      margin: 0;
+
+      // margin-top: @margin-xs;
+    }
+
+    .summary-item {
+      border: 1px solid @border-color-base;
+      margin: @margin-xs 0;
+
+      background-color: rgba(255, 255, 255, 1);
+      padding: @padding-md;
+
+      border-radius: 5px;
+
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: @padding-lg;
+
+      .header {
+        flex: 1 1 150px;
+        display: flex;
+
+        & .title {
+          line-height: 1.2;
+          margin-top: 3px;
+          margin-bottom: @margin-xs;
+          line-height: 1.2;
+        }
+
+        app-device-link {
+          margin-right: @margin-xs;
+          white-space: nowrap;
+        }
+      }
+
+      .content {
+        flex: 1 1 450px;
+
+        display: flex;
+        flex-wrap: wrap;
+        column-gap: @padding-sm;
+        row-gap: @padding-xs;
+
+        app-device-current-errors {
+          flex: 1 1 auto;
+          margin-bottom: @margin-xss;
+        }
+
+        .action {
+          margin-left: auto;
+        }
+      }
+
+      app-relative-timestamp {
+        margin-left: auto;
+        margin-top: 3px;
+        margin-bottom: @margin-xs;
+        line-height: 1.2;
+      }
+    }
+
+    .summary-item.current {
+      // border-color: @gray-7;
+      background-color: white;
+
+      app-device-link {
+        font-weight: bold;
+      }
+    }
+
+    // .summary-item:not(.current) {
+    //   app-device-state .default-case {
+    //     &.state-wrn {
+    //       background: white;
+    //       color: @device-state-color-wrn;
+    //       box-shadow: inset 0 0 0 1px @device-state-color-wrn;
+    //     }
+
+    //     &.state-err {
+    //       background: white;
+    //       color: @device-state-color-err;
+    //       box-shadow: inset 0 0 0 1px @device-state-color-err;
+    //     }
+    //   }
+    // }
+  }
+
+  .filters-block {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @margin-xs;
+    margin-bottom: @margin-sm;
+    align-items: center;
+
+    .timerange-control {
+      flex: 1 1 auto;
+    }
+
+    .switch-control {
+      display: flex;
+      gap: @margin-xs;
+
+      label {
+        padding-top: 2px;
+      }
+    }
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    padding: @padding-xs @padding-sm;
+
+    .summary-items {
+      .summary-item {
+        padding: @padding-sm;
+      }
+    }
+  }
+}

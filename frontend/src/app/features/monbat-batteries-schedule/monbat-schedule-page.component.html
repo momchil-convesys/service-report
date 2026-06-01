@@ -1,0 +1,51 @@
+@let plant = plant$ | async;
+<!--  -->
+@let device = device$ | async;
+<!--  -->
+
+<!-- TODO: do not check against HARDCODED ids! -->
+@if (plant && device && device.deviceMetadataId === "9") {
+  <div class="page-content" [class.single-pane-mode]="singlePaneMode">
+    <div class="left-pane" [class.collapsed]="showDetail">
+      <h2 i18n>Schedule</h2>
+
+      <h3 i18n>Schedules list</h3>
+      @if (hasPermissionToUpload) {
+        <div class="upload-block">
+          <app-monbat-file-upload
+            [context]="{ plantId: plant.id, deviceId: device.id }"
+            (fileUpload)="onFileUploadSuccess($event)"
+          ></app-monbat-file-upload>
+        </div>
+      }
+
+      <div class="list-block">
+        <app-monbat-history-list-loader></app-monbat-history-list-loader>
+      </div>
+    </div>
+
+    <div class="right-pane" [class.collapsed]="!showDetail">
+      @if (showDetail) {
+        <div class="nav-up">
+          <button nz-button nzType="default" [routerLink]="'./'">
+            <span nz-icon nzType="left" nzTheme="outline"></span>&nbsp;
+            <ng-container i18n>All schedules</ng-container>
+          </button>
+        </div>
+      }
+
+      <router-outlet (activate)="onChildRouteActivate()" (deactivate)="onChildRouteDeactivate()">
+      </router-outlet>
+    </div>
+  </div>
+} @else {
+  <div class="page-content">
+    <nz-alert
+      nzType="error"
+      nzMessage="Web application error"
+      nzDescription="Missing context or not allowed to access this page!"
+      nzShowIcon
+      style="flex: 1"
+    ></nz-alert>
+  </div>
+}

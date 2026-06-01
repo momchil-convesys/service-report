@@ -1,0 +1,122 @@
+@import "theme";
+
+app-control-state-view {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  .control-state-view-card {
+    height: 100%;
+    background-color: @component-background;
+    border: 1px solid @border-color-split;
+    border-radius: @border-radius-base;
+
+    .control-state-header {
+      margin-bottom: @margin-sm;
+      padding-bottom: @padding-xs;
+      border-bottom: 1px solid @border-color-split;
+
+      .panel-title {
+        margin: 0;
+        font-size: @font-size-base;
+        font-weight: 500;
+        color: @text-color;
+      }
+    }
+
+    .control-mechanism-section {
+      margin-bottom: @margin-sm;
+      padding: @padding-sm;
+      background: linear-gradient(135deg, @primary-color 0%, lighten(@primary-color, 10%) 100%);
+      border-radius: @border-radius-base;
+      color: @component-background;
+
+      .mechanism-badge {
+        margin-bottom: @margin-xss;
+
+        .mechanism-type {
+          font-size: @font-size-lg;
+          font-weight: bold;
+        }
+      }
+
+      .mechanism-details {
+        display: flex;
+        flex-direction: column;
+        gap: @margin-xss;
+        font-size: @font-size-sm;
+        opacity: 0.95;
+
+        .mechanism-text {
+          line-height: 1.4;
+        }
+
+        .mechanism-timestamp {
+          font-size: @font-size-sm;
+          opacity: 0.85;
+        }
+      }
+    }
+
+    .setpoints-table-section {
+      .setpoints-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: @font-size-sm;
+
+        thead {
+          border-bottom: 1px solid @border-color-split;
+
+          th {
+            padding: @padding-xs @padding-xss;
+            text-align: left;
+            font-weight: 500;
+            color: @text-color-secondary;
+            font-size: @font-size-sm;
+            text-transform: uppercase;
+
+            &.text-right {
+              text-align: right;
+            }
+          }
+        }
+
+        tbody {
+          tr {
+            border-bottom: 1px solid @border-color-base;
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            td {
+              padding: @padding-xss;
+              vertical-align: middle;
+
+              &.setpoint-type {
+                color: @text-color-secondary;
+                font-size: @font-size-sm;
+                font-weight: 500;
+              }
+
+              &.text-right {
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .no-data-message {
+      padding: @padding-md;
+      text-align: center;
+      color: @text-color-secondary;
+      font-size: @font-size-sm;
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+}

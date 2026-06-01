@@ -1,0 +1,69 @@
+@import "theme";
+
+.pr-formula-container {
+  padding: @padding-xs;
+  max-width: 460px;
+}
+
+.intro {
+  margin-bottom: @margin-lg;
+}
+
+.formula {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: @margin-lg;
+  font-style: italic;
+  font-family: serif;
+}
+
+.fraction {
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.fraction span {
+  display: block;
+  padding: 2px;
+}
+
+.numerator {
+  border-bottom: 2px solid @text-color;
+}
+
+.subscript {
+  font-size: 16px;
+  vertical-align: sub;
+}
+
+.legend {
+  margin-top: 20px;
+}
+
+.legend table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.legend td {
+  padding: 4px 0 8px 0;
+  border-bottom: 1px dashed @border-color-base;
+  vertical-align: baseline;
+}
+
+.legend tr:last-child td {
+  border-bottom: none;
+}
+
+.symbol {
+  font-style: italic;
+  font-weight: bold;
+  font-family: serif;
+  font-size: 18px;
+}
+
+.legend td.description {
+  line-height: 1.3;
+  padding-left: @padding-md;
+}

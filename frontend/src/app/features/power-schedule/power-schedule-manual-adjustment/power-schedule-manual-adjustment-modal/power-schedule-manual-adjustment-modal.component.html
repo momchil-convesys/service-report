@@ -1,0 +1,30 @@
+@if (successResult$ | async) {
+  <nz-result
+    nzStatus="success"
+    i18n-nzTitle
+    nzTitle="Command sent successfully!"
+    i18n-nzSubTitle
+    nzSubTitle="The operation may take some time to complete."
+  >
+    <div nz-result-extra>
+      <button type="button" nz-button nzType="primary" (click)="onFinish()">OK</button>
+    </div>
+  </nz-result>
+}
+
+@if (!(successResult$ | async)) {
+  <app-power-schedule-manual-adjustment-form
+    [data]="data.data"
+    [type]="data.type"
+    [loadingMessage]="loadingMessage$ | async"
+    [customError]="customError$ | async"
+    [pvScheduleAdjustmentCoefficient]="
+      data.plant?.plantSpecificMetadata?.powerLimitTargetCoefficient || 1
+    "
+    [bessScheduleAdjustmentCoefficient]="
+      data.plant?.plantSpecificMetadata?.bessSetpointTargetCoefficient || 1
+    "
+    (cancel)="onCancel()"
+    (submitForm)="onSubmit($event)"
+  ></app-power-schedule-manual-adjustment-form>
+}

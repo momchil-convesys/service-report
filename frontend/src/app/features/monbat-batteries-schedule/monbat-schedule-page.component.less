@@ -1,0 +1,172 @@
+@import "theme";
+
+app-monbat-schedule-page {
+  background-color: white;
+  display: block;
+
+  .current-schedule-block {
+    margin: @margin-sm 0 @margin-lg 0;
+  }
+
+  .no-active-schedule {
+    text-align: center;
+
+    padding: 20px; // keep same height as nav item
+
+    background-color: @gray-1;
+
+    border-radius: 2px;
+
+    font-size: @font-size-lg;
+    line-height: 1.5;
+
+    color: @text-color-secondary;
+
+    font-style: italic;
+  }
+
+  .icon-slot {
+    min-width: 28px;
+    line-height: 28px;
+    text-align: center;
+
+    & > app-power-limit-icon svg {
+      fill: @text-color;
+    }
+
+    app-power-limit-schedule-indicator {
+      display: block;
+    }
+  }
+
+  .custom-list .list-item.active-schedule-nav {
+    margin-bottom: @margin-xss;
+
+    align-items: center;
+
+    padding: @padding-md;
+    border: 1px solid @border-color-split;
+
+    border-radius: 2px;
+
+    font-size: @font-size-lg;
+    line-height: 1.5;
+
+    .right {
+      margin-left: auto;
+    }
+
+    &:hover {
+      background-color: @gray-2;
+    }
+
+    &.is-active {
+      border-color: @blue-2;
+      background-color: @blue-2;
+    }
+  }
+
+  .upload-block {
+    margin-bottom: 10px;
+  }
+
+  .list-block {
+    nz-spin {
+      min-height: 150px;
+    }
+
+    app-monbat-history-list {
+      text-align: left; // because nz-spin changes it to center
+    }
+  }
+
+  .page-content {
+    display: flex;
+    // flex-wrap: wrap;
+    padding: @padding-md @padding-lg;
+
+    & > .left-pane {
+      flex: 2 2 40%;
+      // width: 40%;
+      max-width: 600px;
+
+      padding-right: @padding-md;
+      margin-right: @padding-md;
+
+      border-right: 1px solid @border-color-split;
+    }
+
+    & > .right-pane {
+      // NOTE
+      // overflow is breaking sticky descendents
+      // but we need fixed width to constrain chart
+
+      flex: 3 3 60%;
+      // max-width: 1400px + 50px; // adjusted to better fit table
+      width: 60%;
+
+      // overflow-x: hidden;
+    }
+
+    & > .right-pane.collapsed {
+      flex: 0 0 auto;
+      width: auto;
+    }
+
+    .nav-up {
+      display: none;
+    }
+  }
+
+  .single-pane-mode-rules() {
+    & > .left-pane {
+      flex: 1;
+      max-width: 100%;
+    }
+
+    & > .left-pane {
+      border-right: 0;
+      margin-right: 0;
+      padding-right: 0;
+
+      width: 100%;
+    }
+
+    & > .left-pane.collapsed {
+      display: none;
+    }
+
+    & > .right-pane.collapsed {
+      display: none;
+    }
+
+    .nav-up {
+      display: block;
+      padding-bottom: @padding-sm;
+
+      margin-top: -@padding-sm;
+      padding-top: @padding-sm;
+    }
+  }
+
+  .page-content.single-pane-mode {
+    .single-pane-mode-rules();
+  }
+
+  @media (max-width: @breakpoint-xl) {
+    .page-content {
+      .single-pane-mode-rules();
+    }
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    .page-content {
+      padding: @padding-xs @padding-sm;
+    }
+
+    .custom-list {
+      margin-left: -1 * @padding-sm;
+      margin-right: -1 * @padding-sm;
+    }
+  }
+}

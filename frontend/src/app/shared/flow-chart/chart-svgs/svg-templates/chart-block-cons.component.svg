@@ -1,0 +1,15 @@
+<svg width="151" height="49" viewBox="0 0 151 49" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="chart-block-cons.component" clip-path="url(#clip0_84_260)">
+<g id="cons-box">
+<text id="Consumption" fill="#D4DCE3" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="12" font-weight="bold" letter-spacing="0em"><tspan x="35.8262" y="42.3636">Consumption</tspan></text>
+</g>
+<g id="cons-in">
+<text id="cons-in-value" fill="#D4DCE3" xml:space="preserve" style="white-space: pre" font-family="Inter" font-size="18" font-weight="bold" letter-spacing="0em"><tspan x="52.6572" y="24.5455">0 kW</tspan></text>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_84_260">
+<rect width="151" height="49" fill="white"/>
+</clipPath>
+</defs>
+</svg>

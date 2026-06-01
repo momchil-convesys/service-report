@@ -1,0 +1,20 @@
+<span class="value">
+  <app-value-display [value]="percentage" unit=" %" format="1.1-1"></app-value-display>
+</span>
+
+<div
+  class="bar"
+  [ngClass]="{
+    over100: percentage !== null && percentage > 100,
+  }"
+>
+  @for (cell of cells; track $index; let i = $index) {
+    <div
+      class="cell"
+      [ngClass]="{
+        full: percentage !== null && percentage > (100 / cellsCount) * i,
+        small: small,
+      }"
+    ></div>
+  }
+</div>

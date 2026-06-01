@@ -1,0 +1,4 @@
+<app-task-tree-select
+  [treeRootNode]="taskTemplatesRootNode$ | async"
+  (selectTree)="onTaskSelectionChange($event)"
+></app-task-tree-select>

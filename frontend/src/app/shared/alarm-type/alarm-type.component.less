@@ -1,0 +1,45 @@
+@import "theme";
+
+app-alarm-type {
+  display: inline-block;
+  min-width: 40px;
+
+  .alarm-type {
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+
+    line-height: 1.5;
+
+    border-radius: 10px;
+
+    padding: 2px 10px;
+
+    border: 1px solid transparent;
+
+    &.fr {
+      border-color: @alarm-fr-color-base;
+      color: @alarm-fr-color-base;
+    }
+
+    &.pb {
+      border-color: @alarm-pb-color-base;
+      color: @alarm-pb-color-base;
+    }
+
+    &.sc {
+      border-color: @text-color;
+    }
+  }
+
+  .variant-icon {
+    border-width: 0;
+    font-size: 130%;
+  }
+
+  .variant-short.sc {
+    border-color: transparent;
+    font-size: 120%;
+  }
+}

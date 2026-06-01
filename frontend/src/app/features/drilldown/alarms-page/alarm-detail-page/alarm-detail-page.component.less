@@ -1,0 +1,64 @@
+@import "theme";
+
+app-alarm-detail-page {
+  display: block;
+  height: 100%;
+  overflow-y: scroll;
+
+  padding: @padding-md @padding-lg;
+
+  @media (max-width: @breakpoint-sm) {
+    padding: @padding-xs @padding-sm;
+  }
+
+  .flex-header {
+    align-items: baseline;
+    margin-bottom: @margin-md;
+
+    flex-wrap: nowrap;
+
+    h2 {
+      line-height: 1.2;
+    }
+
+    app-inverter-alarm-icon {
+      margin-right: @margin-xss;
+    }
+  }
+
+  .alarm-info {
+    margin-bottom: @margin-lg;
+    margin-left: 28px;
+
+    .uppercase {
+      text-transform: uppercase;
+    }
+
+    .info-row {
+      margin-bottom: @margin-sm;
+
+      .label {
+        color: @text-color-secondary;
+      }
+
+      .value {
+        display: block;
+      }
+    }
+  }
+
+  .no-alarms {
+    background-color: @gray-2;
+    padding: @padding-lg @padding-md;
+    text-align: center;
+    font-style: italic;
+    border-radius: @border-radius-sm;
+    color: @text-color-secondary;
+  }
+
+  .ant-table.ant-table-small .ant-table-tbody > tr > td,
+  .ant-table.ant-table-small .ant-table-thead > tr > th {
+    padding-top: @padding-xss;
+    padding-bottom: @padding-xss;
+  }
+}

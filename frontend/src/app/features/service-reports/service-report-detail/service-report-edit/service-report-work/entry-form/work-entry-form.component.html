@@ -1,0 +1,134 @@
+<h3>{{ entryData ? "Edit record" : "New record" }}</h3>
+<form nz-form [formGroup]="entryForm">
+  <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            entryForm.controls['workName'].invalid && entryForm.controls['workName'].dirty
+              ? 'error'
+              : undefined
+          }}"
+          i18n-nzErrorTip
+          nzErrorTip="This field is required!"
+        >
+          <nz-form-label nzRequired>Work description</nz-form-label>
+
+          <textarea
+            formControlName="workName"
+            nz-input
+            rows="4"
+            placeholder="Enter job..."
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            entryForm.controls['timeWorkStartTimestamp'].invalid &&
+            (entryForm.controls['timeWorkStartTimestamp'].dirty ||
+              entryForm.controls['timeWorkStartTimestamp'].errors?.['custom'])
+              ? 'error'
+              : undefined
+          }}"
+          nzErrorTip="{{
+            entryForm.controls['timeWorkStartTimestamp'].errors?.['required']
+              ? 'This field is required!'
+              : entryForm.controls['timeWorkStartTimestamp'].errors?.['custom']
+          }}"
+        >
+          <app-datetime-picker
+            [formControlDP]="getFormControl(entryForm, 'timeWorkStartTimestamp')"
+            label="Time of start work"
+            labelFor="start-work-time"
+          ></app-datetime-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            entryForm.controls['timeWorkEndTimestamp'].invalid &&
+            (entryForm.controls['timeWorkEndTimestamp'].dirty ||
+              entryForm.controls['timeWorkEndTimestamp'].errors?.['custom'])
+              ? 'error'
+              : undefined
+          }}"
+          nzErrorTip="{{
+            entryForm.controls['timeWorkEndTimestamp'].errors?.['required']
+              ? 'This field is required!'
+              : entryForm.controls['timeWorkEndTimestamp'].errors?.['custom']
+          }}"
+        >
+          <app-datetime-picker
+            [formControlDP]="getFormControl(entryForm, 'timeWorkEndTimestamp')"
+            label="Time of end work"
+            labelFor="end-work-time"
+          ></app-datetime-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row></div>
+
+  <div nz-row>
+    <nz-form-item>
+      <nz-form-control
+        nzValidateStatus="{{
+          entryForm.controls['personsWorkParticipated'].invalid &&
+          entryForm.controls['personsWorkParticipated'].dirty
+            ? 'error'
+            : undefined
+        }}"
+        i18n-nzErrorTip
+        nzErrorTip="This field is required!"
+      >
+        <nz-form-label nzRequired>Persons participated in work</nz-form-label>
+        <input
+          nz-input
+          formControlName="personsWorkParticipated"
+          placeholder="Type names separated by ' , ' "
+          id="persons-work-participated"
+        />
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <hr />
+  <div class="footer">
+    <button
+      type="button"
+      nz-button
+      nzType="primary"
+      [disabled]="entryForm.invalid"
+      (click)="onSubmit()"
+    >
+      {{ entryData ? "Save" : "Add record" }}
+    </button>
+    @if (entryData || entryForm.dirty) {
+      <button type="button" nz-button nzType="default" (click)="onReset()">Cancel</button>
+    }
+    @if (entryData) {
+      <button type="button" class="delete-button" nz-button nzType="default" nzDanger (click)="onDelete()">
+        Delete record
+      </button>
+    }
+  </div>
+</form>
+
+<ng-template #fieldErrors let-field="formField">
+  @if (field.dirty && field.invalid) {
+    <div class="invalid-feedback" style="display: block">
+      @if (field.errors.required) {
+        <div>This field is required.</div>
+      }
+      @if (field.errors.min) {
+        <div>Value should be greater than or equal to {{ field.errors.min.min }}.</div>
+      }
+      @if (field.errors.custom) {
+        <div>{{ field.errors.custom }}</div>
+      }
+    </div>
+  }
+</ng-template>

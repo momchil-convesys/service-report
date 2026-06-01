@@ -1,0 +1,36 @@
+@if (activeSchedule) {
+  <div
+    class="schedule-indicator"
+    [class.mode-tag]="mode === 'tag'"
+    [class.mode-icon]="mode === 'icon'"
+  >
+    <span
+      nz-popover
+      [nzPopoverTitle]="titleTemplate"
+      [nzPopoverContent]="contentTemplate"
+      [nzPopoverTrigger]="'hover'"
+      [nzPopoverPlacement]="'bottom'"
+    >
+      <nz-icon nzType="schedule" nzTheme="outline" class="schedule-icon" />
+
+      <!--  -->
+      @if (mode === "tag") {
+        <ng-container i18n>Active schedule</ng-container>
+      }
+    </span>
+
+    <ng-template #titleTemplate>
+      <div style="padding: 4px 0; font-weight: bold">
+        <ng-container i18n>Active schedule</ng-container>
+      </div>
+    </ng-template>
+
+    <ng-template #contentTemplate>
+      <div>
+        <button i18n nz-button style="margin-bottom: 4px" [routerLink]="linkToSchedule()">
+          View schedule
+        </button>
+      </div>
+    </ng-template>
+  </div>
+}

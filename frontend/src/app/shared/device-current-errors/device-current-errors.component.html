@@ -1,0 +1,12 @@
+@for (item of currentFaults?.values; track $index) {
+  <div class="item">
+    <app-error-stack-index-value [value]="item.errorStackValue"></app-error-stack-index-value>
+    @if (faultById(item.faultId) | async; as fault) {
+      <div class="code">{{ fault.code }}</div>
+      <div class="title">
+        {{ fault.name }}
+      </div>
+    }
+    <ng-template #loadingFault> Loading fault title... </ng-template>
+  </div>
+}

@@ -1,0 +1,55 @@
+<div class="parameter-selector-header">
+  <span class="parameter-label">Racks Min / Max Temperature Packs:</span>
+  <!-- Racks min / max packs -->
+  <nz-radio-group
+    [ngModel]="minMaxPacksParameterKey$ | async"
+    (ngModelChange)="onMinMaxPacksParameterKeyChange($event)"
+  >
+    <label nz-radio-button nzValue="highestPackTemperature">Highest Pack Temperature</label>
+    <label nz-radio-button nzValue="lowestPackTemperature">Lowest Pack Temperature</label>
+  </nz-radio-group>
+</div>
+<div class="chart-section">
+  <app-momentary-data-chart [request]="request4$ | async"></app-momentary-data-chart>
+</div>
+
+<div class="charts-container">
+  <!-- Shared Parameter Selector -->
+  <div class="parameter-selector-header">
+    <span class="parameter-label">Display Parameter:</span>
+    @if (bessMetadata) {
+      <app-bess-parameter-selector
+        [bessMetadata]="bessMetadata"
+        [assetType]="BESSAssetType.BatteryContainer"
+        [selectedParameterKey]="selectedParameter"
+        (parameterChange)="onParameterChange($event)"
+        placeholder="Select parameter"
+      ></app-bess-parameter-selector>
+    }
+  </div>
+
+  <!-- Containers Chart -->
+  <div class="chart-section">
+    <app-momentary-data-chart [request]="request1$ | async"></app-momentary-data-chart>
+  </div>
+
+  <!-- Racks Chart -->
+  <div class="chart-section">
+    <app-momentary-data-chart [request]="request2$ | async"></app-momentary-data-chart>
+  </div>
+
+  <!-- Packs Chart (shown when a rack is clicked) -->
+  @if (request3$ | async; as request) {
+    <div class="chart-section">
+      <app-momentary-data-chart [request]="request"></app-momentary-data-chart>
+    </div>
+  }
+
+  <!-- All Packs Chart -->
+  <!-- <div class="chart-section">
+    <app-momentary-data-chart
+      [request]="request5$ | async"
+      [extremes]="packExtremes$ | async"
+    ></app-momentary-data-chart>
+  </div> -->
+</div>

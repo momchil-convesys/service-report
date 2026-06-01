@@ -1,0 +1,16 @@
+<nz-card
+  i18n-nzTitle
+  nzTitle="Latest Events"
+  nzBordered="true"
+  [nzExtra]="extraTemplate"
+  nzSize="small"
+>
+  <app-alarm-event-list
+    [alarmEventsRequest]="alarmEventsRequest"
+    [deviceIds]="deviceIds"
+  ></app-alarm-event-list>
+</nz-card>
+
+<ng-template #extraTemplate>
+  <a i18n [routerLink]="'/alarm-events'" [queryParams]="{ deviceId: deviceIds }">Show all events</a>
+</ng-template>

@@ -1,0 +1,61 @@
+@import "theme";
+
+.app-side-menu {
+  flex: 0 0 auto;
+
+  width: 300px;
+  opacity: 1;
+
+  height: 100%;
+  overflow-y: auto;
+
+  background-color: white;
+
+  &.animated {
+    transition: all 0.1s ease;
+  }
+}
+
+.app-side-menu.collapsed {
+  margin-left: -300px;
+
+  &.animated {
+    transition: all 0.1s ease;
+  }
+}
+
+.app-side-menu-overlay {
+  display: none;
+}
+
+@media (max-width: @breakpoint-app-sidebar) {
+  .app-side-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+  }
+
+  .app-side-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+
+    opacity: 0;
+
+    transition: opacity 0.2s ease;
+
+    &.visible {
+      display: block;
+      opacity: 1;
+
+      transition: opacity 0.1s ease;
+    }
+  }
+}

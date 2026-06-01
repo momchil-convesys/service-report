@@ -1,0 +1,12 @@
+@if (plain) {
+  {{ timestamp | relativeDate: "mediumDate" }} <span i18n>at</span>
+  {{ timestamp | date: "HH:mm" }}
+}
+
+@if (!plain) {
+  <span>{{ timestamp | date: "HH:mm" }}</span>
+  <br />
+  <small class="secondary-text-color">
+    {{ timestamp | relativeDate: "mediumDate" }}
+  </small>
+}

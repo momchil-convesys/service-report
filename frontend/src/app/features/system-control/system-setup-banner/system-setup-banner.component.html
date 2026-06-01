@@ -1,0 +1,90 @@
+@let thisSetup = plant?.plantSpecificMetadata?.thisSetup;
+<!--  -->
+@let systemSetup = systemSetup$ | async;
+<!--  -->
+@let systemSetupLoading = systemSetupLoading$ | async;
+<!--  -->
+@let systemSetupError = systemSetupError$ | async;
+<!--  -->
+@if (plant?.plantSpecificMetadata?.hasOnSiteSetup === true) {
+  <div
+    class="banner"
+    [ngClass]="{
+      'in-control': systemSetup && systemSetup.systemSetupInControl === thisSetup,
+      'out-of-control': systemSetup && systemSetup.systemSetupInControl !== thisSetup,
+      error: systemSetupError,
+    }"
+  >
+    <div class="icon">
+      <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+    </div>
+
+    <div class="message">
+      <span i18n>Plant with multiple system setups! </span>
+
+      <!-- Loading -->
+      @if (systemSetupLoading) {
+        <span i18n="@@loading">Loading...</span>
+      }
+
+      <!-- Error -->
+      @else if (systemSetupError) {
+        <b i18n>Failed to load information about system setup! </b>
+        <span>{{ systemSetupError.message || systemSetupError.toString() }}</span>
+      }
+
+      <!-- Control info -->
+      @else if (systemSetup) {
+        <!-- In control -->
+        @if (systemSetup.systemSetupInControl === thisSetup) {
+          <span i18n>Your system setup is currently in control: </span>
+          <app-system-setup-tag [setup]="thisSetup"></app-system-setup-tag>
+          <span>. </span>
+        }
+
+        <!-- Out of control -->
+        @if (systemSetup.systemSetupInControl !== thisSetup) {
+          <span i18n>Your system setup is currently read-only. </span>
+
+          <span i18n>Your setup: </span>
+          <app-system-setup-tag [setup]="thisSetup"></app-system-setup-tag>
+          <span>. </span>
+
+          <span i18n>Currently in control: </span>
+          <app-system-setup-tag [setup]="systemSetup.systemSetupInControl"></app-system-setup-tag>
+          <span>. </span>
+        }
+
+        <!--  TODO: time zone -->
+        <span i18n>Last checked: </span>
+        <span>{{ systemSetup.timestamp | date: "HH:mm:ss" }}</span>
+      }
+    </div>
+
+    @if (thisSetup && systemSetup && systemSetup.systemSetupInControl && plant) {
+      <div class="actions">
+        @if (systemSetup.systemSetupInControl === thisSetup) {
+          <button
+            nz-button
+            nzType="default"
+            nzSize="small"
+            (click)="
+              onToggleControl('release', plant.id, thisSetup, systemSetup.systemSetupInControl)
+            "
+          >
+            <span i18n>Release control</span>&hellip;
+          </button>
+        } @else {
+          <button
+            nz-button
+            nzType="primary"
+            nzSize="small"
+            (click)="onToggleControl('take', plant.id, thisSetup, systemSetup.systemSetupInControl)"
+          >
+            <span i18n>Take control</span>&hellip;
+          </button>
+        }
+      </div>
+    }
+  </div>
+}

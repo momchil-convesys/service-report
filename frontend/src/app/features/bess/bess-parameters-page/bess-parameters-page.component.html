@@ -1,0 +1,180 @@
+<div class="params-wrapper">
+  <!-- Parameter Definitions Section -->
+  <div class="section">
+    <h1 class="section-title">Parameter Definitions (Logical Parameters)</h1>
+    @if (loading && !parameters.length) {
+      <nz-spin i18n-nzTip="@@loading" nzTip="Loading..."></nz-spin>
+    } @else if (!parameters.length) {
+      <nz-empty
+        nzNotFoundImage="simple"
+        i18n-nzNotFoundContent
+        nzNotFoundContent="No parameters"
+      ></nz-empty>
+    } @else {
+      <nz-table [nzData]="parameters" nzSize="small" [nzFrontPagination]="false">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Key</th>
+            <th>Name</th>
+            <th>Unit</th>
+            <th>Precision</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of parameters; track p.id) {
+            <tr>
+              <td>{{ p.id }}</td>
+              <td>
+                <code>{{ p.key }}</code>
+              </td>
+              <td>{{ p.name }}</td>
+              <td>{{ p.unit || "—" }}</td>
+              <td>{{ p.precision ?? "—" }}</td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    }
+  </div>
+
+  <!-- Parameter Bindings Section -->
+  <div class="section">
+    <div class="section-header">
+      <h1 class="section-title">Parameter Bindings</h1>
+      <div class="filter-controls">
+        <nz-input-group class="search-input" nzPrefixIcon="search" [nzSuffix]="inputClearTpl">
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearchChange($event)"
+            placeholder="Search by parameter name, key, or ID..."
+          />
+        </nz-input-group>
+        <ng-template #inputClearTpl>
+          @if (searchQuery) {
+            <nz-icon
+              class="ant-input-clear-icon"
+              nzTheme="fill"
+              nzType="close-circle"
+              (click)="onClearSearch()"
+            />
+          }
+        </ng-template>
+
+        <div class="filter-control">
+          <span class="filter-label">Filter by Asset Type:</span>
+          <nz-select
+            [(ngModel)]="selectedAssetType"
+            (ngModelChange)="onAssetTypeChange($event)"
+            [nzShowSearch]="false"
+            class="asset-type-filter"
+          >
+            @for (option of assetTypeOptions; track option.value) {
+              <nz-option [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+            }
+          </nz-select>
+        </div>
+      </div>
+    </div>
+
+    @if (loading && !filteredBindings.length) {
+      <nz-spin i18n-nzTip="@@loading" nzTip="Loading..."></nz-spin>
+    } @else if (!filteredBindings.length) {
+      <nz-empty
+        nzNotFoundImage="simple"
+        i18n-nzNotFoundContent
+        nzNotFoundContent="No bindings found"
+      ></nz-empty>
+    } @else {
+      <!-- Asset Type Bindings (Non-Vendor Specific) -->
+      @if (assetTypeBindings.length > 0) {
+        <div class="bindings-subsection">
+          <h2 class="subsection-title">Asset Type Bindings</h2>
+          <nz-table [nzData]="assetTypeBindings" nzSize="small" [nzFrontPagination]="false">
+            <thead>
+              <tr>
+                <th>Asset Type</th>
+                <th>Parameter ID</th>
+                <th>Parameter Key</th>
+                <th>Parameter Name</th>
+                <th>Display Name</th>
+                <th>Unit Override</th>
+                <th>Precision Override</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (binding of assetTypeBindings; track binding.parameterId + binding.assetType) {
+                <tr>
+                  <td>
+                    <app-bess-asset-type-tag
+                      [assetType]="binding.assetType"
+                      [variant]="'long'"
+                    ></app-bess-asset-type-tag>
+                  </td>
+                  <td>{{ binding.parameterId }}</td>
+                  <td>
+                    <code>{{ getParameterKey(binding) }}</code>
+                  </td>
+                  <td>{{ getParameterName(binding) }}</td>
+                  <td>{{ binding.displayName || "—" }}</td>
+                  <td>{{ binding.unit || "—" }}</td>
+                  <td>{{ binding.precision ?? "—" }}</td>
+                </tr>
+              }
+            </tbody>
+          </nz-table>
+        </div>
+      }
+
+      <!-- Vendor Specific Bindings -->
+      @if (vendorSpecificBindings.length > 0) {
+        <div class="bindings-subsection vendor-specific">
+          <h2 class="subsection-title">Vendor Specific Bindings</h2>
+          <nz-table [nzData]="vendorSpecificBindings" nzSize="small" [nzFrontPagination]="false">
+            <thead>
+              <tr>
+                <th>Asset Type</th>
+                <th>Parameter ID</th>
+                <th>Parameter Key</th>
+                <th>Parameter Name</th>
+                <th>Display Name</th>
+                <th>Vendor Profile</th>
+                <th>Unit Override</th>
+                <th>Precision Override</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (
+                binding of vendorSpecificBindings;
+                track binding.parameterId + binding.assetType + binding.vendorProfileId
+              ) {
+                <tr>
+                  <td>
+                    <app-bess-asset-type-tag
+                      [assetType]="binding.assetType"
+                      [variant]="'long'"
+                    ></app-bess-asset-type-tag>
+                  </td>
+                  <td>{{ binding.parameterId }}</td>
+                  <td>
+                    <code>{{ getParameterKey(binding) }}</code>
+                  </td>
+                  <td>{{ getParameterName(binding) }}</td>
+                  <td>
+                    <span class="vendor-name">{{
+                      binding.displayName || binding.vendorName || binding.vendorProfileId
+                    }}</span>
+                  </td>
+                  <td>{{ binding.unit || "—" }}</td>
+                  <td>{{ binding.precision ?? "—" }}</td>
+                </tr>
+              }
+            </tbody>
+          </nz-table>
+        </div>
+      }
+    }
+  </div>
+</div>

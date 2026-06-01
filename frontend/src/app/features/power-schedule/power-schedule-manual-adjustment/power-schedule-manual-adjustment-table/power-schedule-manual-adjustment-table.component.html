@@ -1,0 +1,442 @@
+<nz-table
+  #basicTable
+  [nzData]="tableData"
+  [nzFrontPagination]="false"
+  [nzShowPagination]="false"
+  nzSize="small"
+  nzBordered="true"
+  [nzLoading]="isLoading"
+  [nzScroll]="{
+    x: '2100px',
+    y: viewPortHeight() > maxViewPortHeight ? parentViewHeight - tableHeadersHeight + 'px' : null,
+  }"
+>
+  <thead>
+    <tr>
+      <th class="right-separator" nzLeft class="left-separator highlight-th date-th">
+        {{ targetDate | date: "EEEE, d MMMM" }}
+      </th>
+      <th nzAlign="center" colspan="2" i18n class="right-separator highlight-th"></th>
+      <th nzAlign="center" colspan="5" i18n class="right-separator highlight-th">PV</th>
+      <th nzAlign="center" colspan="6" i18n class="right-separator highlight-th">BESS</th>
+      <th nzAlign="center" colspan="5" i18n class="right-separator highlight-th">GRID</th>
+    </tr>
+    <tr>
+      <th class="left-separator right-separator" nzLeft rowspan="2">
+        <ng-container i18n>Interval</ng-container>
+        <!-- <br />
+        <span class="secondary-text">in plant time zone</span> -->
+      </th>
+      <th nzAlign="left" i18n class="right-separator" rowspan="2">Schedule<br />status</th>
+      <th nzAlign="right" i18n class="right-separator" rowspan="2">Priority mode</th>
+      <th nzAlign="right" colspan="2">
+        <ng-container i18n>PV power setpoint</ng-container>
+        @if (pvAdjustmentPercentageFormatted) {
+          <span style="padding: 8px">|</span>{{ pvAdjustmentPercentageFormatted }}
+        }
+      </th>
+      <th nzAlign="right" rowspan="2">
+        <ng-container i18n>Energy equivalent</ng-container>
+      </th>
+      <th nzAlign="right" rowspan="2">
+        <ng-container i18n>PV production</ng-container>
+      </th>
+      <th nzAlign="right" class="right-separator" rowspan="2">
+        <ng-container i18n>Deviation</ng-container>
+      </th>
+      <th nzAlign="right" colspan="2">
+        <ng-container i18n>BESS power setpoint</ng-container>
+        @if (bessAdjustmentPercentageFormatted) {
+          <span style="padding: 8px">|</span>{{ bessAdjustmentPercentageFormatted }}
+        }
+        <!-- <br /> -->
+        <!-- <span class="secondary-text" i18n>in kW</span> -->
+      </th>
+      <th nzAlign="right" rowspan="2">
+        <ng-container i18n>Energy equivalent</ng-container>
+      </th>
+      <th nzAlign="right" rowspan="2">
+        <ng-container i18n>Charged<br />energy</ng-container>
+      </th>
+      <th nzAlign="right" rowspan="2">
+        <ng-container i18n>Discharged<br />energy</ng-container>
+      </th>
+      <th nzAlign="right" class="right-separator" rowspan="2">
+        <ng-container i18n>Deviation</ng-container>
+      </th>
+      <th nzAlign="right" rowspan="2">
+        <ng-container i18n>Grid power setpoint</ng-container>
+      </th>
+      <th nzAlign="right" rowspan="2">
+        <ng-container i18n>Energy equivalent</ng-container>
+      </th>
+      <th nzAlign="right" rowspan="2">
+        <ng-container i18n>Exported<br />energy</ng-container>
+      </th>
+      <th nzAlign="right" rowspan="2">
+        <ng-container i18n>Imported<br />energy</ng-container>
+      </th>
+      <th nzAlign="right" class="right-separator" rowspan="2">
+        <ng-container i18n>Deviation</ng-container>
+      </th>
+    </tr>
+    <tr>
+      <th nzAlign="right" i18n>Original (kW)</th>
+      <th nzAlign="right" i18n>Custom (kW)</th>
+      <th nzAlign="right" i18n>Original (kW)</th>
+      <th nzAlign="right" i18n>Custom (kW)</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (row of basicTable.data; track $index) {
+      <tr [class]="getRowClass(row)">
+        <td class="left-separator right-separator" nzLeft>
+          <!-- <span class="secondary-text">
+            {{ row.interval.start | date: "EEEE, d MMMM" }}
+            <span style="padding: 0 8px">|</span>
+          </span> -->
+          <!-- <span style="white-space: nowrap">
+            {{ row.interval.start | date: "HH:mm" }}–{{ row.interval.end | date: "HH:mm" }}
+          </span> -->
+          <app-power-schedule-manual-adjustment-cell-history
+            [interval]="row"
+          ></app-power-schedule-manual-adjustment-cell-history>
+        </td>
+
+        <!-- 
+        ----------------------------------------------------------------------------
+        Schedule status and Priority mode columns
+        ----------------------------------------------------------------------------
+        -->
+
+        <td nzAlign="left" class="right-separator">
+          @if (row.scheduleStatus) {
+            <span class="g-schedule-status secondary-text-size" [class]="row.scheduleStatus">
+              {{ row.scheduleStatus }}
+            </span>
+          } @else {
+            <span class="secondary-text-size">N/A</span>
+          }
+        </td>
+        <td nzAlign="right" class="right-separator">
+          <div class="adjust-button-container">
+            <button
+              [class.hidden]="!hasPermissionToAdjust || getRowClass(row) === 'past'"
+              nz-button
+              nzType="default"
+              nzSize="small"
+              (click)="openAdjustModal(row, 'priorityMode')"
+              nz-tooltip
+              nzTooltipTitle="Adjust&hellip;"
+              i18n-nzTooltipTitle
+              class="adjust-button"
+            >
+              <span nz-icon nzType="edit" nzTheme="outline"></span>
+            </button>
+            <div
+              class="priority-mode-title"
+              [title]="row.priorityMode"
+              [class.hidden]="row.priorityMode === 'DEFAULT'"
+            >
+              {{ row.priorityMode }}
+            </div>
+          </div>
+        </td>
+
+        <!-- 
+        ----------------------------------------------------------------------------
+        PV related columns
+        ----------------------------------------------------------------------------
+        -->
+
+        <td nzAlign="right">
+          @if (
+            row.pvPowerSetpoint.valueAdjusted !== null &&
+            row.pvPowerSetpoint.valueAdjusted !== row.pvPowerSetpoint.value
+          ) {
+            @if (row.pvPowerSetpoint.value !== null) {
+              <span class="secondary-text">
+                <app-power-schedule-setpoint-value
+                  [value]="row.pvPowerSetpoint.value"
+                ></app-power-schedule-setpoint-value>
+                <span>|</span>
+              </span>
+            }
+          }
+          <app-power-schedule-setpoint-value
+            [value]="row.pvPowerSetpoint.valueAdjusted ?? row.pvPowerSetpoint.value"
+          ></app-power-schedule-setpoint-value>
+        </td>
+
+        <td nzAlign="right">
+          <div class="adjust-button-container">
+            <button
+              [class.hidden]="!hasPermissionToAdjust || getRowClass(row) === 'past'"
+              nz-button
+              nzType="default"
+              nzSize="small"
+              (click)="openAdjustModal(row, 'pv')"
+              nz-tooltip
+              nzTooltipTitle="Adjust&hellip;"
+              i18n-nzTooltipTitle
+              class="adjust-button"
+            >
+              <span nz-icon nzType="edit" nzTheme="outline"></span>
+            </button>
+            <div
+              nz-tooltip
+              [nzTooltipTitle]="getInitialValueTooltip(row.pvPowerSetpointCustom, 'pv')"
+            >
+              @if (
+                row.pvPowerSetpointCustom &&
+                row.pvPowerSetpointCustom.value !== row.pvPowerSetpoint.value
+              ) {
+                <app-power-schedule-setpoint-value
+                  [value]="
+                    row.pvPowerSetpointCustom.valueAdjusted ?? row.pvPowerSetpointCustom.value
+                  "
+                ></app-power-schedule-setpoint-value>
+              }
+            </div>
+          </div>
+        </td>
+
+        <td nzAlign="right">
+          @if (row.pvEffectiveSetpointEnergyEquivalent !== null) {
+            @if (row.pvEffectiveSetpointEnergyEquivalent !== 0) {
+              <app-pls-equivalent-icon [hint]="'pvSetpoint'"></app-pls-equivalent-icon>
+            }
+            <app-value-display
+              [value]="row.pvEffectiveSetpointEnergyEquivalent"
+              [format]="'1.0-0'"
+              [unit]="row.pvEffectiveSetpointEnergyEquivalent ? ' kWh' : ''"
+            ></app-value-display>
+          }
+        </td>
+
+        <td nzAlign="right">
+          @if (getRowClass(row) !== "future") {
+            <b>
+              <app-value-display
+                [value]="row.pvProduction"
+                [unit]="row.pvProduction ? ' kWh' : ''"
+                [format]="'1.0-0'"
+              ></app-value-display>
+            </b>
+          }
+        </td>
+
+        <td nzAlign="right" class="right-separator">
+          @if (getRowClass(row) !== "future" && row.pvProductionDeviation !== null) {
+            <span
+              [class.deviation-danger]="isDeviationSignificant(row.pvProductionDeviation, 'pv')"
+            >
+              <app-value-display
+                [value]="row.pvProductionDeviation"
+                [unit]="row.pvProductionDeviation ? ' kWh' : ''"
+                [format]="'1.0-0'"
+                [showPlusSignIfPositive]="true"
+              ></app-value-display>
+            </span>
+          }
+        </td>
+
+        <!-- 
+        ----------------------------------------------------------------------------
+        BESS related columns
+        ----------------------------------------------------------------------------
+        -->
+
+        <td nzAlign="right">
+          @if (
+            row.bessPowerSetpoint.valueAdjusted !== null &&
+            row.bessPowerSetpoint.valueAdjusted !== row.bessPowerSetpoint.value
+          ) {
+            @if (row.bessPowerSetpoint.value !== null) {
+              <span class="secondary-text">
+                <app-power-schedule-setpoint-value
+                  [value]="row.bessPowerSetpoint.value"
+                  [showPlusSignIfPositive]="true"
+                ></app-power-schedule-setpoint-value>
+                <span>|</span>
+              </span>
+            }
+          }
+          <span [class]="getBessPowerSetpointClass(row.bessPowerSetpoint)">
+            <app-power-schedule-setpoint-value
+              [value]="row.bessPowerSetpoint.valueAdjusted ?? row.bessPowerSetpoint.value"
+              [showPlusSignIfPositive]="true"
+            ></app-power-schedule-setpoint-value>
+          </span>
+        </td>
+
+        <td nzAlign="right">
+          <div class="adjust-button-container">
+            <button
+              [class.hidden]="!hasPermissionToAdjust || getRowClass(row) === 'past'"
+              nz-button
+              nzType="default"
+              nzSize="small"
+              (click)="openAdjustModal(row, 'bess')"
+              nz-tooltip
+              nzTooltipTitle="Adjust&hellip;"
+              i18n-nzTooltipTitle
+              class="adjust-button"
+            >
+              <span nz-icon nzType="edit" nzTheme="outline"></span>
+            </button>
+            <div
+              nz-tooltip
+              [nzTooltipTitle]="getInitialValueTooltip(row.bessPowerSetpointCustom, 'bess')"
+            >
+              @if (
+                row.bessPowerSetpointCustom &&
+                row.bessPowerSetpointCustom.value !== row.bessPowerSetpoint.value
+              ) {
+                <span [class]="getBessPowerSetpointClass(row.bessPowerSetpointCustom)">
+                  <app-power-schedule-setpoint-value
+                    [value]="
+                      row.bessPowerSetpointCustom.valueAdjusted ?? row.bessPowerSetpointCustom.value
+                    "
+                    [showPlusSignIfPositive]="true"
+                  ></app-power-schedule-setpoint-value>
+                </span>
+              }
+            </div>
+          </div>
+        </td>
+
+        <td nzAlign="right">
+          @if (row.bessEffectiveSetpointEnergyEquivalent !== null) {
+            @if (row.bessEffectiveSetpointEnergyEquivalent !== 0) {
+              <app-pls-equivalent-icon [hint]="'bessSetpoint'"></app-pls-equivalent-icon>
+            }
+            <app-value-display
+              [value]="row.bessEffectiveSetpointEnergyEquivalent"
+              [format]="'1.0-0'"
+              [unit]="row.bessEffectiveSetpointEnergyEquivalent ? ' kWh' : ''"
+            ></app-value-display>
+          }
+        </td>
+
+        <td nzAlign="right">
+          @if (getRowClass(row) !== "future") {
+            <b [class.charge]="row.bessChargedEnergy !== null && row.bessChargedEnergy > 0">
+              <app-value-display
+                [value]="row.bessChargedEnergy"
+                [unit]="row.bessChargedEnergy ? ' kWh' : ''"
+                [format]="'1.0-0'"
+              ></app-value-display>
+            </b>
+          }
+        </td>
+
+        <td nzAlign="right">
+          @if (getRowClass(row) !== "future") {
+            <b
+              [class.discharge]="row.bessDischargedEnergy !== null && row.bessDischargedEnergy > 0"
+            >
+              <app-value-display
+                [value]="row.bessDischargedEnergy"
+                [unit]="row.bessDischargedEnergy ? ' kWh' : ''"
+                [format]="'1.0-0'"
+              ></app-value-display>
+            </b>
+          }
+        </td>
+
+        <td nzAlign="right" class="right-separator">
+          @if (getRowClass(row) !== "future" && row.bessEnergyDeviation !== null) {
+            <span
+              [class.deviation-danger]="isDeviationSignificant(row.bessEnergyDeviation, 'bess')"
+            >
+              <app-value-display
+                [value]="row.bessEnergyDeviation"
+                [unit]="' kWh'"
+                [format]="'1.0-0'"
+                [showPlusSignIfPositive]="true"
+              ></app-value-display>
+            </span>
+          }
+        </td>
+
+        <!-- 
+        ----------------------------------------------------------------------------
+        GRID related columns
+        ----------------------------------------------------------------------------
+        -->
+
+        <td nzAlign="right">
+          @if (row.gridPowerSetpoint !== null) {
+            <app-power-schedule-setpoint-value
+              [value]="row.gridPowerSetpoint"
+              [showPlusSignIfPositive]="true"
+            ></app-power-schedule-setpoint-value>
+          }
+        </td>
+
+        <td nzAlign="right">
+          @let importEnergy = row.gridImportEnergyEquivalent;
+          @let exportEnergy = row.gridExportEnergyEquivalent;
+          @if (importEnergy !== null || exportEnergy !== null) {
+            @if (importEnergy || exportEnergy) {
+              <app-pls-equivalent-icon [hint]="'gridSetpoint'"></app-pls-equivalent-icon>
+            }
+            @if (exportEnergy !== null) {
+              <app-value-display
+                [value]="exportEnergy"
+                [format]="'1.0-0'"
+                [unit]="exportEnergy ? ' kWh' : ''"
+              ></app-value-display>
+            } @else if (importEnergy !== null) {
+              <app-value-display
+                [value]="importEnergy"
+                [format]="'1.0-0'"
+                [unit]="importEnergy ? ' kWh' : ''"
+              ></app-value-display>
+            }
+          }
+        </td>
+
+        <td nzAlign="right">
+          @if (getRowClass(row) !== "future") {
+            <b>
+              <app-value-display
+                [value]="row.exportedEnergy"
+                [unit]="row.exportedEnergy ? ' kWh' : ''"
+                [format]="'1.0-0'"
+              ></app-value-display>
+            </b>
+          }
+        </td>
+
+        <td nzAlign="right">
+          @if (getRowClass(row) !== "future") {
+            <b>
+              <app-value-display
+                [value]="row.importedEnergy"
+                [unit]="row.importedEnergy ? ' kWh' : ''"
+                [format]="'1.0-0'"
+              ></app-value-display>
+            </b>
+          }
+        </td>
+
+        <td nzAlign="right" class="right-separator">
+          @if (getRowClass(row) !== "future" && row.gridEnergyDeviation !== null) {
+            <span
+              [class.deviation-danger]="isDeviationSignificant(row.gridEnergyDeviation, 'grid')"
+            >
+              <app-value-display
+                [value]="row.gridEnergyDeviation"
+                [unit]="row.gridEnergyDeviation ? ' kWh' : ''"
+                [format]="'1.0-0'"
+                [showPlusSignIfPositive]="true"
+              ></app-value-display>
+            </span>
+          }
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>

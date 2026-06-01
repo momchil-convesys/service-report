@@ -1,0 +1,65 @@
+<nz-card class="custom-card" nzBordered="true" nzSize="small">
+  <div class="card-header">
+    <div class="card-title">
+      <span>
+        <ng-container i18n>Total production for selected period:</ng-container>
+        <b style="white-space: nowrap">
+          @if (showPowerMeterIndicator(chartContext$ | async)) {
+            <app-production-value
+              [productionValue]="(chartDataRequest$ | async)?.data?.totalProductionPM"
+            ></app-production-value>
+          } @else {
+            <app-production-value
+              [productionValue]="(chartDataRequest$ | async)?.data?.totalProduction"
+            ></app-production-value>
+          }
+        </b>
+        <app-live-data-indicator></app-live-data-indicator>
+      </span>
+
+      @if (showPowerMeterIndicator(chartContext$ | async)) {
+        <div
+          class="extra-hint"
+          nz-tooltip
+          i18n-nzTooltipTitle
+          nzTooltipTitle="Production data is calculated based on power meter."
+        >
+          <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+          <ng-container i18n>Power meter</ng-container>
+        </div>
+      }
+    </div>
+    <div class="card-extra">
+      <app-datetime-range-select
+        (modelChange)="onDatetimeRangeChange($event)"
+        [defaultOption]="'day'"
+        [timeZone]="(timeZone$ | async) || undefined"
+        [showIntegrationPeriod]="true"
+        [defaultIntegrationPeriod]="(defaultIntegrationPeriod$ | async) || undefined"
+      >
+      </app-datetime-range-select>
+      <app-highcharts-export-option
+        [chartComponent]="chartComponent"
+        [disabled]="(chartDataRequest$ | async)?.isLoading || false"
+        [filename]="(chartDataRequest$ | async)?.data?.exportFileName"
+      ></app-highcharts-export-option>
+    </div>
+  </div>
+
+  @if ((chartDataRequest$ | async)?.error; as error) {
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load data"
+      [nzDescription]="error.message"
+      nzShowIcon
+    ></nz-alert>
+  }
+
+  <app-pv-production-chart
+    [data]="(chartDataRequest$ | async)?.data"
+    [loading]="(chartDataRequest$ | async)?.isLoading"
+    [context]="chartContext$ | async"
+    #chartComponent
+  ></app-pv-production-chart>
+</nz-card>

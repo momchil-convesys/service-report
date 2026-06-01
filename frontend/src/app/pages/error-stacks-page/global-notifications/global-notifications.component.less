@@ -1,0 +1,65 @@
+@import "theme";
+
+app-global-notifications {
+  & > a {
+    display: flex;
+    align-items: center;
+
+    color: white !important;
+
+    padding: 0 @padding-md;
+    line-height: @top-header-height;
+
+    nz-icon {
+      font-size: 20px;
+    }
+
+    &:hover {
+      background-color: @primary-9;
+    }
+
+    &.active {
+      background-color: @primary-10;
+    }
+  }
+}
+
+.app-global-notifications-scope-class {
+  .clear-notifications-btn {
+    margin-bottom: @margin-lg;
+  }
+
+  .close-btn {
+    position: absolute;
+
+    top: @padding-sm;
+    right: 0;
+  }
+
+  .notification-item {
+    padding: @padding-md 0;
+
+    border-top: 1px solid @border-color-split;
+    position: relative;
+
+    .notification-title {
+      display: block;
+    }
+
+    app-relative-timestamp {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.75em;
+    }
+
+    app-device-link {
+      display: block;
+      margin-bottom: 0.75em;
+    }
+
+    .link-to-stack {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}

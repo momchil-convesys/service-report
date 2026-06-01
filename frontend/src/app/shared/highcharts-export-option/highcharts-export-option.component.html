@@ -1,0 +1,72 @@
+<!-- <app-highcharts-edit-option
+  [chart]="chartComponent?.getChartInstance()"
+  style="margin-right: 4px"
+></app-highcharts-edit-option> -->
+
+<button
+  nz-button
+  nz-dropdown
+  [nzDropdownMenu]="menu"
+  [nzTrigger]="'click'"
+  [disabled]="disabled"
+  [nzSize]="size"
+>
+  <!-- [disabled]="false && (chartComponent === undefined || chartComponent.loading)" -->
+
+  <span nz-icon nzType="menu-unfold" nzTheme="outline"></span>
+</button>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <ul nz-menu>
+    @if (!limitedOptions) {
+      <li nz-menu-item (click)="onViewFullScreen()">
+        <span class="dropdown-menu-icon-container">
+          <span nz-icon nzType="fullscreen" nzTheme="outline"></span>
+        </span>
+        <ng-container i18n>View in fullscreen</ng-container>
+      </li>
+
+      <li nz-menu-divider></li>
+
+      <li nz-menu-item (click)="onDownloadImage('png')">
+        <span class="dropdown-menu-icon-container">
+          <span nz-icon nzType="file-image" nzTheme="outline"></span>
+        </span>
+        <ng-container i18n>Download PNG image</ng-container>
+      </li>
+      <li nz-menu-item (click)="onDownloadImage('jpeg')">
+        <span class="dropdown-menu-icon-container">
+          <span nz-icon nzType="file-jpg" nzTheme="outline"></span>
+        </span>
+        <ng-container i18n>Download JPEG image</ng-container>
+      </li>
+      <li nz-menu-item (click)="onDownloadImage('pdf')">
+        <span class="dropdown-menu-icon-container">
+          <span nz-icon nzType="file-pdf" nzTheme="outline"></span>
+        </span>
+        <ng-container i18n>Download PDF image</ng-container>
+      </li>
+      <li nz-menu-item (click)="onDownloadImage('svg')">
+        <span class="dropdown-menu-icon-container">
+          <span nz-icon nzType="file-image" nzTheme="outline"></span>
+        </span>
+        <ng-container i18n>Download SVG image</ng-container>
+      </li>
+
+      <li nz-menu-divider></li>
+    }
+
+    <li nz-menu-item (click)="onDownloadCSV()">
+      <span class="dropdown-menu-icon-container">
+        <span nz-icon nzType="file-text" nzTheme="outline"></span>
+      </span>
+      <ng-container i18n>Download CSV</ng-container>
+    </li>
+    <li nz-menu-item (click)="onDownloadXLS()">
+      <span class="dropdown-menu-icon-container">
+        <span nz-icon nzType="file-excel" nzTheme="outline"></span>
+      </span>
+      <ng-container i18n>Download XLSX</ng-container>
+    </li>
+  </ul>
+</nz-dropdown-menu>

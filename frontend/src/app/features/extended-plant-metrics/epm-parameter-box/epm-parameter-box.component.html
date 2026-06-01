@@ -1,0 +1,39 @@
+<h4 class="title">
+  <ng-content></ng-content>
+</h4>
+
+@if (data) {
+  <div class="content">
+    <div class="plant-total">
+      <div class="label">{{ label }}</div>
+
+      <div class="value">
+        <app-value-display [value]="data.totalForPlant" [format]="data.format"></app-value-display>
+        @if (data.totalForPlant !== null) {
+          <span class="unit">
+            {{ data.unit }}
+          </span>
+        }
+      </div>
+    </div>
+
+    @for (pmValue of data.valuesPerSubLevel; track $index; let i = $index) {
+      <div class="pm-specific">
+        @if (data.metadata && data.metadata.subLevels && data.metadata.subLevels.length > i) {
+          <div class="label">{{ data.metadata.subLevels[i].name }}</div>
+        } @else {
+          <div class="label"><ng-container i18n>PM</ng-container> {{ i + 1 }}</div>
+        }
+
+        <div class="value">
+          <app-value-display [value]="pmValue" [format]="data.format"></app-value-display>
+          @if (pmValue !== null) {
+            <span class="unit">
+              {{ data.unit }}
+            </span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

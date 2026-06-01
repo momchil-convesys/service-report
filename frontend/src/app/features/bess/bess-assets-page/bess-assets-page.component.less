@@ -1,0 +1,145 @@
+@import "theme";
+
+app-bess-assets-page {
+  display: block;
+
+  .assets-container {
+    display: flex;
+    flex-direction: column;
+    gap: @margin-md;
+    padding: @padding-md;
+  }
+
+  .filters-section {
+    display: flex;
+    gap: @margin-sm;
+    align-items: center;
+
+    .search-input {
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .type-filter {
+      min-width: 180px;
+    }
+  }
+
+  nz-spin {
+    min-height: 120px;
+    width: 100%;
+  }
+
+  .asset-type-badge {
+    display: inline-block;
+    padding: 0 8px;
+    border-radius: @border-radius-sm;
+    font-size: @font-size-sm;
+    font-weight: 500;
+    // text-transform: uppercase;
+
+    &.compact {
+      padding: 0 4px;
+      font-size: (@font-size-sm - 2);
+    }
+
+    &[data-type="BESS"] {
+      background-color: @red-1;
+      color: @red-8;
+      border: 1px solid @red-3;
+    }
+
+    &[data-type="TS"] {
+      background-color: @blue-1;
+      color: @blue-8;
+      border: 1px solid @blue-3;
+    }
+
+    &[data-type="BC"] {
+      background-color: @gray-2;
+      color: @gray-9;
+      border: 1px solid @gray-5;
+    }
+
+    &[data-type="BR"] {
+      background-color: @gold-1;
+      color: @gold-8;
+      border: 1px solid @gold-4;
+    }
+
+    &[data-type="BP"] {
+      background-color: @green-1;
+      color: @green-8;
+      border: 1px solid @green-3;
+    }
+
+    &[data-type="BCL"] {
+      background-color: @red-1;
+      color: @red-8;
+      border: 1px solid @red-3;
+    }
+
+    &[data-type="INV"] {
+      background-color: @purple-1;
+      color: @purple-8;
+      border: 1px solid @purple-3;
+    }
+  }
+
+  .children-count {
+    color: @primary-color;
+    font-weight: 500;
+    cursor: help;
+  }
+
+  .clickable-name {
+    color: @primary-color;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+
+    &:hover {
+      color: @primary-7;
+      text-decoration: underline;
+    }
+
+    &:active {
+      color: @primary-8;
+    }
+  }
+
+  .no-data {
+    color: @text-color-secondary;
+  }
+
+  .parameter-count {
+    color: @primary-color;
+    font-weight: 500;
+    cursor: help;
+  }
+
+  code {
+    font-size: @font-size-sm;
+    background-color: @gray-2;
+    padding: 2px 6px;
+    border-radius: @border-radius-sm;
+  }
+
+  .ant-table.ant-table-small .ant-table-tbody > tr > td {
+    padding: @padding-xss @padding-xs;
+  }
+
+  .parameters-popover-content {
+    max-width: 500px;
+    max-height: 400px;
+    overflow: auto;
+
+    .ant-table {
+      margin: 0;
+    }
+
+    .ant-table.ant-table-small .ant-table-tbody > tr > td {
+      padding: @padding-xss @padding-xs;
+    }
+  }
+}

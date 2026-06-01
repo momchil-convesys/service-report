@@ -1,0 +1,182 @@
+@import "theme";
+
+app-monbat-string-page {
+  @values-font-size: 28px;
+
+  display: block;
+  background-color: white;
+
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    flex: 0 0 auto;
+    // max-width: 500px;
+
+    p {
+      margin: 0;
+    }
+
+    .sticky-header {
+      // position: sticky;
+      top: 0;
+
+      padding: @padding-md @padding-lg;
+
+      display: flex;
+      flex-wrap: wrap;
+      gap: @margin-md;
+      align-items: baseline;
+    }
+
+    nz-badge {
+      margin-top: @margin-sm;
+      margin-left: @margin-sm;
+      vertical-align: top;
+    }
+
+    .ant-badge-status-dot {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  .content {
+    padding: @padding-lg;
+    padding-top: 0;
+
+    flex: 1; // 3 3 700px;
+
+    overflow-x: hidden; // makes chart responsive
+    overflow-y: auto;
+  }
+
+  .electric-current {
+    background-color: @gray-2;
+    padding: @padding-sm @padding-lg;
+    text-align: center;
+
+    border-radius: 5px;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 150px;
+
+    app-value-display {
+      font-size: @values-font-size;
+      line-height: 56px;
+    }
+
+    .label {
+      color: @text-color-secondary;
+      // font-weight: bold;
+      font-size: 12px;
+      // text-transform: uppercase;
+    }
+  }
+
+  .min-max-container {
+    display: flex;
+    gap: 2px;
+
+    border-radius: 5px;
+    overflow: hidden;
+
+    .min,
+    .max {
+      flex: 1;
+
+      background-color: @gray-2;
+      padding: @padding-sm @padding-lg;
+      text-align: center;
+
+      display: flex;
+      flex-direction: column;
+
+      min-width: 150px;
+    }
+
+    app-value-display {
+      font-size: 22px;
+    }
+
+    .min-max-label {
+      color: @text-color-secondary;
+      // font-weight: bold;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+  }
+
+  .historical-data-page {
+    // flex: 0;
+
+    &.visible {
+      flex: 1;
+      display: flex;
+      padding: @padding-md 0;
+      margin: 0 @margin-lg;
+      border-top: 1px solid @border-color-split;
+      overflow-y: auto;
+
+      .battery-page-container {
+        flex: 1;
+        overflow-x: hidden; // makes chart responsive
+      }
+    }
+
+    .battery-nav {
+      display: flex;
+      flex-direction: column;
+
+      min-width: 140px;
+
+      .nav-item-sticky {
+        flex: 0 0 auto;
+        padding-bottom: @margin-xs;
+        margin-right: @padding-sm;
+        border-bottom: 1px solid @border-color-split;
+
+        a {
+          width: 100%;
+        }
+      }
+
+      .battery-nav-list {
+        flex: 1;
+        max-height: 530px;
+        border-bottom: 1px solid @border-color-split;
+      }
+    }
+  }
+
+  .battery-nav-list {
+    overflow-y: auto;
+
+    list-style: none;
+    margin: 0;
+    margin-top: -2px;
+    padding: 0;
+    margin-right: @padding-sm;
+
+    .battery-nav-item {
+      cursor: pointer;
+      padding: @padding-xs @padding-xs;
+
+      border: 1px solid @border-color-split;
+
+      margin-top: -1px;
+
+      &:hover {
+        background-color: @gray-2;
+      }
+
+      &.active {
+        background-color: @blue-2;
+      }
+    }
+  }
+}

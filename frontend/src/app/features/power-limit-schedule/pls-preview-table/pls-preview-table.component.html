@@ -1,0 +1,115 @@
+<nz-table
+  #basicTable
+  [nzData]="listOfMapData"
+  [nzFrontPagination]="false"
+  nzSize="small"
+  nzBordered="true"
+  nzTableLayout="auto"
+>
+  <thead>
+    <tr>
+      <th nzAlign="left">
+        <ng-container i18n>Interval</ng-container>
+        <br />
+        <span class="secondary-text" i18n>in plant time zone</span>
+      </th>
+
+      <th nzAlign="right">
+        <ng-container i18n>Target limit</ng-container>
+        <br />
+        <span class="secondary-text" i18n>as provided in file</span>
+      </th>
+
+      <th nzAlign="right">
+        <ng-container i18n>Target limit adjusted</ng-container>
+        <br />
+        <span class="secondary-text">
+          <ng-container i18n>equals target limit</ng-container
+          >{{ scheduleAdjustmentPercentageFormatted }}
+        </span>
+      </th>
+
+      @if (showEnergyEquivallent) {
+        <th nzAlign="left">
+          <ng-container i18n>Energy equivalent</ng-container>
+          <br />
+          <span class="secondary-text" i18n>calculated</span>
+        </th>
+      }
+    </tr>
+  </thead>
+
+  <tbody>
+    @for (tableData of basicTable.data; track tableData.key) {
+      @for (row of mapOfExpandedData[tableData.key]; track row.key) {
+        @if ((row.parent && row.parent.expand) || !row.parent) {
+          <tr [class]="getRowClass(row) | async" (click)="toggleExpandGroupRow(row)">
+            @if (row.hourIntervalData && showInGroups) {
+              <!-- Group row -->
+
+              @let interval = row.hourIntervalData.interval;
+
+              <td
+                [nzShowExpand]="!!row.children"
+                [nzExpand]="row.expand"
+                (nzExpandChange)="collapse(mapOfExpandedData[tableData.key], row, $event)"
+                [attr.colspan]="showEnergyEquivallent ? 4 : 3"
+                class="group-row-cell secondary-text-size"
+              >
+                {{ interval.start | date: "EEEE, d MMMM" }}
+                <span style="padding: 8px">|</span>
+                {{ interval.start | date: "HH:mm" }}–{{ interval.end | date: "HH:mm" }}
+              </td>
+            } @else if (row.subIntervalData) {
+              <!-- Sub interval row -->
+
+              @let interval = row.subIntervalData.data.zonedInterval;
+              @let rowData = row.subIntervalData.data;
+
+              <td [nzAlign]="showInGroups ? 'right' : 'left'">
+                @if (!showInGroups) {
+                  <span class="secondary-text">
+                    {{ interval.start | date: "EEEE, d MMMM" }}
+                    <span style="padding: 8px">|</span>
+                  </span>
+                }
+                <span style="white-space: nowrap"
+                  >{{ interval.start | date: "HH:mm" }}–{{ interval.end | date: "HH:mm" }}</span
+                >
+              </td>
+
+              <td nzAlign="right">
+                <app-pls-value-formatted
+                  [value]="rowData.targetLimit_Mega"
+                  [unit]="getUnitSuffixFormatted()"
+                ></app-pls-value-formatted>
+              </td>
+
+              <td nzAlign="right">
+                <app-pls-value-formatted
+                  [value]="rowData.targetLimitAdjusted_Mega"
+                  [unit]="getUnitSuffixFormatted()"
+                  [bold]="true"
+                ></app-pls-value-formatted>
+              </td>
+
+              @if (showEnergyEquivallent) {
+                <td nzAlign="left">
+                  <!-- Show only for non null and non zero values -->
+                  @if (rowData.energyLimitEquivalent?.targetLimitAdjusted_Mega) {
+                    <app-pls-equivalent-icon></app-pls-equivalent-icon>
+
+                    <app-pls-value-formatted
+                      [value]="rowData.energyLimitEquivalent?.targetLimitAdjusted_Mega"
+                      [unit]="' MWh'"
+                    ></app-pls-value-formatted>
+                  }
+                </td>
+              }
+            }
+          </tr>
+        }
+      }
+    }
+  </tbody>
+</nz-table>

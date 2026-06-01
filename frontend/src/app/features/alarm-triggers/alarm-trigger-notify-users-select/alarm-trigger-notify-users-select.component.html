@@ -1,0 +1,71 @@
+@if (error$ | async; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Failed to load data"
+    [nzDescription]="error.message"
+    nzShowIcon
+  ></nz-alert>
+}
+
+@if (loading$ | async) {
+  <nz-skeleton
+    [nzActive]="true"
+    [nzParagraph]="{ rows: 3, width: ['200px', '160px', '180px'] }"
+    [nzTitle]="false"
+  ></nz-skeleton>
+}
+
+@if (allRelatedUsers$ | async; as allUsers) {
+  <div>
+    @for (user of allUsers; track user.id; let i = $index) {
+      <div>
+        <label
+          nz-checkbox
+          [nzId]="user.id"
+          [nzChecked]="isSelected(user)"
+          (nzCheckedChange)="onChange(user, $event)"
+        >
+          {{ user.displayName }}
+          <span
+            class="details"
+            nz-icon
+            nzType="info-circle"
+            nzTheme="outline"
+            nz-popover
+            [nzPopoverTitle]="user.email"
+            [nzPopoverContent]="popoverContentTemplate"
+            nzPopoverPlacement="right"
+            [nzPopoverMouseEnterDelay]="0"
+            [nzPopoverMouseLeaveDelay]="0"
+          ></span>
+          <!-- <span class="details">({{ user.email }})</span> -->
+        </label>
+        <ng-template #popoverContentTemplate>
+          <!-- <div>{{ user.plantNames.length }} plant{{ user.plantNames.length !== 1 ? "s" : "" }}</div> -->
+          @for (plantName of user.plantNames; track plantName) {
+            <div>{{ plantName }}</div>
+          }
+        </ng-template>
+      </div>
+    }
+    @if (allUsers.length > 1) {
+      <div class="actions-block">
+        <button
+          i18n
+          type="button"
+          (click)="onSelectAll(allUsers)"
+          nz-button
+          nzType="link"
+          nzSize="small"
+        >
+          Select all
+        </button>
+        <nz-divider nzType="vertical"></nz-divider>
+        <button i18n type="button" (click)="onDeselectAll()" nz-button nzType="link" nzSize="small">
+          Deselect all
+        </button>
+      </div>
+    }
+  </div>
+}

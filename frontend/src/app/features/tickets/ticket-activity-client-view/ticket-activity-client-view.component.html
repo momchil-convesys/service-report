@@ -1,0 +1,27 @@
+@if (ticket.createdBy) {
+  <div class="item">
+    <app-relative-timestamp [timestamp]="ticket.createdBy.timestamp"></app-relative-timestamp>
+    <div class="something"></div>
+    <div class="title">
+      Ticket created.
+      <br />
+      <small nz-typography nzType="secondary">
+        by <app-user-link [userId]="ticket.createdBy.userId"></app-user-link>
+      </small>
+    </div>
+  </div>
+}
+
+@for (item of activityItems$ | async; track item.id) {
+  <div class="item">
+    <app-relative-timestamp [timestamp]="item.timestamp"></app-relative-timestamp>
+    <div class="something"></div>
+    <div class="title">
+      {{ getTitleForItem(item) }}
+      <br />
+      <small nz-typography nzType="secondary">
+        by <app-user-link [userId]="item.userId"></app-user-link>
+      </small>
+    </div>
+  </div>
+}

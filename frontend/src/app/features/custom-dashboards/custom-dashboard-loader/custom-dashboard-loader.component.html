@@ -1,0 +1,5 @@
+<app-custom-dashboard
+  [dashboardConfig]="dashboard$ | async"
+  (save)="onSave($event)"
+  (delete)="onDeleteDashboard($event)"
+></app-custom-dashboard>

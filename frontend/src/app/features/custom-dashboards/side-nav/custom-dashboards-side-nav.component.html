@@ -1,0 +1,24 @@
+<ul nz-menu nzMode="inline" nzTheme="light" [nzInlineIndent]="28">
+  <li nz-menu-group nzTitle="Custom dashboards"></li>
+
+  @for (dashboard of dashboards$ | async; track dashboard.id) {
+    <li nz-menu-item [routerLink]="dashboard.id" nzMatchRouter>
+      <span nz-icon nzType="appstore" nzTheme="outline"></span>
+      <span>{{ dashboard.name }}</span>
+    </li>
+  }
+</ul>
+
+<div class="actions-container">
+  <button nz-button nzBlock="true" (click)="onCreateDashboard()" class="btn-create-new" i18n>
+    Create new dashboard
+  </button>
+</div>
+
+<ul nz-menu nzMode="inline" nzTheme="light" [nzInlineIndent]="52">
+  <li nz-menu-group nzTitle="Widgets"></li>
+
+  <li nz-menu-item routerLink="widgets/1" nzMatchRouter i18n>Widget 1</li>
+  <li nz-menu-item routerLink="widgets/2" nzMatchRouter i18n>Widget 2</li>
+  <li nz-menu-item routerLink="widgets/new" nzMatchRouter i18n>Create new widget...</li>
+</ul>

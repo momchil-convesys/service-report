@@ -1,0 +1,33 @@
+@import "theme";
+
+app-tasks-edit {
+  display: flex;
+  background: white;
+  height: 100%;
+
+  .task-list-select-block,
+  .task-list-edit-block {
+    overflow-y: auto;
+
+    padding: 30px;
+
+    width: 500px;
+
+    border-right: 1px solid @border-color-base;
+  }
+
+  .task-definition-block {
+    overflow-y: auto;
+
+    padding: 30px;
+
+    width: 700px;
+
+    border-right: 1px solid @border-color-base;
+
+    [nz-radio] {
+      height: 32px;
+      line-height: 32px;
+    }
+  }
+}

@@ -1,0 +1,31 @@
+.bottom-border-workaround {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+
+  &::after {
+    content: " ";
+    position: absolute;
+    top: -1px;
+    width: 100%;
+    background-color: @border-color-split;
+    height: 1px;
+  }
+}
+
+tr.highlight td {
+  background-color: @blue-2;
+  animation: flash linear 0.5s 2 forwards;
+}
+
+@keyframes flash {
+  0% {
+    background-color: white;
+  }
+  50% {
+    background-color: @blue-2;
+  }
+  100% {
+    background-color: white;
+  }
+}

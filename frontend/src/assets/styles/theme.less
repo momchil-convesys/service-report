@@ -1,0 +1,148 @@
+@import "./colors.less";
+
+@primary-1: @blue-1;
+@primary-2: @blue-2;
+@primary-3: @blue-3;
+@primary-4: @blue-4;
+@primary-5: @blue-5;
+@primary-6: @blue-6;
+@primary-7: @blue-7;
+@primary-8: @blue-8;
+@primary-9: @blue-9;
+@primary-10: @blue-10;
+
+@primary-color: @primary-7;
+
+@error-color: @red-6; // @red-5;
+
+@info-color: @blue-7; // @primary-color;
+
+@alert-info-border-color: @blue-3;
+@alert-info-bg-color: @blue-1;
+@alert-info-icon-color: @info-color;
+
+@badge-color: @red-6;
+
+@text-color: fade(@black, 85%); // TODO: 87%
+@text-color-secondary: fade(@black, 45%); // TODO: 54%
+
+@text-color-secondary-inverse: fade(@white, 54%);
+
+@font-size-base: 14px;
+@font-size-lg: @font-size-base + 2px;
+
+// NB! Setting this variable to percentage value breaks ng-zorro styles,
+// E.g.: table expand icon is broken.
+@font-size-sm: 12px;
+
+// Background color
+@background-color-light: @gray-1; // hsv(0, 0, 98%); // background of header and selected item
+@background-color-base: @gray-2; // hsv(0, 0, 96%); // Default grey background color
+
+// Border color
+@border-color-base: @gray-4; // hsv(0, 0, 85%); // base border outline a component
+@border-color-split: @gray-3; // hsv(0, 0, 94%); // split border inside a component
+
+@border-radius-base: 2px;
+@border-radius-sm: 2px;
+
+@item-hover-bg: @gray-3;
+@item-active-bg: @primary-1;
+
+@divider-color: @border-color-split;
+
+@layout-body-background: @background-color-base;
+
+// Override default dark selection for tree directory option
+@tree-directory-selected-color: @text-color;
+@tree-directory-selected-bg: @primary-2;
+
+// Disabled states
+@disabled-color: fade(#000, 25%);
+@disabled-bg: @background-color-base;
+@disabled-active-bg: tint(@black, 90%);
+@disabled-color-dark: fade(#fff, 35%);
+
+// Override dark menu theme
+@menu-dark-item-active-bg: @blue-9;
+@menu-dark-bg: @primary-header-background;
+
+@descriptions-bg: @background-color-light; // #fafafa;
+
+// Override table variables
+@table-header-bg: @background-color-light;
+@table-row-hover-bg: @gray-2;
+@table-header-sort-bg: @gray-3;
+@table-header-sort-active-bg: @gray-3;
+
+// ====================================================================================================
+// Custom variables
+
+@primary-header-background: @blue-8;
+
+@item-hover-bg-light: @background-color-light;
+@item-hover-bg-dark: @gray-3;
+
+@error-stack-current-index-background: @gold-1;
+
+// Alarm types
+
+@alarm-fr-color-base: @red-6;
+@alarm-pb-color-base: @gold-6;
+@alarm-sc-color-base: @gray-6;
+
+// Device states
+
+@device-state-color-on: @green-6;
+@device-state-color-off: @gray-6;
+@device-state-color-wrn: @gold-6;
+@device-state-color-err: @red-6;
+@device-state-color-nc: @cyan-6;
+@device-state-color-svc: @purple-6;
+@device-state-color-inv: @cyan-6;
+@device-state-color-int: @blue-3;
+
+// Media breakpoints
+
+@breakpoint-sm: 576px;
+@breakpoint-md: 768px;
+@breakpoint-lg: 992px;
+@breakpoint-xl: 1200px;
+@breakpoint-xxl: 1600px;
+
+@breakpoint-app-sidebar: @breakpoint-xl;
+
+// {
+//   xs: '575px',
+//   sm: '576px',
+//   md: '768px',
+//   lg: '992px',
+//   xl: '1200px',
+//   xxl: '1600px'
+// }
+
+@top-header-height: 48px;
+
+// vertical paddings
+@padding-lg: 24px; // containers
+@padding-md: 16px; // small containers and buttons
+@padding-sm: 12px; // Form controls and items
+@padding-xs: 8px; // small items
+@padding-xss: 4px; // more small
+
+// vertical margins
+@margin-lg: 24px; // containers
+@margin-md: 16px; // small containers and buttons
+@margin-sm: 12px; // Form controls and items
+@margin-xs: 8px; // small items
+@margin-xss: 4px; // more small
+
+// height rules
+@height-base: 32px;
+@height-lg: 40px;
+@height-sm: 24px;
+
+// Space between cards and panels on overview pages
+@panel-spacing: @margin-xss;
+
+@component-background: white;

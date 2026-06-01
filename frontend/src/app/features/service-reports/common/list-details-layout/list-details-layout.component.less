@@ -1,0 +1,44 @@
+@import "theme";
+
+:host {
+  display: flex;
+
+  .new-entry-container {
+    flex: 3;
+    padding: 2em;
+    padding-bottom: 0.75em;
+    background: #f7f7f7;
+    // margin: 5px;
+  }
+
+  .entries-container {
+    flex: 2;
+    padding: 2em;
+    margin: 5px;
+    margin-right: 0;
+    background: white;
+  }
+
+  &.compact-form {
+    .new-entry-container {
+      flex: 1;
+    }
+
+    .entries-container {
+      flex: 1;
+    }
+  }
+
+  .list-group {
+    margin-bottom: 2em;
+  }
+
+  .empty-list {
+    color: lightgray;
+    font-size: 20px;
+    line-height: 1.3;
+    text-align: center;
+    padding: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}

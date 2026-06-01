@@ -1,0 +1,65 @@
+@import "theme";
+
+app-pls-status {
+  display: inline-block;
+
+  font-size: @font-size-sm;
+  font-weight: bold;
+  text-transform: uppercase;
+
+  text-align: center;
+
+  span {
+    display: inline-block;
+    line-height: 1.3;
+
+    padding: 0.15em 1em;
+    border-radius: 1.5em;
+
+    background-color: transparent;
+
+    border: 1px solid transparent;
+  }
+
+  .past {
+    border-color: @gray-5;
+    color: @text-color-secondary;
+  }
+
+  //----------------------------------------------------------------------------
+  // enabled
+
+  .enabled.present {
+    background-color: @green-6;
+    border-color: @green-6;
+    color: white;
+  }
+
+  .enabled.future {
+    border-color: @green-7;
+    color: @green-7;
+  }
+
+  //----------------------------------------------------------------------------
+  // disabled
+
+  .disabled.present {
+    border-color: @red-6;
+    background-color: @red-6;
+    color: white;
+  }
+
+  .disabled.future {
+    border-color: @red-6;
+    color: @red-6;
+  }
+
+  //----------------------------------------------------------------------------
+  // draft
+
+  .draft:not(.past) {
+    border: 1px solid @gray-6;
+    background-color: @gray-6;
+    color: white;
+  }
+}

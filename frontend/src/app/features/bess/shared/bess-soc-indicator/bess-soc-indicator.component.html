@@ -1,0 +1,46 @@
+<div class="bess-soc-indicator">
+  <div class="bess-soc-indicator-content">
+    <div class="label">SoC</div>
+    <div class="bess-soc-indicator-value">
+      <app-value-display [value]="data?.soc" unit="%" format="1.0-2"></app-value-display>
+    </div>
+  </div>
+  <div class="bar-container">
+    <div class="energy-row">
+      <div class="dischargeable">
+        <div class="label">Dischargeable</div>
+        @let scaledValueMaximumDischargeableEnergy =
+          getScaledValue(data?.maxDischargeableEnergy, "Wh");
+        <div
+          class="value"
+          nz-tooltip
+          [nzTooltipTitle]="formatNumber(data?.maxDischargeableEnergy, 'kWh')"
+        >
+          <span>{{ scaledValueMaximumDischargeableEnergy.value }}</span>
+          @if (scaledValueMaximumDischargeableEnergy.unit) {
+            <span class="unit"> {{ scaledValueMaximumDischargeableEnergy.unit }}</span>
+          }
+        </div>
+      </div>
+      <div class="chargeable">
+        <div class="label">Chargeable</div>
+        @let scaledValueMaximumChargeableEnergy = getScaledValue(data?.maxChargeableEnergy, "Wh");
+        <div
+          class="value"
+          nz-tooltip
+          [nzTooltipTitle]="formatNumber(data?.maxChargeableEnergy, 'kWh')"
+        >
+          <span>{{ scaledValueMaximumChargeableEnergy.value }}</span>
+          @if (scaledValueMaximumChargeableEnergy.unit) {
+            <span class="unit"> {{ scaledValueMaximumChargeableEnergy.unit }}</span>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="bess-soc-indicator-bar">
+      @for (step of steps; track step) {
+        <div class="bess-soc-indicator-bar-step" [class.active]="isStepActive(step)"></div>
+      }
+    </div>
+  </div>
+</div>

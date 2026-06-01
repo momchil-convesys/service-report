@@ -1,0 +1,105 @@
+@if (ticket === null) {
+  <h1 i18n>New Ticket</h1>
+}
+
+@if (ticket) {
+  <ng-container i18n>
+    <h1>{{ ticket.id }} {{ ticket.title }}</h1>
+    <p>
+      Created<br />
+      @if (ticket.createdBy) {
+        {{ ticket.createdBy.timestamp | relativeDate: "mediumDate" }} at
+        {{ ticket.createdBy.timestamp | date: "HH:mm" }}
+        by
+        <app-user-link [userId]="ticket.createdBy.userId"></app-user-link>
+      }
+    </p>
+    <p>
+      Description11<br />
+      {{ ticket.description || "No description provided1111111" }}
+    </p>
+  </ng-container>
+}
+
+@if (form) {
+  <ng-container i18n>
+    <form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="onSubmit(form)">
+      @if (isNewTicket) {
+        <nz-form-item>
+          <nz-form-label>Title</nz-form-label>
+          <nz-form-control>
+            <nz-input-group>
+              <input type="text" nz-input formControlName="name" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+      }
+
+      @if (isNewTicket) {
+        <nz-form-item>
+          <nz-form-label>Description</nz-form-label>
+          <nz-form-control>
+            <nz-input-group>
+              <textarea
+                nz-input
+                [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+                formControlName="description"
+              ></textarea>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+      }
+
+      <nz-form-item>
+        <nz-form-label>Assignee</nz-form-label>
+        <nz-form-control>
+          <nz-select
+            formControlName="assignedTo"
+            nzPlaceHolder="Not assigned"
+            nzAllowClear="true"
+            style="max-width: 400px"
+          >
+            @for (user of allUsers; track user.id) {
+              <nz-option [nzValue]="user.id" [nzLabel]="userDisplayStringById(user.id)"></nz-option>
+            }
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="default" type="button" nzDanger (click)="onDelete(form)">
+            Delete
+          </button>
+          &nbsp;
+          <button nz-button nzType="primary" type="submit">Save</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+}
+
+@if (ticket) {
+  <div i18n class="tasks-block">
+    <nz-divider></nz-divider>
+    <h2>Tasks</h2>
+    <p><a nz-button (click)="showModal()">Select from templates</a></p>
+    <app-ticket-tasks [ticket]="ticket"></app-ticket-tasks>
+  </div>
+}
+
+@if (ticket) {
+  <div class="activity-block">
+    <nz-divider></nz-divider>
+    <h2 i18n>Activity log (history)</h2>
+    <app-ticket-activity-client-view [ticket]="ticket"></app-ticket-activity-client-view>
+  </div>
+}
+
+@if (ticket) {
+  <ng-container i18n>
+    <nz-divider></nz-divider>
+    <h2>Comments (Curretly showing full activity log)</h2>
+    <app-ticket-comments [ticket]="ticket"></app-ticket-comments>
+  </ng-container>
+}

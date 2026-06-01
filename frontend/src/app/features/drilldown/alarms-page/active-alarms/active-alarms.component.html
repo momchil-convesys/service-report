@@ -1,0 +1,22 @@
+<div class="main-page" [class.conditionally-collapsed]="outlet.isActivated">
+  <h1 i18n>Active alarms</h1>
+
+  @if (error$ | async; as error) {
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load data"
+      [nzDescription]="error.message"
+      nzShowIcon
+    ></nz-alert>
+  }
+
+  <app-alarms-table
+    [alarms]="(alarms$ | async) || []"
+    [loading]="(loading$ | async) || false"
+  ></app-alarms-table>
+</div>
+
+<div class="detail-page" [class.conditionally-full-width]="outlet.isActivated">
+  <router-outlet #outlet="outlet"></router-outlet>
+</div>

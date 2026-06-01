@@ -1,0 +1,135 @@
+<!--  -->
+@let loading = loading$ | async;
+<!--  -->
+@let alarm = alarm$ | async;
+<!--  -->
+@let lastActiveAlarm = lastActiveAlarm$ | async;
+<!--  -->
+@let cachedAlarm = alarm || lastActiveAlarm;
+
+<!--  -->
+<div class="flex-header">
+  @if (cachedAlarm) {
+    <app-inverter-alarm-icon
+      [severity]="cachedAlarm.severity"
+      [inverse]="true"
+    ></app-inverter-alarm-icon>
+    <h2>{{ cachedAlarm.title }}</h2>
+  }
+
+  <a role="button" class="close-page-button extra" routerLink=".." queryParamsHandling="merge">
+    &times;
+  </a>
+</div>
+
+<!--  -->
+
+@if (cachedAlarm) {
+  <div class="alarm-info">
+    <div class="info-row">
+      <span class="label" i18n>Severity</span>
+      <span class="value uppercase"> {{ cachedAlarm.severity }}</span>
+    </div>
+    @if (cachedAlarm.suggestion) {
+      <div class="info-row">
+        <span class="label" i18n>Suggestion</span>
+        <span class="value"> {{ cachedAlarm.suggestion }}</span>
+      </div>
+    }
+  </div>
+}
+
+<!--  -->
+@if (error$ | async; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Failed to load data"
+    [nzDescription]="error.message"
+    nzShowIcon
+  ></nz-alert>
+}
+
+<!--  -->
+@if (loading) {
+  <nz-spin></nz-spin>
+}
+
+<!--  -->
+@if (alarm) {
+  <h3>
+    <ng-container i18n>Active instances</ng-container>
+    ({{ alarm.inverterEvents.length }})
+  </h3>
+  <nz-table
+    [nzData]="alarm.inverterEvents"
+    [nzShowPagination]="false"
+    [nzSize]="'small'"
+    [nzBordered]="true"
+  >
+    <thead>
+      <tr>
+        <th i18n>TS</th>
+        <th i18n>Inverter</th>
+        <th i18n nzAlign="right">Active since</th>
+        <th i18n nzAlign="right">Active until</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (inverter of alarm.inverterEvents; track inverter.inverterId + inverter.interval.start) {
+        <!--  -->
+        @let inverterMetadata = getMetadataForInverterId(inverter.inverterId);
+        <tr>
+          <td>
+            @if (inverterMetadata | async; as metadata) {
+              <span class="secondary-text">
+                {{ metadata?.data?.context?.tsDisplayName }}
+              </span>
+            }
+          </td>
+          <td>
+            @if (inverterMetadata | async; as metadata) {
+              <span style="white-space: nowrap">Inverter {{ metadata?.data?.displayIndex }}</span>
+            }
+          </td>
+          <td nzAlign="right">
+            <span class="secondary-text">{{
+              inverter.intervalZoned.start | date: "mediumDate"
+            }}</span>
+            <span>
+              {{ inverter.intervalZoned.start | date: "HH:mm:ss" }}
+            </span>
+          </td>
+          <td nzAlign="right">
+            @if (inverter.intervalZoned.end) {
+              <span class="secondary-text">{{
+                inverter.intervalZoned.end | date: "mediumDate"
+              }}</span>
+              <span>
+                {{ inverter.intervalZoned.end | date: "HH:mm:ss" }}
+              </span>
+            } @else {
+              <span i18n>currently active</span>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+}
+<!--  -->
+@else if (!loading) {
+  <div class="no-alarms">
+    @if (cachedAlarm) {
+      @if (filterType === "active") {
+        <ng-container i18n>This alarm has no currently active instances.</ng-container>
+      } @else {
+        <ng-container i18n
+          >This alarm has no active instances for the selected time range.</ng-container
+        >
+      }
+    } @else {
+      <ng-container i18n>Select an alarm to view details.</ng-container>
+    }
+  </div>
+}

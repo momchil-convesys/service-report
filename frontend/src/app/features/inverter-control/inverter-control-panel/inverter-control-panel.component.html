@@ -1,0 +1,110 @@
+@if (devices$ | async; as devices) {
+  <nz-table
+    [nzData]="devices"
+    nzBordered="true"
+    nzShowPagination="false"
+    nzSize="default"
+    [nzFooter]="devices.length > 1 ? footer : null"
+    [nzScroll]="{ x: 'auto' }"
+  >
+    <thead>
+      <tr>
+        <th i18n rowspan="2" nzLeft nzWidth="130px">Device</th>
+        <th i18n colspan="2">Power Limit</th>
+        <th i18n colspan="2">Operation State</th>
+      </tr>
+      <tr>
+        <th i18n nzAlign="center">Current Limit</th>
+        <th i18n nzAlign="center">Actions</th>
+        <th i18n nzAlign="center">Current State</th>
+        <th i18n nzAlign="center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (device of devices; track device.id) {
+        <tr>
+          <td nzLeft nzWidth="130px" [class.power-limit-applied]="device.powerLimitSubject | async">
+            {{ device.name }}
+          </td>
+
+          <td nzAlign="center" class="no-wrap">
+            @if (device.powerLimitSubject | async; as powerLimit) {
+              <app-inverter-power-limit-indicator
+                [powerLimit]="powerLimit"
+                [mode]="'icon-value'"
+              ></app-inverter-power-limit-indicator>
+            } @else {
+              <span i18n class="no-limit-text"> No limit </span>
+            }
+          </td>
+
+          <td nzAlign="center" class="actions-cell">
+            <div class="actions">
+              <button nz-button (click)="onRequest('limit-inverter-power', [device], tplTitle)">
+                <ng-container i18n>Set power limit</ng-container>&hellip;
+              </button>
+            </div>
+          </td>
+
+          <td nzAlign="center">
+            <app-device-state-dynamic
+              [device]="device"
+              [variant]="'full'"
+              [fixedWidth]="true"
+            ></app-device-state-dynamic>
+          </td>
+
+          <td nzAlign="center" class="actions-cell">
+            <div class="actions">
+              <button nz-button (click)="onRequest('start-inverter', [device], tplTitle)">
+                <ng-container i18n>START</ng-container>&hellip;
+              </button>
+              <button nz-button (click)="onRequest('stop-inverter', [device], tplTitle)" nzDanger>
+                <ng-container i18n>STOP</ng-container>&hellip;
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+      <!-- <tr *ngIf="devices.length > 1">
+        <td>Total</td>
+        <td nzAlign="center">XXX kW</td>
+        <td colspan="3"></td>
+      </tr> -->
+    </tbody>
+  </nz-table>
+  <ng-template #footer>
+    <div class="table-footer">
+      <span i18n class="title">Batch request</span>
+      <div class="actions">
+        <button
+          nz-button
+          nzSize="large"
+          (click)="onRequest('limit-inverter-power', devices, tplTitle)"
+        >
+          <ng-container i18n>Set power limit for ALL</ng-container>&hellip;
+        </button>
+        <nz-divider nzType="vertical"></nz-divider>
+        <div class="start-stop-actions">
+          <button nz-button nzSize="large" (click)="onRequest('start-inverter', devices, tplTitle)">
+            <ng-container i18n>START ALL</ng-container>&hellip;
+          </button>
+          <button
+            nz-button
+            nzSize="large"
+            (click)="onRequest('stop-inverter', devices, tplTitle)"
+            nzDanger
+          >
+            <ng-container i18n>STOP ALL</ng-container>&hellip;
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+}
+
+<ng-template #tplTitle>
+  <span> {{ (plant$ | async)?.name }} <ng-container i18n>inverter control</ng-container></span>
+</ng-template>
+
+<app-inverter-control-latest-activity></app-inverter-control-latest-activity>

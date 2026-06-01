@@ -1,0 +1,62 @@
+@if (timeRange && device) {
+  <div class="header">
+    <h2 i18n>Fault counters</h2>
+    <app-datetime-range-filter
+      (rangeChange)="onTimeRangeChange($event)"
+      (predefinedRangeChange)="onPredefinedTimeRangeChange($event)"
+      [initialRange]="timeRange"
+    ></app-datetime-range-filter>
+  </div>
+  <div class="content">
+    <div class="table">
+      <nz-tabs [nzAnimated]="false" [nzTabBarExtraContent]="extraTemplate">
+        <!-- TODO: translate nzTitle -->
+        <nz-tab [nzTitle]="hasSlave(device) ? 'Master' : 'Faults'">
+          <app-fault-counters-table
+            [faultCountersData]="(faultCountersData$ | async) || null"
+            [loadingData]="faultCountersDataLoading$ | async"
+            [faultGroups]="(faultsTemplate$ | async)?.master || []"
+            [hideFilteringOptions]="(faultsTemplate$ | async)?.hideFilteringOptions"
+          ></app-fault-counters-table>
+        </nz-tab>
+        @if (hasSlave(device)) {
+          <nz-tab i18n-nzTitle nzTitle="Slave">
+            <app-fault-counters-table
+              [faultCountersData]="(faultCountersData$ | async) || null"
+              [loadingData]="faultCountersDataLoading$ | async"
+              [faultGroups]="(faultsTemplate$ | async)?.slave || []"
+              [hideFilteringOptions]="(faultsTemplate$ | async)?.hideFilteringOptions"
+            ></app-fault-counters-table>
+          </nz-tab>
+        }
+      </nz-tabs>
+    </div>
+    <div class="charts">
+      <app-fault-counters-column-chart-loader
+        [faults]="selectedFaults$ | async"
+        [timeRange]="convertedTimeRange!"
+        [deviceId]="device.id"
+      ></app-fault-counters-column-chart-loader>
+      <app-fault-counters-bar-chart
+        [values]="(faultCountersData$ | async)?.values || null"
+        [faults]="selectedFaults$ | async"
+        [isLoadingData]="faultCountersDataLoading$ | async"
+      ></app-fault-counters-bar-chart>
+    </div>
+  </div>
+
+  <ng-template #extraTemplate>
+    <div class="selected-faults">
+      <a
+        nz-button
+        nzSize="default"
+        nzType="default"
+        (click)="clearSelectedFaults()"
+        [disabled]="(selectedFaultIds$ | async)?.size === 0"
+      >
+        <ng-container i18n>Clear selected faults</ng-container>
+        ({{ (selectedFaultIds$ | async)?.size || 0 }})
+      </a>
+    </div>
+  </ng-template>
+}

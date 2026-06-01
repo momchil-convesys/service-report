@@ -1,0 +1,28 @@
+@import "theme";
+
+app-monbat-strings-page {
+  display: block;
+  background-color: white;
+  height: 100%;
+
+  .strings-overview {
+    padding: @padding-md @padding-lg;
+    height: 100%;
+    overflow: scroll;
+  }
+
+  .error-block,
+  .loading-block {
+    padding: @padding-lg;
+    min-height: 200px;
+
+    nz-spin {
+      min-height: 200px;
+    }
+  }
+
+  .navigation-container {
+    padding: @padding-sm;
+    padding-bottom: 0;
+  }
+}

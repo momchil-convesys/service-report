@@ -1,0 +1,25 @@
+@if (!(historyRequestError$ | async)) {
+  <nz-spin
+    [nzSpinning]="(historyRequest$ | async)?.isLoading"
+    i18n-nzTip="@@loading"
+    nzTip="Loading..."
+  >
+    <div class="nz-spin-fix-text-align">
+      <h3 i18n class="title">Latest activity</h3>
+
+      @if (historyRequestData$ | async; as requestItems) {
+        @for (item of requestItems; track item.id) {
+          <app-inverter-control-request-item [item]="item"></app-inverter-control-request-item>
+        }
+      }
+
+      <button i18n nz-button nzSize="default" class="full-history-btn" routerLink="../history">
+        View full history
+      </button>
+    </div>
+  </nz-spin>
+}
+
+@if (historyRequestError$ | async; as error) {
+  <nz-alert i18n-nzMessage nzType="error" nzMessage="Failed to load activity" nzShowIcon></nz-alert>
+}

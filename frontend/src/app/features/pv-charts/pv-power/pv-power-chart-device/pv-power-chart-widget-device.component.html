@@ -1,0 +1,48 @@
+<nz-card class="custom-card" nzBordered="true" nzSize="small">
+  <div class="card-header">
+    <div class="card-title">
+      <span>
+        <ng-container i18n>Total production for selected day:</ng-container>
+        <b style="white-space: nowrap">
+          <app-production-value
+            [productionValue]="(chartDataRequest$ | async)?.data?.calculatedProduction"
+          ></app-production-value>
+        </b>
+      </span>
+      <app-live-data-indicator></app-live-data-indicator>
+    </div>
+    <div class="card-extra">
+      <app-datetime-range-select
+        (modelChange)="onDatetimeRangeChange($event)"
+        [defaultOption]="'day'"
+        [customRangeTypeOptions]="['day', 'week', 'month', 'custom-range']"
+        [timeZone]="(timeZone$ | async) || undefined"
+      >
+      </app-datetime-range-select>
+      <app-highcharts-export-option
+        [chartComponent]="chartComponent"
+        [disabled]="(chartDataRequest$ | async)?.isLoading || false"
+        [filename]="(chartDataRequest$ | async)?.data?.exportFileName"
+      ></app-highcharts-export-option>
+    </div>
+  </div>
+
+  @if ((chartDataRequest$ | async)?.error; as error) {
+    <div class="error-block">
+      <nz-alert
+        nzType="error"
+        i18n-nzMessage
+        nzMessage="Failed to load data"
+        [nzDescription]="error.message"
+        nzShowIcon
+      ></nz-alert>
+    </div>
+  }
+
+  <app-pv-power-chart-device
+    [data]="(chartDataRequest$ | async)?.data"
+    [loading]="(chartDataRequest$ | async)?.isLoading"
+    [context]="chartContext$ | async"
+    #chartComponent
+  ></app-pv-power-chart-device>
+</nz-card>

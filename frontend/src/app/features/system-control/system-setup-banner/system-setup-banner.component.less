@@ -1,0 +1,32 @@
+@import "theme";
+
+app-system-setup-banner {
+  display: block;
+
+  .banner {
+    padding: @padding-xss @padding-md;
+
+    display: flex;
+    align-items: center;
+    gap: @margin-xs;
+
+    font-size: @font-size-sm;
+
+    min-height: 38px;
+
+    background-color: @gray-2;
+
+    &.in-control {
+      background-color: @purple-1;
+    }
+
+    &.out-of-control {
+      background-color: @gold-1;
+    }
+
+    &.error {
+      background-color: @red-7;
+      color: white;
+    }
+  }
+}

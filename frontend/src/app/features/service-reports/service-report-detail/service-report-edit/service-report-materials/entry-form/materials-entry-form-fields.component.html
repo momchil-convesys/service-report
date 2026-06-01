@@ -1,0 +1,112 @@
+<form nz-form [formGroup]="entryForm">
+  <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="16">
+      @if (!readonlySchematicLabel) {
+        <div>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-form-label class="control-label">Schematic label</nz-form-label>
+
+              <input
+                placeholder="input here"
+                nz-input
+                formControlName="schematicLabel"
+                id="material-schematic-label"
+                (input)="typeaheadOnSelect('schematicLabel', $event)"
+                [nzAutocomplete]="auto"
+            /></nz-form-control>
+          </nz-form-item>
+          <nz-autocomplete [nzDataSource]="schematicLabels" nzBackfill #auto></nz-autocomplete>
+        </div>
+      }
+      @if (readonlySchematicLabel) {
+        <div class="readonly-schematic-label">
+          {{ entryForm.get("schematicLabel")!.value }}
+        </div>
+      }
+    </div>
+    <div>
+      <ng-content></ng-content>
+    </div>
+  </div>
+
+  <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="16">
+      <!-- <div nz-col [nzSpan]="12"> -->
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            entryForm.controls['name'].invalid && entryForm.controls['name'].dirty
+              ? 'error'
+              : undefined
+          }}"
+          i18n-nzErrorTip
+          nzErrorTip="This field is required!"
+        >
+          <nz-form-label nzRequired>Name</nz-form-label>
+          <input
+            nz-input
+            formControlName="name"
+            id="material-name"
+            placeholder="Enter material/part name..."
+            (input)="typeaheadOnSelect('name', $event)"
+            [nzAutocomplete]="auto"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="8">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            entryForm.controls['quantity'].invalid && entryForm.controls['quantity'].dirty
+              ? 'error'
+              : undefined
+          }}"
+          i18n-nzErrorTip
+          nzErrorTip="This field is required!"
+        >
+          <nz-form-label nzRequired>Quantity</nz-form-label>
+          <nz-input-number
+            formControlName="quantity"
+            id="parts-count"
+            [nzMin]="1"
+            [nzStep]="1"
+            style="width: 100%"
+          ></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-form-label>Installed serial №</nz-form-label>
+          <input
+            placeholder="input here"
+            nz-input
+            formControlName="installedSerialNumber"
+            id="installed-serial-number"
+            placeholder="Enter Installed Serial Number..."
+        /></nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-form-label>Dismantled serial №</nz-form-label>
+          <input
+            placeholder="input here"
+            nz-input
+            formControlName="dismantledSerialNumber"
+            id="dismantled-serial-number"
+            placeholder="Enter Dismantled Serial Number..."
+        /></nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <nz-autocomplete [nzDataSource]="filteredInventoryItems" nzBackfill #auto></nz-autocomplete>
+</form>

@@ -1,0 +1,51 @@
+@import "theme";
+
+app-bess-overview-page {
+  display: block;
+  width: 100%;
+
+  .bess-overview-layout {
+    display: flex;
+    // gap: @padding-lg;
+    align-items: stretch;
+  }
+
+  .bess-overview-layout__summary {
+    flex: 0 0 320px;
+    min-width: 280px;
+
+    margin: @margin-md;
+  }
+
+  .bess-overview-layout__content {
+    flex: 1;
+    min-width: 0;
+
+    margin-right: @margin-md;
+    margin-bottom: @margin-lg;
+  }
+
+  .bess-overview-container {
+    margin: @margin-md 0;
+
+    h2 {
+      margin-bottom: @margin-md;
+      color: @text-color;
+    }
+
+    p {
+      color: @text-color-secondary;
+    }
+  }
+
+  @media (max-width: @breakpoint-lg) {
+    .bess-overview-layout {
+      flex-direction: column;
+    }
+
+    .bess-overview-layout__summary {
+      flex: none;
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,17 @@
+<div class="pages">Pages:</div>
+@if (rawSvg) {
+  <div class="svg-container" [innerHtml]="rawSvg" #svgContainer></div>
+}
+@if (!rawSvg) {
+  <div class="svg-container loading">
+    <div class="">
+      <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="message">Loading SVG</div>
+    </div>
+  </div>
+}

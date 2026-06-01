@@ -1,0 +1,54 @@
+@if (isLoading || (selectedTriggerRequest$ | async)?.isLoading) {
+  <nz-spin
+    i18n-nzTip
+    nzTip="Please wait..."
+    [nzSpinning]="true"
+    nzSize="large"
+    class="spinner-container"
+  ></nz-spin>
+} @else {
+  @if ((selectedTriggerRequest$ | async)?.error; as error) {
+    @if ((selectedTriggerRequest$ | async)?.error) {
+      <div class="error-block">
+        <nz-alert
+          nzType="error"
+          i18n-nzMessage
+          nzMessage="Failed to load trigger"
+          [nzDescription]="error.message"
+          nzShowIcon
+        ></nz-alert>
+      </div>
+    }
+  } @else {
+    <div class="trigger-header">
+      @if (!(selectedTriggerRequest$ | async)?.data) {
+        <h1 i18n>New alarm trigger</h1>
+      }
+      @if ((selectedTriggerRequest$ | async)?.data; as selectedTrigger) {
+        <h1>
+          {{ selectedTrigger.title }}
+        </h1>
+      }
+
+      <a role="button" class="close-page-button" (click)="onClose()"> &times; </a>
+    </div>
+    <div class="trigger-content">
+      @if (editMode) {
+        @if (!(selectedTriggerRequest$ | async)?.isLoading) {
+          <app-alarm-config-form
+            [selectedTrigger]="(selectedTriggerRequest$ | async)?.data"
+            (create)="onCreate($event)"
+            (update)="onUpdate($event)"
+            (delete)="onDelete($event)"
+            (cancel)="onCancel()"
+          ></app-alarm-config-form>
+        }
+      }
+
+      @if (!editMode && (selectedTriggerRequest$ | async)?.data; as selectedTrigger) {
+        <app-alarm-trigger-view (edit)="onEdit()" [selectedTrigger]="selectedTrigger">
+        </app-alarm-trigger-view>
+      }
+    </div>
+  }
+}

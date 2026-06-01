@@ -1,0 +1,36 @@
+<div class="flex-row">
+  <app-datetime-range-select
+    (modelChange)="onDatetimeRangeChange($event)"
+    [defaultOption]="'day'"
+    [customRangeTypeOptions]="['day', 'week', 'month', 'custom-range']"
+    [timeZone]="(timeZone$ | async) || undefined"
+  >
+  </app-datetime-range-select>
+
+  <div class="extra">
+    <app-highcharts-export-option
+      [chartComponent]="chartComponent"
+      [disabled]="(chartDataRequest$ | async)?.isLoading || false"
+      [filename]="(chartDataRequest$ | async)?.data?.exportFileName"
+    ></app-highcharts-export-option>
+  </div>
+</div>
+
+@if ((chartDataRequest$ | async)?.error; as error) {
+  <div class="error-block">
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load data"
+      [nzDescription]="error.message"
+      nzShowIcon
+    ></nz-alert>
+  </div>
+}
+
+<app-pv-power-chart-device
+  [data]="(chartDataRequest$ | async)?.data"
+  [loading]="(chartDataRequest$ | async)?.isLoading"
+  [context]="chartContext$ | async"
+  #chartComponent
+></app-pv-power-chart-device>

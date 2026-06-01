@@ -1,0 +1,79 @@
+@import "theme";
+
+app-service-reports {
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  .conditionally-collapsed {
+    display: none;
+  }
+  .main-content {
+    height: 100%;
+    overflow: auto;
+    flex: 1;
+    border-left: 1px solid @border-color-base;
+    overflow-y: auto;
+  }
+
+  nz-spin,
+  nz-result {
+    flex: 1;
+    align-self: center;
+    text-align: center;
+  }
+
+  .list-block .footer {
+    flex: 0 0 auto;
+    // background: white;
+    //padding: @padding-sm @padding-lg;
+
+    // border-top: 1px solid @border-color-base;
+
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: @margin-xs;
+
+    .left-align {
+      margin-right: auto;
+    }
+  }
+
+  .list-block .header {
+    flex: 0 0 auto;
+    align-items: baseline;
+    // padding: @padding-md @padding-lg;
+    padding-bottom: 0;
+    // border-top: 1px solid @border-color-base;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: @margin-xs;
+    .left-align {
+      margin-right: auto;
+    }
+  }
+
+  .item-header {
+    display: flex;
+    font-weight: bold;
+    margin-bottom: 5px;
+    line-height: 1.2;
+
+    .title {
+      flex: 1;
+    }
+  }
+
+  .item-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    // margin-top: -24px; // Move up with the possibility to overlap text
+
+    .btn {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}

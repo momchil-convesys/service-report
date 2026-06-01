@@ -1,0 +1,76 @@
+@import "theme";
+
+app-pls-manual-adjustment {
+  display: block;
+
+  .custom-card .card-header .card-title {
+    display: flex;
+    flex-wrap: wrap;
+
+    width: 100%;
+
+    .extra-hint {
+      margin-left: auto;
+      font-size: @font-size-sm;
+      color: @blue-7;
+    }
+  }
+
+  .custom-card .card-header .card-extra {
+    width: 100%;
+    margin-left: 0;
+
+    app-highcharts-export-option {
+      margin-left: auto;
+    }
+  }
+
+  // Sticky stuff
+
+  @backButtonSpace: 57px;
+
+  app-pls-manual-adjustment-table {
+    overflow: visible;
+
+    thead > tr {
+      position: sticky;
+      top: @backButtonSpace;
+      z-index: 2;
+      box-shadow: 0 -1px 0 0 @border-color-split;
+    }
+  }
+
+  &.sticky-chart {
+    .custom-card {
+      position: sticky;
+      top: @backButtonSpace;
+      z-index: 1;
+    }
+
+    app-pls-manual-adjustment-table thead > tr {
+      top: 345px + @backButtonSpace;
+    }
+  }
+}
+
+@media (max-width: @breakpoint-xl) {
+  // Remove sticky rules to allow horizontal scrolling
+
+  app-pls-manual-adjustment {
+    app-pls-manual-adjustment-table {
+      overflow: auto;
+
+      thead > tr {
+        position: static;
+        z-index: 0;
+      }
+    }
+
+    &.sticky-chart {
+      .custom-card {
+        position: static;
+        z-index: 0;
+      }
+    }
+  }
+}

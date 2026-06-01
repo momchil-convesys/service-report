@@ -1,0 +1,42 @@
+@import "theme";
+
+app-monbat-battery-charge-bar {
+  display: flex;
+  flex-wrap: wrap;
+
+  column-gap: @margin-xs;
+  align-items: center;
+
+  .bar {
+    flex: 1;
+    display: flex;
+    column-gap: 1px;
+
+    min-width: 100px;
+    max-width: 100px;
+    border-radius: 2px;
+    overflow: hidden;
+
+    height: 22px;
+
+    // &.over100 {
+    //   background: linear-gradient(@green-5, @green-6);
+    // }
+
+    .cell {
+      background-color: @gray-4;
+
+      flex: 1;
+      height: 100%;
+
+      &.full {
+        background: linear-gradient(@green-5, @green-6);
+      }
+    }
+  }
+
+  .value {
+    min-width: 80px;
+    text-align: right;
+  }
+}

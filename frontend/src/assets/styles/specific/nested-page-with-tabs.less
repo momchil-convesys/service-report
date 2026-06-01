@@ -1,0 +1,43 @@
+.nested-page-with-tabs() {
+  display: block;
+
+  height: 100%;
+
+  padding: @padding-xss;
+
+  & > nz-spin {
+    min-height: 200px;
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    padding: 0;
+  }
+
+  background-color: @background-color-base;
+
+  & > .ant-tabs-top > .ant-tabs-nav {
+    margin-bottom: 0;
+  }
+
+  .ant-tabs-content-holder {
+    background-color: white;
+  }
+
+  & > .content {
+    flex: 1;
+    background-color: white;
+    padding: @padding-md;
+
+    border: 1px solid @border-color-split;
+    border-top: 0;
+
+    background-color: white;
+    border-radius: @border-radius-sm;
+
+    @media (max-width: @breakpoint-sm) {
+      padding: @padding-xs;
+      border: 0;
+      border-radius: 0;
+    }
+  }
+}

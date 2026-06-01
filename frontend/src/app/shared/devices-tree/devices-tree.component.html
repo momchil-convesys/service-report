@@ -1,0 +1,176 @@
+@if (hasFilter) {
+  <div class="header">
+    <div class="filters-container">
+      <app-state-filter (filterChange)="onFilterChange($event)"></app-state-filter>
+    </div>
+  </div>
+}
+
+<nz-tree-view
+  [nzDataSource]="dataSource"
+  [nzLevelAccessor]="levelAccessor"
+  [nzDirectoryTree]="true"
+>
+  <nz-tree-node
+    *nzTreeNodeDef="let node"
+    nzTreeNodePadding
+    [id]="deviceIdPrefix + node.deviceId"
+    [nzExpandable]="false"
+  >
+    <nz-tree-node-toggle nzTreeNodeNoopToggle class="power-limit-placeholder">
+      <app-inverter-power-limit-indicator
+        [powerLimit]="node.powerLimit$ | async"
+      ></app-inverter-power-limit-indicator>
+      @if (node.monbatActiveSchedule$ | async; as activeSchedule) {
+        <span>
+          <app-monbat-schedule-indicator
+            [activeSchedule]="castMonbatSchedule(activeSchedule)"
+            [plantId]="node.plantId"
+            [deviceId]="node.deviceId"
+            [mode]="'icon'"
+          ></app-monbat-schedule-indicator>
+        </span>
+      }
+    </nz-tree-node-toggle>
+    <nz-tree-node-option
+      [nzDisabled]="node.disabled"
+      [nzSelected]="selectListSelection.isSelected(node)"
+      (nzClick)="onClick(node, $event)"
+      [title]="node.name"
+    >
+      <span class="device-node">
+        <span class="title device" [class.power-limit-applied]="node.powerLimit$ | async">{{
+          node.name
+        }}</span>
+        <!-- <app-device-state-iconish
+          [state]="(node.state$ | async) || undefined"
+        ></app-device-state-iconish> -->
+        <app-device-state
+          [state]="(node.state$ | async) || undefined"
+          variant="short"
+        ></app-device-state>
+      </span>
+    </nz-tree-node-option>
+  </nz-tree-node>
+
+  <nz-tree-node
+    *nzTreeNodeDef="let node; when: hasChild"
+    nzTreeNodePadding
+    [id]="plantIdPrefix + node.plantId"
+    [nzExpandable]="true"
+  >
+    <nz-tree-node-toggle (click)="onNodeToggled(node)">
+      <i nz-icon nzType="caret-down" nzTreeNodeToggleRotateIcon></i>
+    </nz-tree-node-toggle>
+    <nz-tree-node-option
+      [nzDisabled]="node.disabled"
+      [nzSelected]="selectListSelection.isSelected(node)"
+      (nzClick)="onClick(node, $event)"
+      [title]="node.name"
+    >
+      <span class="plant-node">
+        <span
+          class="title"
+          style="font-weight: 600"
+          [class.power-limit-applied]="isPowerLimitScheduleActive(node.powerLimitSchedule$ | async)"
+        >
+          {{ node.name }}
+        </span>
+
+        @if (!isExpanded(node)) {
+          <span class="counters-slot">
+            @let powerLimitCount = node.powerLimitCount$ | async;
+            @if (powerLimitCount) {
+              @let tooltipTitle =
+                powerLimitCount === 1
+                  ? "1 device has a power limit"
+                  : powerLimitCount + " devices have a power limit";
+              <span class="counter" nz-tooltip [nzTooltipTitle]="tooltipTitle">
+                <app-power-limit-icon></app-power-limit-icon>
+              </span>
+            }
+
+            @let noCommunicationCount = node.noCommunicationCount$ | async;
+            @if (noCommunicationCount) {
+              @let tooltipTitle =
+                noCommunicationCount === 1
+                  ? "1 device has no communication"
+                  : noCommunicationCount + " devices have no communication";
+              <span class="counter" nz-tooltip [nzTooltipTitle]="tooltipTitle">
+                <app-device-state-iconish
+                  [state]="{ baseState: DeviceState.NoCommunication }"
+                ></app-device-state-iconish>
+              </span>
+            }
+
+            @let offCount = node.offCount$ | async;
+            @if (offCount) {
+              @let tooltipTitle =
+                offCount === 1 ? "1 device is off" : offCount + " devices are off";
+              <span class="counter" nz-tooltip [nzTooltipTitle]="tooltipTitle">
+                <app-device-state-iconish
+                  [state]="{ baseState: DeviceState.Off }"
+                ></app-device-state-iconish>
+              </span>
+            }
+
+            @let warningsCount = node.warningsCount$ | async;
+            @if (warningsCount) {
+              @let tooltipTitle =
+                warningsCount === 1
+                  ? "1 device is in warning state"
+                  : warningsCount + " devices are in warning state";
+              <span class="counter" nz-tooltip [nzTooltipTitle]="tooltipTitle">
+                <app-device-state-iconish
+                  [state]="{ baseState: DeviceState.Warning }"
+                ></app-device-state-iconish>
+              </span>
+            }
+
+            @let errorsCount = node.errorsCount$ | async;
+            @if (errorsCount) {
+              @let tooltipTitle =
+                errorsCount === 1
+                  ? "1 device is in error state"
+                  : errorsCount + " devices are in error state";
+              <span class="counter" nz-tooltip [nzTooltipTitle]="tooltipTitle">
+                <app-device-state-iconish
+                  [state]="{ baseState: DeviceState.Error }"
+                ></app-device-state-iconish>
+              </span>
+            }
+          </span>
+        }
+
+        @if (node.bessSchedule$ | async; as activeBESSSchedule) {
+          <span class="power-limit-schedule-slot">
+            <app-bess-schedule-indicator
+              [currentSchedule]="castPwSchedule(activeBESSSchedule)"
+              [mode]="'icon-only'"
+              [fileLink]="plsLink(node.plantId, castPwSchedule(activeBESSSchedule))"
+            ></app-bess-schedule-indicator>
+          </span>
+        }
+
+        @if (node.powerLimitSchedule$ | async; as currentSchedule) {
+          <span class="power-limit-schedule-slot">
+            <app-power-limit-schedule-indicator
+              [currentSchedule]="castPwSchedule(currentSchedule)"
+              [mode]="'icon-only'"
+              [fileLink]="plsLink(node.plantId, castPwSchedule(currentSchedule))"
+            ></app-power-limit-schedule-indicator>
+          </span>
+        }
+      </span>
+    </nz-tree-node-option>
+  </nz-tree-node>
+</nz-tree-view>
+
+@if (plants && plants.length > 1) {
+  <div class="footer">
+    <div class="actions-container">
+      <button nz-button nzType="link" nzSize="small" (click)="onExpandAll()">Expand all</button>
+      <button nz-button nzType="link" nzSize="small" (click)="onCollapseAll()">Collapse all</button>
+    </div>
+  </div>
+}

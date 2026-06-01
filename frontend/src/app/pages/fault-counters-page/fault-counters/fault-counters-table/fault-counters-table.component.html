@@ -1,0 +1,68 @@
+<app-faults-table
+  [faultGroups]="faultGroups"
+  [loadingData]="loadingData"
+  [hideFilteringOptions]="hideFilteringOptions"
+  [extraColumns]="[
+    {
+      thTemplate: countThTemplate,
+      tdTemplate: countTdTemplate,
+      sortFn: sortOrder ? sortByCount : undefined,
+    },
+    { thTemplate: thTemplate, tdTemplate: tdTemplate },
+  ]"
+  (faultRowClick)="onFaultRowClick($event)"
+>
+</app-faults-table>
+
+<ng-template #countThTemplate>
+  <th
+    nzAlign="left"
+    [nzSortOrder]="sortOrder"
+    [nzSortDirections]="sortDirections"
+    (nzSortOrderChange)="onSortCountColumnChange($event)"
+    class="ant-fix"
+    i18n
+  >
+    Count
+  </th>
+</ng-template>
+
+<ng-template let-item #countTdTemplate>
+  @if (faultCountersData) {
+    <td>
+      <div class="counter-container">
+        <span class="text-value">{{ faultCountersData.values[item.itemId] }}</span>
+        <div class="percent-bar-container">
+          <div
+            class="percent-bar"
+            style.width="{{
+              (faultCountersData.values[item.itemId] / (faultCountersData.maxValue || 1)) * 100
+            }}%"
+          ></div>
+        </div>
+      </div>
+    </td>
+  } @else {
+    <td>
+      <span class="text-value"></span>
+      <div class="percent-bar-container"></div>
+    </td>
+  }
+</ng-template>
+
+<ng-template #thTemplate>
+  <th nzAlign="center" i18n>Draw</th>
+</ng-template>
+
+<ng-template let-item #tdTemplate>
+  <td nzAlign="center" style="cursor: pointer">
+    @if (item.itemId) {
+      <label
+        nz-checkbox
+        [nzChecked]="(selectedFaultIds$ | async)?.has(item.itemId || '')!!"
+        (nzCheckedChange)="onItemChecked(item.itemId || '', $event)"
+      >
+      </label>
+    }
+  </td>
+</ng-template>

@@ -1,0 +1,229 @@
+@import "theme";
+
+app-inverter-grid-box {
+  &.stale {
+    opacity: 0.4;
+  }
+
+  .inverter-box {
+    border: 1px solid @gray-3; // @border-color-base;
+    border-radius: @border-radius-sm;
+
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: @padding-xs;
+    padding-right: @padding-xss;
+
+    background-color: white;
+
+    display: flex;
+    gap: @margin-xss;
+    align-items: center;
+
+    & > .state-container {
+      flex: 0 0 auto;
+      padding-right: 2px;
+    }
+
+    & > .title {
+      flex: 2 2 80px;
+    }
+
+    & > .bars-container {
+      margin-left: auto;
+
+      flex: 1 1 50px;
+
+      & > .power-bar {
+        margin-bottom: 1px;
+      }
+    }
+
+    & > .alarms {
+      margin-left: auto;
+
+      flex: 1 1 26px;
+    }
+
+    &:hover {
+      border-color: @blue-7 !important;
+      box-shadow: inset 0 0 0 2px @blue-7 !important;
+    }
+
+    &.active {
+      background-color: @blue-2;
+      box-shadow: inset 0 0 0 1px @blue-7 !important;
+    }
+
+    &.major {
+      font-weight: bold;
+      background-color: @red-7;
+      box-shadow: inset 0 0 0 2px @red-7;
+      color: white;
+    }
+
+    &.warning {
+      font-weight: bold;
+      background-color: @gold-6;
+      box-shadow: inset 0 0 0 2px @gold-6;
+      color: white;
+    }
+
+    // &.minor {
+    //   font-weight: bold;
+    //   background-color: @yellow-6;
+    //   box-shadow: inset 0 0 0 2px @yellow-6;
+    //   color: white;
+    // }
+
+    // &.info {
+    //   font-weight: bold;
+    //   background-color: @cyan-6;
+    //   box-shadow: inset 0 0 0 2px @cyan-6;
+    //   color: white;
+    // }
+  }
+
+  .ant-skeleton-content .ant-skeleton-title {
+    height: 12px;
+    margin: 0;
+  }
+}
+
+// Popovers are not direct children,
+// they are appended to the body element,
+// so the corresponding css should not be scoped.
+
+.inverter-box-popover {
+  // The following rules are kept as a backup for tooltip version
+
+  // max-width: 300px; // default is 250px in .ant-tooltip
+
+  table {
+    width: 100%;
+  }
+
+  // .ant-tooltip-inner {
+  //   padding: @padding-xss @padding-sm @padding-sm @padding-sm;
+  // }
+
+  // .tooltip-header {
+  //   padding-bottom: @padding-xss;
+  //   margin-bottom: @margin-xs;
+
+  //   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  // }
+
+  .ant-popover-title {
+    font-weight: normal;
+  }
+
+  .title-container {
+    display: flex;
+    align-items: baseline;
+
+    .timestamp {
+      margin-left: auto;
+      margin-right: 2px;
+    }
+  }
+
+  .section-title,
+  .section-title-inverse {
+    margin-bottom: @margin-xss;
+    font-size: @font-size-sm;
+  }
+
+  .section-title {
+    color: @text-color-secondary;
+  }
+
+  .section-title-inverse {
+    color: @text-color-secondary-inverse;
+  }
+
+  .parameter-tooltip-row {
+    line-height: 1.3;
+
+    .title {
+      padding: 0 @padding-xss;
+      white-space: nowrap;
+    }
+
+    .value {
+      text-align: right;
+      font-weight: bold;
+      padding-left: @padding-xss;
+    }
+
+    .unit {
+      padding-left: @padding-xss;
+      padding-right: 0;
+
+      font-weight: bold;
+    }
+
+    .color-indicator {
+      display: block;
+      width: 16px;
+      height: 8px;
+      border-radius: 2px;
+      padding-right: 2px;
+
+      &.active-power {
+        background-color: #ffe200;
+      }
+
+      &.installed-capacity {
+        background-color: #00305950; // @blue-10 with opacity;
+      }
+
+      &.performance-ratio {
+        background-color: #14995d;
+      }
+    }
+  }
+
+  .state-container {
+    margin-top: @margin-xs;
+
+    .state-row {
+      display: flex;
+      align-items: baseline;
+      gap: @margin-xss;
+    }
+
+    .state-description {
+      max-width: 200px; // Remove for tooltip
+      line-height: 1.3;
+    }
+  }
+
+  .alarms {
+    margin-top: @margin-xs;
+
+    .alarm {
+      display: flex;
+      align-items: center;
+      gap: @margin-xss;
+      line-height: 20.2px; // equals table row height
+
+      .alarm-message {
+        flex: 1 1;
+      }
+    }
+  }
+}
+
+.inverter-box-popover.stale {
+  .ant-popover-title {
+    background-color: @gold-1;
+    box-shadow: inset 0 0 0 1px white;
+
+    .stale-data-warning {
+      color: @red-7;
+      font-weight: bold;
+      font-size: @font-size-sm;
+    }
+  }
+}

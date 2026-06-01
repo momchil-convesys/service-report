@@ -1,0 +1,11 @@
+<app-material-item-form></app-material-item-form>
+
+@if (selectedElements$ | async; as listItems) {
+  <ul>
+    @for (item of listItems; track item.id) {
+      <li>
+        <app-material-item-form [schematicElement]="item"></app-material-item-form>
+      </li>
+    }
+  </ul>
+}

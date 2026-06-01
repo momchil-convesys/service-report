@@ -1,0 +1,48 @@
+<nz-card nzBordered="true" nzSize="small" [nzTitle]="title1">
+  @if (error$ | async; as error) {
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load data"
+      [nzDescription]="error.message"
+      nzShowIcon
+    ></nz-alert>
+  }
+
+  <app-pv-active-power-live
+    [data]="(chartData$ | async) || undefined"
+    [loading]="(chartDataLoading$ | async) || false"
+    [context]="chartContext$ | async"
+  ></app-pv-active-power-live>
+</nz-card>
+
+<!-- Placeholder to insert another chart -->
+<ng-content></ng-content>
+
+<nz-card nzBordered="true" nzSize="small" [nzTitle]="title2">
+  @if (error$ | async; as error) {
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load data"
+      [nzDescription]="error.message"
+      nzShowIcon
+    ></nz-alert>
+  }
+
+  <app-pv-daily-production-live
+    [data]="(chartData$ | async) || undefined"
+    [loading]="(chartDataLoading$ | async) || false"
+    [context]="chartContext$ | async"
+  ></app-pv-daily-production-live>
+</nz-card>
+
+<ng-template #title1>
+  <ng-container i18n>Active power</ng-container>
+  <app-live-data-indicator></app-live-data-indicator>
+</ng-template>
+
+<ng-template #title2>
+  <ng-container i18n>Daily production</ng-container>
+  <app-live-data-indicator></app-live-data-indicator>
+</ng-template>

@@ -1,0 +1,83 @@
+<div class="list-block">
+  <header>
+    <a
+      nz-button
+      class="back-button"
+      routerLink="../faults-history"
+      queryParamsHandling="merge"
+      routerLinkActive="active"
+    >
+      <span nz-icon nzType="left" nzTheme="outline"></span>
+      <ng-container i18n>Faults history</ng-container>
+    </a>
+    <h3><ng-container i18n>Error stacks</ng-container> ({{ es.totalCount }})</h3>
+  </header>
+
+  @if (es.hasSlave) {
+    <p class="filters">
+      <nz-radio-group [ngModel]="es.deviceSide" (ngModelChange)="onDeviceSideFilterChange($event)">
+        <label i18n nz-radio-button [nzValue]="undefined">All</label>
+        <label i18n nz-radio-button [nzValue]="'master'">Master</label>
+        <label i18n nz-radio-button [nzValue]="'slave'">Slave</label>
+      </nz-radio-group>
+    </p>
+  }
+
+  <nz-spin
+    [nzSpinning]="(es.errorStacksRequest$ | async)?.isLoading"
+    i18n-nzTip="@@loading"
+    nzTip="Loading..."
+  >
+    @if (es.errorStacks$ | async; as errorStacks) {
+      <div class="custom-list">
+        @if (errorStacks.length === 0) {
+          <nz-empty
+            nzNotFoundImage="simple"
+            i18n-nzNotFoundContent
+            nzNotFoundContent="No error stacks"
+          ></nz-empty>
+        }
+
+        @for (item of errorStacks; track item.id) {
+          <div
+            class="list-item"
+            [class.current]="item.isCurrent"
+            routerLink="{{ 'detail/' + item.deviceId + '/' + item.id }}"
+            routerLinkActive="is-active"
+            queryParamsHandling="merge"
+          >
+            <div class="title">
+              <app-device-link [deviceId]="item.deviceId"></app-device-link>
+              <br />
+              @if (item.isCurrent) {
+                <span i18n class="current-faults-indicator">(Current faults)</span>
+              }
+            </div>
+            <div class="timestamp">
+              <app-relative-timestamp [timestamp]="item.timestamp"></app-relative-timestamp>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <p class="pagination-block">
+      <nz-pagination
+        [nzTotal]="es.totalCount"
+        [nzPageIndex]="es.pageIndex"
+        [nzPageSize]="es.pageSize"
+        (nzPageIndexChange)="onPageIndexChange($event)"
+        [nzSize]="'small'"
+        nzSimple="true"
+        nzHideOnSinglePage="true"
+      ></nz-pagination>
+    </p>
+  </nz-spin>
+</div>
+
+<div class="details-block">
+  <router-outlet #outlet="outlet"></router-outlet>
+  @if (!outlet.isActivated) {
+    <div i18n class="empty">Chose error stack to see details.</div>
+  }
+</div>

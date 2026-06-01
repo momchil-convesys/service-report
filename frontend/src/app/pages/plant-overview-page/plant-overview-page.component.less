@@ -1,0 +1,48 @@
+@import "theme";
+
+@panel-spacing: @margin-xss;
+
+app-plant-overview-page {
+  display: flex;
+  max-width: 100%;
+  flex-wrap: wrap;
+
+  padding: @panel-spacing;
+  gap: @panel-spacing;
+
+  height: 100%;
+  background-color: @background-color-base;
+
+  .left-pane {
+    flex: 1 1 500px;
+
+    &.wider-left {
+      flex: 1 1 720px;
+    }
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: @panel-spacing;
+  }
+
+  .right-pane {
+    flex: 1 1 500px;
+
+    &.wider-left {
+      flex: 1 1 450px;
+      max-width: 600px;
+    }
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: @panel-spacing;
+  }
+
+  app-wt-power-chart-widget {
+    flex: 1 1;
+  }
+}

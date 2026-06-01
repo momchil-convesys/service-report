@@ -1,0 +1,277 @@
+<h3>{{ entryData ? "Edit record" : "New record" }}</h3>
+
+<form nz-form [formGroup]="entryForm">
+  <div formGroupName="origin" nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            entryForm.get('origin.location')!.invalid && entryForm.get('origin.location')!.dirty
+              ? 'error'
+              : undefined
+          }}"
+          i18n-nzErrorTip
+          nzErrorTip="This field is required!"
+        >
+          <nz-form-label nzRequired>Origin</nz-form-label>
+          <input
+            nz-input
+            type="text"
+            class="form-control"
+            formControlName="location"
+            id="origin-location"
+            placeholder="Enter location..."
+            spellcheck="false"
+        /></nz-form-control>
+      </nz-form-item>
+      <!-- <ng-container
+        [ngTemplateOutlet]="fieldErrors"
+        [ngTemplateOutletContext]="{ formField: entryForm.get('origin.location') }"
+      >
+      </ng-container> -->
+    </div>
+    <div nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            entryForm.get('origin.travelTimestamp')!.invalid &&
+            entryForm.get('origin.travelTimestamp')!.dirty
+              ? 'error'
+              : undefined
+          }}"
+          nzErrorTip="{{
+            entryForm.get('origin.travelTimestamp')!.errors?.['required']
+              ? 'This field is required!'
+              : entryForm.get('origin.travelTimestamp')!.errors?.['custom']
+          }}"
+        >
+          <app-datetime-picker
+            [formControlDP]="getFormControl(entryForm, 'origin.travelTimestamp')"
+            label="Time of departure"
+            labelFor="origin-date"
+          ></app-datetime-picker
+        ></nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div formGroupName="destination" nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            entryForm.get('destination.location')!.invalid &&
+            entryForm.get('destination.location')!.dirty
+              ? 'error'
+              : undefined
+          }}"
+          i18n-nzErrorTip
+          nzErrorTip="This field is required!"
+        >
+          <nz-form-label nzRequired>Destination</nz-form-label>
+          <input
+            nz-input
+            type="text"
+            class="form-control"
+            formControlName="location"
+            id="destination-location"
+            placeholder="Enter location..."
+            spellcheck="false"
+        /></nz-form-control>
+      </nz-form-item>
+      <!-- <ng-container
+        [ngTemplateOutlet]="fieldErrors"
+        [ngTemplateOutletContext]="{ formField: entryForm.get('destination.location') }"
+      >
+      </ng-container> -->
+    </div>
+    <div nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            entryForm.get('destination.travelTimestamp')!.invalid &&
+            entryForm.get('destination.travelTimestamp')!.dirty
+              ? 'error'
+              : undefined
+          }}"
+          nzErrorTip="{{
+            entryForm.get('destination.travelTimestamp')!.errors?.['required']
+              ? 'This field is required!'
+              : entryForm.get('destination.travelTimestamp')!.errors?.['custom']
+          }}"
+        >
+          <app-datetime-picker
+            [formControlDP]="getFormControl(entryForm, 'destination.travelTimestamp')"
+            label="Time of arrival"
+            labelFor="destination-date"
+          ></app-datetime-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col nzSpan="12">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            entryForm.get('distance')!.invalid && entryForm.get('distance')!.dirty
+              ? 'error'
+              : undefined
+          }}"
+          i18n-nzErrorTip
+          nzErrorTip="This field is required!"
+        >
+          <nz-form-label nzRequired>Distance</nz-form-label>
+
+          <nz-input-group nzAddOnAfter="km">
+            <input
+              nz-input
+              type="number"
+              min="1"
+              formControlName="distance"
+              id="distance"
+            />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div nz-col [nzSpan]="12" formGroupName="duration">
+      <nz-form-label>Duration</nz-form-label>
+      <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-group nzAddOnAfter=" h">
+                <input
+                  nz-input
+                  type="number"
+                  formControlName="hours"
+                  id="duration-hours"
+                  readonly
+                  tabindex="-1"
+                  container="body"
+                  placement="top"
+                />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="12">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-group nzAddOnAfter=" min">
+                <input
+                  nz-input
+                  type="number"
+                  formControlName="minutes"
+                  id="duration-minutes"
+                  readonly
+                  tabindex="-1"
+                  container="body"
+                  placement="top"
+                />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+  <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="20">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            entryForm.get('personsParticipated')!.invalid &&
+            entryForm.get('personsParticipated')!.dirty
+              ? 'error'
+              : undefined
+          }}"
+          i18n-nzErrorTip
+          nzErrorTip="This field is required!"
+        >
+          <!-- <label for="persons-participated" class="control-label required">Persons participated</label> -->
+          <nz-form-label nzRequired>Persons participated</nz-form-label>
+          <input
+            nz-input
+            id="persons-participated"
+            type="text"
+            class="form-control"
+            placeholder="Slavi Trifonov, Momchil Momchilov, etc..."
+            formControlName="personsParticipated"
+            spellcheck="false"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <!-- <ng-container
+        [ngTemplateOutlet]="fieldErrors"
+        [ngTemplateOutletContext]="{ formField: entryForm.get('personsParticipated') }"
+      >
+      </ng-container> -->
+    </div>
+    <div nz-col [nzSpan]="4">
+      <!-- <label for="vehicles-count" class="control-label">Vehicles</label> -->
+      <nz-form-label nzRequired>Vehicles</nz-form-label>
+      <input
+        nz-input
+        type="number"
+        class="form-control"
+        id="vehicles-count"
+        min="1"
+        formControlName="vehiclesCount"
+      />
+    </div>
+  </div>
+  <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="24">
+      <label for="additional-expenses">Additional expenses</label>
+      <textarea
+        nz-input
+        id="additional-expenses"
+        rows="3"
+        formControlName="otherExpenses"
+        class="form-control"
+        placeholder="Ferry taxes, etc..."
+      ></textarea>
+    </div>
+  </div>
+  <hr />
+  <div class="footer">
+    <div>
+      <button nz-button nzType="primary" [disabled]="entryForm.invalid" (click)="onSubmit()">
+        {{ entryData ? "Save" : "Add record" }}
+      </button>
+    </div>
+    @if (entryData || entryForm.dirty) {
+      <div>
+        <button nz-button nzType="default" (click)="onReset()">Cancel</button>
+      </div>
+    }
+    @if (entryData) {
+      <div>
+        <button nz-button nzType="default" nzDanger (click)="onDelete()">Delete record</button>
+      </div>
+    }
+  </div>
+</form>
+
+<!-- <ng-template #fieldErrors let-field="formField">
+  <div *ngIf="field.dirty && field.invalid" class="invalid-feedback" style="display: block">
+    <div *ngIf="field.errors.required">This field is required.</div>
+    <div *ngIf="field.errors.min">
+      Value should be greater than or equal to {{ field.errors.min.min }}.
+    </div>
+    <div *ngIf="field.errors.custom">{{ field.errors.custom }}</div>
+  </div>
+</ng-template> -->
+
+<!-- [delay]="500"
+[tooltip]="'This field is calculated automatically.'"
+
+[tooltip]="'This field is calculated automatically.'"
+              [delay]="500"
+
+-->

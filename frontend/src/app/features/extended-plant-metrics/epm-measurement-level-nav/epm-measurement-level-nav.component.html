@@ -1,0 +1,25 @@
+<ul class="context-select-list">
+  <li class="context-select-list-item root">
+    <a
+      [routerLinkActive]="'active'"
+      [routerLinkActiveOptions]="matchSubLevelLinkOptions"
+      [routerLink]="'.'"
+      [queryParams]="{ subLevelId: null }"
+      [queryParamsHandling]="'merge'"
+      >Main level</a
+    >
+  </li>
+
+  @for (item of subLevels; track $index) {
+    <li class="context-select-list-item">
+      <a
+        [routerLinkActive]="'active'"
+        [routerLinkActiveOptions]="matchSubLevelLinkOptions"
+        [routerLink]="'.'"
+        [queryParams]="{ subLevelId: item.subLevelId }"
+        [queryParamsHandling]="'merge'"
+        >{{ item.name }}</a
+      >
+    </li>
+  }
+</ul>

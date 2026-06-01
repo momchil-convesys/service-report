@@ -1,0 +1,13 @@
+<div class="item-header">
+  <div class="title">{{ entry.name }}</div>
+  <div>×{{ entry.quantity }}</div>
+</div>
+<div class="item-content text-muted small">
+  <div>Element: {{ entry.schematicLabel }}</div>
+  @if (entry.installedSerialNumber) {
+    <div>Installed serial №: {{ entry.installedSerialNumber }}</div>
+  }
+  @if (entry.dismantledSerialNumber) {
+    <div>Dismantled serial №: {{ entry.dismantledSerialNumber }}</div>
+  }
+</div>

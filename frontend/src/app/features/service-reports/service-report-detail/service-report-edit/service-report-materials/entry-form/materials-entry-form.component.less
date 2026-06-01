@@ -1,0 +1,39 @@
+@import "theme";
+
+.footer {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: @margin-xs;
+  justify-content: space-between;
+  width: 100%;
+
+  .footer-actions,
+  .footer-danger {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: @margin-xs;
+  }
+
+  .footer-danger {
+    margin-left: auto;
+  }
+
+  button[nz-button] {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+.flex-row {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

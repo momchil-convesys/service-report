@@ -1,0 +1,73 @@
+@import "theme";
+
+app-device-metrics-charts {
+  display: flex;
+  gap: 10px;
+
+  .filters-container {
+    flex: 1 1 250px;
+    min-width: 250px;
+    max-width: 500px;
+
+    padding: 1em;
+
+    background-color: @background-color-light;
+  }
+
+  .filter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+
+    margin-bottom: 0.5em;
+
+    h3 {
+      flex: 1;
+      padding-left: 12px;
+    }
+  }
+
+  .charts-container {
+    flex: 5 5 500px;
+    // padding: 1em;
+
+    overflow-x: hidden;
+
+    // prevents double scroll when adding new chart with animation
+    // usually happens around fourth chart when they sart to get off screen
+    overflow-y: hidden;
+
+    .chart-container + .chart-container {
+      // margin-top: -2px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: @padding-md;
+
+      font-size: 150%;
+      color: @text-color-secondary;
+    }
+  }
+
+  .filter-row {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 5px;
+
+    padding: 0.5em 0.75em;
+    border-radius: 16px;
+
+    line-height: 1.3;
+
+    &:hover {
+      background: @item-hover-bg-dark;
+      cursor: pointer;
+    }
+
+    nz-switch {
+      line-height: 1.1;
+    }
+  }
+}

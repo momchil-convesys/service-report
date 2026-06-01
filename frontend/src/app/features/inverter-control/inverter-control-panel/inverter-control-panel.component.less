@@ -1,0 +1,124 @@
+@import "theme";
+
+app-inverter-control-panel {
+  app-inverter-power-limit-indicator {
+    color: @red-7;
+    font-weight: bold;
+  }
+
+  app-device-state-dynamic {
+    margin-bottom: 2px; // vertical align
+  }
+
+  .ant-table .actions {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: @margin-xs;
+    justify-content: center;
+  }
+
+  .no-wrap {
+    white-space: nowrap;
+  }
+
+  .no-limit-text {
+    color: @text-color-secondary;
+    // font-size: @font-size-sm;
+    // text-transform: uppercase;
+    font-style: italic;
+    opacity: 0.5;
+  }
+
+  .ant-table {
+    margin-bottom: @margin-md;
+
+    .ant-table-thead > tr > th {
+      padding-top: @padding-xs;
+      padding-bottom: @padding-xs;
+
+      white-space: nowrap;
+    }
+  }
+
+  .ant-table-footer {
+    padding-top: @padding-lg;
+    padding-bottom: @padding-lg;
+  }
+
+  .actions-cell {
+    // background-color: @gray-1;
+  }
+
+  .ant-table-tbody > tr.ant-table-row:hover > td,
+  .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+    background-color: @gray-3;
+  }
+
+  .power-limit-applied {
+    color: @red-7;
+  }
+
+  .table-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: @margin-md;
+    text-align: left;
+
+    .title {
+      flex: 1;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: @margin-md;
+      align-items: center;
+      justify-content: flex-start;
+
+      // button {
+      //   flex: 1;
+      // }
+    }
+
+    .start-stop-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: @margin-xs;
+      // justify-content: center;
+
+      // button {
+      //   flex: 1;
+      // }
+    }
+  }
+
+  .ant-divider {
+    border-color: @border-color-base;
+  }
+
+  .header-with-actions {
+    margin-bottom: @margin-xs;
+
+    & > * {
+      margin: 0;
+    }
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: @margin-xs;
+
+    .title {
+      flex: 1;
+    }
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    .actions .ant-divider {
+      display: none;
+    }
+  }
+}

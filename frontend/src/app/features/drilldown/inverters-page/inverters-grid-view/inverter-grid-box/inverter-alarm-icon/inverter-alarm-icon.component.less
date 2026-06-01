@@ -1,0 +1,66 @@
+@import "theme";
+
+app-inverter-alarm-icon {
+  display: block;
+
+  // This is a nested element
+  .alarm-icon {
+    min-width: 20px;
+    height: 20px;
+    line-height: 20px;
+
+    text-align: center;
+    border-radius: @border-radius-sm;
+
+    display: block;
+  }
+
+  &.major .alarm-icon.default {
+    background-color: @red-7;
+    color: white;
+  }
+
+  &.major .alarm-icon.inverse {
+    color: @red-7;
+
+    // Compensate fot the triangle
+    font-size: 18px;
+    margin-top: -1px;
+  }
+
+  &.warning .alarm-icon.default {
+    color: white;
+    background-color: @gold-6;
+  }
+
+  &.warning .alarm-icon.inverse {
+    color: @gold-6;
+
+    // Compensate fot the triangle
+    font-size: 18px;
+    margin-top: -1px;
+  }
+
+  &.minor .alarm-icon.default {
+    color: white;
+    background-color: @gold-6;
+  }
+
+  &.minor .alarm-icon.inverse {
+    color: @gold-6;
+
+    // Compensate fot the triangle
+    font-size: 18px;
+    margin-top: -1px;
+  }
+
+  &.info .alarm-icon.default {
+    color: white;
+    background-color: @cyan-6;
+  }
+
+  &.info .alarm-icon.inverse {
+    color: @cyan-6;
+    // font-size: 18px;
+  }
+}

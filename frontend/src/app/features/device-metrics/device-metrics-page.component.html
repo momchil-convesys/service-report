@@ -1,0 +1,15 @@
+@if (error$ | async; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Failed to load metadata"
+    [nzDescription]="error"
+    nzShowIcon
+  ></nz-alert>
+} @else {
+  @if (context$ | async; as context) {
+    <app-device-metrics [context]="context"></app-device-metrics>
+  } @else {
+    <nz-spin i18n-nzTip="@@loading" nzTip="Loading..." nzSize="large"></nz-spin>
+  }
+}

@@ -1,0 +1,7 @@
+@if (actualValue !== null && maximumValue !== null) {
+  <div class="bar-container">
+    <div class="bar" [style.width]="(actualValue * 100) / maximumValue + '%'">
+      <div class="fill"></div>
+    </div>
+  </div>
+}

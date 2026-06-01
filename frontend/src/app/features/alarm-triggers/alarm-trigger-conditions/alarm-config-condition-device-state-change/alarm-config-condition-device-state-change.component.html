@@ -1,0 +1,55 @@
+<div [formGroup]="formGroup" class="condition-form">
+  <nz-form-item>
+    <nz-form-control
+      nzValidateStatus="{{
+        formGroup.controls.stateOfInterest.invalid && formGroup.controls.stateOfInterest.dirty
+          ? 'error'
+          : undefined
+      }}"
+      i18n-nzErrorTip
+      nzErrorTip="This field is required!"
+    >
+      <nz-select
+        formControlName="stateOfInterest"
+        i18n-nzPlaceHolder
+        nzPlaceHolder="Select state"
+        style="min-width: 300px; margin-right: 0.5em"
+        [nzLoading]="deviceStateOptionsLoading$ | async"
+      >
+        @for (stateOption of deviceStateOptions$ | async; track stateOption.value) {
+          <nz-option [nzValue]="stateOption.value" [nzLabel]="stateOption.label" nzCustomContent>
+            <app-device-state
+              [state]="{ baseState: stateOption.value }"
+              [fixedWidth]="true"
+              style="margin-top: 2px; vertical-align: top"
+            ></app-device-state>
+            &nbsp;
+            {{ stateOption.label }}
+          </nz-option>
+        }
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control
+      nzValidateStatus="{{
+        formGroup.controls.persistenceSeconds.invalid && formGroup.controls.persistenceSeconds.dirty
+          ? 'error'
+          : undefined
+      }}"
+      i18n-nzErrorTip
+      nzErrorTip="This field is required!"
+    >
+      <nz-input-group [nzAddOnAfter]="addOnAfterTemplate" style="margin-right: 0.5em">
+        <nz-input-number formControlName="persistenceSeconds"></nz-input-number>
+        <ng-template #addOnAfterTemplate>
+          <span [ngPlural]="formGroup.controls.persistenceSeconds.value">
+            <ng-template ngPluralCase="=1" i18n="@@second">second</ng-template>
+            <ng-template ngPluralCase="other" i18n="@@seconds">seconds</ng-template>
+          </span>
+        </ng-template>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+</div>

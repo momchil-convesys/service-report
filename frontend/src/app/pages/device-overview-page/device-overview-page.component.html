@@ -1,0 +1,54 @@
+@if (device$ | async; as device) {
+  @switch (device.type) {
+    @case (DeviceType.Wind) {
+      <app-wt-power-chart-widget [deviceIds]="[device.id]"></app-wt-power-chart-widget>
+    }
+
+    @case (DeviceType.Pump) {
+      <div class="left-pane">
+        <app-consumption-chart-widget></app-consumption-chart-widget>
+      </div>
+
+      <div class="right-pane">
+        <app-device-current-errors-widget></app-device-current-errors-widget>
+
+        <app-alarm-events-widget
+          [alarmEventsRequest]="alarmEventsRequest$"
+          [deviceIds]="[device.id]"
+        ></app-alarm-events-widget>
+
+        <app-device-availability-widget>
+          <ng-container i18n>Device operation state</ng-container>
+        </app-device-availability-widget>
+      </div>
+    }
+
+    @case (DeviceType.Solar) {
+      <div class="left-pane">
+        <app-pv-power-chart-widget-device></app-pv-power-chart-widget-device>
+        <app-pv-production-chart-widget></app-pv-production-chart-widget>
+      </div>
+
+      <div class="right-pane">
+        <app-device-current-errors-widget></app-device-current-errors-widget>
+
+        <app-alarm-events-widget
+          [alarmEventsRequest]="alarmEventsRequest$"
+          [deviceIds]="[device.id]"
+        ></app-alarm-events-widget>
+
+        <app-device-availability-widget>
+          <ng-container i18n>Device operation state</ng-container>
+        </app-device-availability-widget>
+      </div>
+    }
+
+    @case (DeviceType.BatteryString) {
+      <app-hybrid-inverter-overview-page></app-hybrid-inverter-overview-page>
+
+      <!-- <div class="left-pane">
+      </div>
+      <div class="right-pane"></div> -->
+    }
+  }
+}

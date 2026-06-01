@@ -1,0 +1,23 @@
+@import "theme";
+
+app-device-metrics-table {
+  th,
+  td {
+    &.header-cell {
+      white-space: normal;
+      font-weight: 600;
+      background-color: @table-header-bg;
+    }
+  }
+
+  .grid-keepr th {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-bottom-color: transparent !important;
+  }
+
+  .transformed {
+    color: @blue-7;
+    // color: @text-color;
+  }
+}

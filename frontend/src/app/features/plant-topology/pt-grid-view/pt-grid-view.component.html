@@ -1,0 +1,19 @@
+@if (plantTopology) {
+  <div class="grid">
+    <!--  -->
+    @for (ts of plantTopology.transformerStations; track ts.id) {
+      <div class="ts-container">
+        <div class="ts-header">{{ ts.name }}</div>
+        <div class="inverters-grid">
+          <!--  -->
+          @for (inverter of ts.inverters; track inverter.id) {
+            <div class="inverter-box">
+              <!-- <span class="secondary-text">{{ ts.name }}&nbsp;&nbsp;|&nbsp;&nbsp;</span> -->
+              <span>{{ inverter.name }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

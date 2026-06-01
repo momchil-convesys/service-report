@@ -1,0 +1,19 @@
+@import "theme";
+@import "specific/nested-page-with-tabs";
+
+app-drilldown-page {
+  .nested-page-with-tabs();
+
+  display: flex;
+  flex-direction: column;
+
+  nz-tabs {
+    flex: 0 0 auto;
+  }
+
+  & > .content {
+    padding: 0;
+    flex: 1;
+    overflow: auto;
+  }
+}

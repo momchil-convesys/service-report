@@ -1,0 +1,40 @@
+@if (loading) {
+  <nz-spin i18n-nzTip="@@loading" nzTip="Loading..."></nz-spin>
+}
+
+@if (data && data.values.length === 1) {
+  <nz-timeline nzMode="custom">
+    @for (interval of data.values[0].intervals; track interval) {
+      <nz-timeline-item [nzLabel]="labelTemplate1" [nzPosition]="'left'" [nzColor]="'gray'">
+        @if (interval.state === null) {
+          <span i18n>No data is available for this interval</span>
+        }
+
+        @if (interval.state !== null) {
+          <app-device-state
+            [state]="{ baseState: interval.state }"
+            [variant]="'full'"
+          ></app-device-state>
+        }
+        <div class="state-continuity-duration">{{ interval.duration | duration }}</div>
+
+        <ng-template #labelTemplate1>
+          <app-relative-timestamp
+            [timestamp]="interval.from"
+            [plain]="false"
+          ></app-relative-timestamp>
+        </ng-template>
+      </nz-timeline-item>
+    }
+    <nz-timeline-item [nzLabel]="labelTemplate2" [nzPosition]="'left'" [nzColor]="'gray'">
+      <ng-container i18n>Requested time span END</ng-container>
+      <ng-template #labelTemplate2>
+        <app-relative-timestamp [timestamp]="data.to" [plain]="false"></app-relative-timestamp>
+      </ng-template>
+    </nz-timeline-item>
+  </nz-timeline>
+}
+
+@if (data && data.values.length !== 1) {
+  <div i18n class="not-available">Timeline is available only for a single device.</div>
+}

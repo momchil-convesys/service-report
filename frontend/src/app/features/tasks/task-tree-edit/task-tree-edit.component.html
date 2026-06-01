@@ -1,0 +1,15 @@
+<button nz-button (click)="onCreateNode(false)">Create group</button>&nbsp;
+<button nz-button (click)="onCreateNode(true)">Create task</button>
+<p></p>
+<nz-tree
+  [nzData]="nodes"
+  [nzSelectedKeys]="selectedIds"
+  nzCheckStrictly
+  nzDraggable="true"
+  nzBlockNode
+  nzShowLine
+  (nzOnDrop)="onDrop($event)"
+  (nzClick)="onClick($event)"
+  #treeRef
+>
+</nz-tree>

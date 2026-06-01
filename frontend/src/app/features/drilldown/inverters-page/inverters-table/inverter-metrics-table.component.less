@@ -1,0 +1,94 @@
+@import "theme";
+
+app-inverter-metrics-table {
+  display: block;
+
+  app-device-parameter-unit-display {
+    color: @text-color-secondary;
+  }
+
+  .ant-table-column-sorter {
+    transform: scale(1.6);
+    color: @gray-5;
+  }
+
+  .ant-table-thead th.ant-table-column-sort {
+    background-color: @gray-3;
+  }
+
+  .ant-table.ant-table-small .ant-table-tbody > tr > td {
+    padding-top: @padding-xss;
+    padding-bottom: @padding-xss;
+  }
+
+  .timestamp-cell {
+    white-space: nowrap;
+  }
+
+  app-inverter-alarm-icon {
+    display: inline-block;
+  }
+
+  .no-faults {
+    color: @text-color-secondary;
+    font-style: italic;
+  }
+
+  .stale {
+    display: flex;
+    align-items: baseline;
+    gap: @padding-xss;
+
+    background-color: @gold-1;
+    padding: @padding-xss;
+
+    nz-icon {
+      color: @red-7;
+      align-self: center;
+      margin-left: auto;
+      padding-left: @padding-xss;
+    }
+  }
+
+  .actions {
+    margin-top: @margin-xss;
+
+    display: flex;
+    gap: @padding-xs;
+  }
+}
+
+// Popover styles for alarms - not scoped to component
+.inverter-alarms-popover {
+  .ant-popover-title {
+    font-weight: normal;
+  }
+
+  .title-container {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .section-title {
+    margin-bottom: @margin-xss;
+    font-size: @font-size-sm;
+    color: @text-color-secondary;
+  }
+
+  .alarms {
+    .alarm {
+      display: flex;
+      align-items: center;
+      gap: @margin-xss;
+      margin-bottom: @margin-xss;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .alarm-message {
+        flex: 1 1;
+      }
+    }
+  }
+}

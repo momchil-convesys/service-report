@@ -1,0 +1,123 @@
+@import "theme";
+
+app-inverter-control-form {
+  @left-side-space: 100px;
+
+  .content {
+    padding: @padding-lg @padding-lg;
+    padding-left: @left-side-space;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    gap: @margin-xs;
+
+    border-top: 1px solid @border-color-split;
+
+    padding: @padding-md @padding-lg;
+    padding-left: @left-side-space;
+
+    button {
+      flex: 1 1 auto;
+    }
+  }
+
+  .power-limit-options {
+    width: 100%;
+
+    [nz-radio] {
+      display: flex;
+      align-items: baseline;
+      padding: @padding-md @padding-md;
+      border: 1px solid @gray-3;
+      border-radius: 5px;
+      margin-bottom: @margin-xs;
+      margin-right: 0;
+
+      &.active {
+        background-color: @blue-1;
+        border-color: @blue-7;
+      }
+
+      &:not(.active):hover {
+        background-color: @gray-2;
+      }
+
+      .ant-input-group-wrapper {
+        margin-top: @margin-xss;
+        display: block;
+        max-width: 150px;
+      }
+
+      input[disabled] {
+        pointer-events: none; // allow click event to select the radio option
+      }
+
+      .ant-input-group-addon .ant-select {
+        width: auto;
+        min-width: 60px;
+
+        .ant-select-arrow {
+          color: @text-color-secondary;
+        }
+      }
+
+      span.ant-radio + * {
+        flex: 1;
+      }
+    }
+
+    // .power-limit-value-controls {
+    // display: flex;
+
+    // .ant-slider-rail {
+    //   background-color: white;
+    // }
+
+    // .ant-slider-track {
+    //   background-color: @blue-7;
+    // }
+
+    // .ant-slider-handle {
+    //   border-color: @blue-7 !important;
+    // }
+    // }
+  }
+
+  .ant-form-item-with-help .ant-form-item-explain {
+    padding-top: 2px;
+  }
+
+  .ant-form-item {
+    margin-bottom: @margin-xss;
+  }
+
+  .intro {
+    display: flex;
+    margin: 0 0 @margin-lg 0;
+
+    .icon {
+      display: block;
+      margin-left: -@left-side-space;
+      flex: 0 0 @left-side-space;
+      font-size: 300%;
+    }
+
+    .description {
+      flex: 1;
+    }
+  }
+
+  .ant-spin-nested-loading > div > .ant-spin .ant-spin-dot,
+  .ant-spin-nested-loading > div > .ant-spin .ant-spin-text {
+    top: 40%;
+  }
+
+  .ambiguous-values-warning {
+    margin-bottom: @margin-md;
+    margin-top: @margin-xs * -1;
+  }
+}

@@ -1,0 +1,76 @@
+@if (notificationsList.length > 0) {
+  <a
+    (click)="onClickNotificationsButton()"
+    nz-tooltip
+    nzTooltipTitle="Notifications"
+    i18n-nzTooltipTitle
+    nzTooltipPlacement="left"
+    [class.active]="drawerVisible"
+  >
+    <nz-icon nzType="notification" nzTheme="fill" />
+    <span style="margin-left: 0.5em">
+      <nz-badge nzStandalone [nzCount]="notificationsList.length" [nzOverflowCount]="99"></nz-badge>
+    </span>
+  </a>
+}
+
+<ng-template #drawerTitle>
+  <span i18n>Notifications</span> ({{ notificationsList.length }})
+</ng-template>
+
+<nz-drawer
+  [nzClosable]="true"
+  [nzVisible]="drawerVisible"
+  nzPlacement="right"
+  [nzTitle]="drawerTitle"
+  (nzOnClose)="hideDrawer()"
+  nzWrapClassName="app-global-notifications-scope-class"
+>
+  <ng-container *nzDrawerContent>
+    <button
+      nz-button
+      (click)="onClearNotifications()"
+      i18n
+      class="clear-notifications-btn"
+      nzBlock="true"
+    >
+      Clear all notifications
+    </button>
+
+    @for (notificationData of notificationsList; track $index) {
+      <div class="notification-item">
+        <span class="notification-title secondary-text" i18n>New error stack</span>
+
+        <app-relative-timestamp
+          [timestamp]="notificationData.errorStack.timestamp"
+          [plain]="true"
+        ></app-relative-timestamp>
+
+        <app-device-link
+          [deviceId]="notificationData.errorStack.deviceId"
+          [devicePath]="true"
+        ></app-device-link>
+
+        <button
+          nz-button
+          (click)="onShowErrorStack(notificationData)"
+          i18n
+          nzSize="small"
+          nzType="link"
+          class="link-to-stack"
+        >
+          Go to error stack
+        </button>
+
+        <button
+          nz-button
+          nzType="text"
+          class="close-btn"
+          (click)="onClearNotification(notificationData)"
+        >
+          <i nz-icon nzType="close"></i>
+        </button>
+      </div>
+    }
+  </ng-container>
+</nz-drawer>

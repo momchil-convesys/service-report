@@ -1,0 +1,101 @@
+@import "theme";
+
+app-device {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  & > .content {
+    flex: 1;
+
+    @media (min-width: @breakpoint-md) {
+      &:has(app-ts-metrics-page) {
+        overflow: auto;
+      }
+    }
+  }
+
+  & > header {
+    flex: 0 0 auto;
+
+    padding: @padding-md @padding-lg;
+    padding-bottom: 0px;
+    background: white;
+
+    position: relative;
+
+    &::before {
+      display: block;
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-bottom: 1px solid @border-color-split;
+    }
+
+    p {
+      margin-bottom: 0;
+      margin-top: @margin-xss;
+    }
+
+    h1 {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      column-gap: @padding-sm;
+      row-gap: @margin-xss;
+      margin: 0;
+      line-height: 1.2;
+
+      min-height: 38px; // the height of power limit marker in plant header if present
+    }
+
+    .page-title:last-child {
+      padding-bottom: 1em;
+    }
+  }
+
+  .primary-tabset.ant-tabs > .ant-tabs-nav {
+    background: white;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ant-tabs-top > .ant-tabs-nav::before {
+    border-bottom: 1px solid @border-color-split;
+  }
+
+  h1 {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-up {
+    display: none;
+    flex: 0 0 auto;
+  }
+
+  app-inverter-power-limit-indicator {
+    cursor: pointer;
+  }
+
+  app-monbat-schedule-indicator {
+    margin-left: auto;
+  }
+
+  .nav-up {
+    display: block;
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    & > header {
+      padding: @padding-xs @padding-sm;
+      padding-bottom: 0px;
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+  }
+}

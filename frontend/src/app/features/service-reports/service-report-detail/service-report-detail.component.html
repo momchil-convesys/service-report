@@ -1,0 +1,51 @@
+<app-service-report-header
+  [parentForm]="reportService.formGroup"
+  [title]="reportService.title"
+  [displayMode]="reportService.displayMode"
+>
+</app-service-report-header>
+<!-- <pre>reportService.title:  {{ reportService.title }}</pre>
+-->
+
+@if (!reportService.editMode && reportService.reportId) {
+  <app-service-report-form
+    [reportId]="reportService.reportId"
+    [pdfObject]="reportService.pdfObject"
+  ></app-service-report-form>
+} @else {
+  @if ((selectedReportDataRequest$ | async)?.isLoading) {
+    <nz-spin
+      i18n-nzTip
+      nzTip="Please wait..."
+      [nzSpinning]="true"
+      nzSize="large"
+      class="spinner-container"
+    ></nz-spin>
+  } @else {
+    @if ((selectedReportDataRequest$ | async)?.error; as error) {
+      @if ((selectedReportDataRequest$ | async)?.error) {
+        <div class="error-block">
+          <nz-alert
+            nzType="error"
+            i18n-nzMessage
+            nzMessage="Failed to load Report"
+            [nzDescription]="error.message"
+            nzShowIcon
+          ></nz-alert>
+        </div>
+      }
+    } @else {
+      <app-service-report-edit
+        [reportData]="
+          (selectedReportDataRequest$ | async)?.data || {
+            genericObj: {},
+            materials: [],
+            travelling: [],
+            works: [],
+          }
+        "
+      >
+      </app-service-report-edit>
+    }
+  }
+}

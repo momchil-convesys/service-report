@@ -1,0 +1,52 @@
+@if (small || subPlant) {
+  @if (subPlant) {
+    <div class="subplant-title secondary-text-size"><ng-content></ng-content></div>
+  }
+  <div
+    class="bess-state"
+    [class.charging]="bessState === 'charging'"
+    [class.discharging]="bessState === 'discharging'"
+    [class.idle]="bessState === 'idle'"
+  >
+    <div class="moving-gradient"></div>
+    <ng-container [ngTemplateOutlet]="idleLabel"></ng-container>
+  </div>
+  <span class="bess-state-value-small">
+    @let scaledValue = getScaledValue(data?.value);
+    <span nz-tooltip [nzTooltipTitle]="formatNumber(data?.value)">
+      {{ scaledValue.value }}
+    </span>
+    @if (scaledValue.unit) {
+      <span class="unit">{{ scaledValue.unit }}</span>
+    }
+  </span>
+} @else {
+  <div
+    class="bess-state"
+    [class.charging]="bessState === 'charging'"
+    [class.discharging]="bessState === 'discharging'"
+    [class.idle]="bessState === 'idle'"
+  >
+    <div class="moving-gradient"></div>
+    <ng-container [ngTemplateOutlet]="idleLabel"></ng-container>
+    <span class="bess-state-value">
+      @let scaledValue = getScaledValue(data?.value);
+      <span nz-tooltip [nzTooltipTitle]="formatNumber(data?.value)">{{ scaledValue.value }}</span>
+      @if (scaledValue.unit) {
+        <span class="unit"> {{ scaledValue.unit }}</span>
+      }
+    </span>
+  </div>
+}
+
+<ng-template #idleLabel>
+  <span class="bess-state-label">{{
+    bessState === "charging"
+      ? "Charging"
+      : bessState === "discharging"
+        ? "Discharging"
+        : bessState === "idle"
+          ? "Idle"
+          : "N / A"
+  }}</span>
+</ng-template>

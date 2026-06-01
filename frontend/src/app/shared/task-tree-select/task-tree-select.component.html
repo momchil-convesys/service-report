@@ -1,0 +1,55 @@
+<nz-tree-view
+  [nzDataSource]="dataSource"
+  [nzLevelAccessor]="levelAccessor"
+  [nzDataSource]="dataSource"
+  [nzDirectoryTree]="!checkable"
+>
+  <nz-tree-node *nzTreeNodeDef="let node" nzTreeNodePadding>
+    <nz-tree-node-toggle nzTreeNodeNoopToggle></nz-tree-node-toggle>
+    @if (checkable) {
+      <nz-tree-node-checkbox
+        [nzDisabled]="node.disabled"
+        [nzChecked]="checklistSelection.isSelected(node)"
+        (nzClick)="leafItemSelectionToggle(node)"
+      ></nz-tree-node-checkbox>
+    }
+    <nz-tree-node-option
+      [nzDisabled]="node.disabled"
+      (nzClick)="leafItemSelectionToggle(node)"
+      [title]="node.name"
+    >
+      @if (!checkable) {
+        <span nz-icon nzType="file" nzTheme="outline"></span>
+      }
+      {{ node.name }}
+    </nz-tree-node-option>
+  </nz-tree-node>
+
+  <nz-tree-node *nzTreeNodeDef="let node; when: hasChild" nzTreeNodePadding>
+    <nz-tree-node-toggle>
+      <span nz-icon nzType="caret-down" nzTreeNodeToggleRotateIcon></span>
+    </nz-tree-node-toggle>
+    @if (checkable) {
+      <nz-tree-node-checkbox
+        [nzDisabled]="node.disabled"
+        [nzChecked]="descendantsAllSelected(node)"
+        [nzIndeterminate]="descendantsPartiallySelected(node)"
+        (nzClick)="itemSelectionToggle(node)"
+      ></nz-tree-node-checkbox>
+    }
+    <nz-tree-node-option
+      [nzDisabled]="node.disabled"
+      (nzClick)="itemSelectionToggle(node)"
+      [title]="node.name"
+    >
+      @if (!checkable) {
+        <span
+          nz-icon
+          [nzType]="tree.isExpanded(node) ? 'folder-open' : 'folder'"
+          nzTheme="outline"
+        ></span>
+      }
+      {{ node.name }}
+    </nz-tree-node-option>
+  </nz-tree-node>
+</nz-tree-view>

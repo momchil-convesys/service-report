@@ -1,0 +1,84 @@
+@import "../node_modules/gridstack/dist/gridstack.min.css";
+
+// Custom Theming for NG-ZORRO
+// For more information: https://ng.ant.design/docs/customize-theme/en
+@import "../node_modules/ng-zorro-antd/ng-zorro-antd.less";
+
+// Override less variables to here
+// View all variables: https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/components/style/themes/default.less
+
+@import "./assets/styles/theme.less";
+
+@import "./assets/styles/global/index.less";
+
+small {
+  // default is 80% of the base font size which is 11.2 px
+  // but our small font size is defined as 12px
+  font-size: @font-size-sm;
+}
+
+.highcharts-credits {
+  display: none;
+}
+
+// TODO: scope these rules, as they may not be needed in all drawer cases
+.ant-drawer-header-title .ant-drawer-close {
+  // Move it to the right end
+  order: 2;
+  margin-right: 0;
+}
+
+.ant-upload.ant-upload-drag {
+  border-width: 3px;
+}
+
+app-devices-tree {
+  @tree-title-height: 36px;
+}
+
+.ant-form-vertical .ant-form-item-label {
+  padding-bottom: 4px; // default is 8px
+}
+
+.ant-form-vertical .ant-form-item {
+  flex-direction: column;
+}
+
+.ant-form-item {
+  margin-bottom: 12px; // default is 24px
+}
+
+.ant-table-thead > tr > th {
+  font-weight: 600;
+}
+
+.dropdown-menu-icon-container {
+  display: inline-block;
+  vertical-align: top;
+
+  margin-right: 4px;
+
+  font-size: 130%;
+}
+
+app-flow-chart svg tspan {
+  font-family: @font-family;
+}
+
+.ant-tabs-tab + .ant-tabs-tab {
+  margin-left: @margin-lg;
+}
+
+.anticon {
+  // In newer versions the library
+  // this property was changed to inline-flex
+  // which breaks current layout here and there
+  // so we stick to the old version for now
+  display: inline-block;
+}
+
+@media (max-width: @breakpoint-sm) {
+  .ant-tabs-tab + .ant-tabs-tab {
+    margin-left: @margin-sm;
+  }
+}

@@ -1,0 +1,99 @@
+<h1 i18n>Weather data</h1>
+
+<!-- Always visible charts -->
+<app-plant-weather-chart-widget
+  [chartSpecifics]="{
+    chartIdentifier: chartIdentifiers.PlantOverview,
+    parameterName: undefined,
+  }"
+></app-plant-weather-chart-widget>
+
+<app-plant-weather-chart-widget
+  [chartSpecifics]="{
+    chartIdentifier: chartIdentifiers.CumulativePerTS,
+    parameterName: 'daily-irradiation-amount',
+  }"
+></app-plant-weather-chart-widget>
+
+@let plant = plant$ | async;
+<!--  -->
+@if (plant) {
+  <!--  -->
+  @if (hasExtraCharts(plant)) {
+    <div class="chart-sets-container">
+      <ul class="chart-sets-nav context-select-list">
+        <li class="context-select-list-item">
+          <a (click)="onTabChange(0)" [class.active]="activeTabIndex === 0">
+            <span i18n>Charts set 1</span><br />
+            <span class="secondary-text" i18n>Irradiance and temperatures</span>
+          </a>
+        </li>
+
+        <li class="context-select-list-item">
+          <a (click)="onTabChange(1)" [class.active]="activeTabIndex === 1">
+            <span i18n>Charts set 2</span><br />
+            <span class="secondary-text" i18n>Dust, wind and rain</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="chart-sets-panel">
+        @if (activeTabIndex === 0) {
+          <ng-container *ngTemplateOutlet="chartSet1"></ng-container>
+        } @else if (activeTabIndex === 1) {
+          <ng-container *ngTemplateOutlet="chartSet2"></ng-container>
+        }
+      </div>
+    </div>
+  } @else {
+    <ng-container *ngTemplateOutlet="chartSet1"></ng-container>
+  }
+
+  <ng-template #chartSet1>
+    <app-plant-weather-chart-widget
+      [chartSpecifics]="{
+        chartIdentifier: chartIdentifiers.MomentaryPerTS,
+        parameterName: 'total-irradiance',
+      }"
+    ></app-plant-weather-chart-widget>
+
+    <app-plant-weather-chart-widget
+      [chartSpecifics]="{
+        chartIdentifier: chartIdentifiers.MomentaryPerTS,
+        parameterName: 'ambient-temperature',
+      }"
+    ></app-plant-weather-chart-widget>
+
+    <app-plant-weather-chart-widget
+      [chartSpecifics]="{
+        chartIdentifier: chartIdentifiers.MomentaryPerTS,
+        parameterName: 'pv-module-temperature',
+      }"
+    ></app-plant-weather-chart-widget>
+  </ng-template>
+
+  <!-- Extra Sensors -->
+
+  <ng-template #chartSet2>
+    <app-plant-weather-chart-widget
+      [chartSpecifics]="{
+        chartIdentifier: chartIdentifiers.MomentaryPerTS,
+        parameterName: 'dust',
+      }"
+    ></app-plant-weather-chart-widget>
+
+    <app-plant-weather-chart-widget
+      [chartSpecifics]="{
+        chartIdentifier: chartIdentifiers.MomentaryPerTS,
+        parameterName: 'wind',
+      }"
+    ></app-plant-weather-chart-widget>
+
+    <app-plant-weather-chart-widget
+      [chartSpecifics]="{
+        chartIdentifier: chartIdentifiers.MomentaryPerTS,
+        parameterName: 'rain',
+      }"
+    ></app-plant-weather-chart-widget>
+  </ng-template>
+}

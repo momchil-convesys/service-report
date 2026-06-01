@@ -1,0 +1,51 @@
+@import "theme";
+
+app-epm-historical-data-chart {
+  display: block;
+
+  h2,
+  h3 {
+    line-height: 1.1;
+    margin: @margin-sm 0;
+  }
+
+  .row {
+    // margin: @margin-sm 0;
+
+    width: 100%;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    column-gap: @margin-sm;
+
+    .sums-container {
+      flex: 1 1 250px;
+
+      @media (min-width: @breakpoint-xxl) {
+        max-width: 300px;
+      }
+    }
+
+    .chart-container {
+      flex: 3 3 750px;
+      overflow-x: hidden;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .pm-boxes-container {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: @margin-xss;
+
+    & > * {
+      flex: 1 1 150px;
+      max-width: 300px;
+    }
+  }
+}

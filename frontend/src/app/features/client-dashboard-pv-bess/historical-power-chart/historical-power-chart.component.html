@@ -1,0 +1,51 @@
+<app-datetime-range-select
+  (modelChange)="onDatetimeRangeChange($event)"
+  [defaultOption]="'day'"
+  [defaultIntegrationPeriod]="IntegrationPeriod.Minutes"
+  [timeZone]="timeZone"
+  [showIntegrationPeriod]="false"
+  [showPredefinedOptions]="true"
+  [customRangeTypeOptions]="['day']"
+  [model]="(targetRange$ | async) || undefined"
+>
+  @let disabled = (isLoading$ | async) || !!(dataError$ | async) || !!(appError$ | async) || false;
+  <app-highcharts-export-option
+    style="margin-left: auto"
+    [chartComponent]="this"
+    [disabled]="disabled"
+    [filename]="exportFileName"
+    [limitedOptions]="false"
+  ></app-highcharts-export-option>
+</app-datetime-range-select>
+
+<!-- Data loading error -->
+@if (dataError$ | async; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Failed to load data"
+    [nzDescription]="error.message"
+  ></nz-alert>
+}
+
+<!-- Web app error -->
+@if (appError$ | async; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Application error"
+    [nzDescription]="error.message"
+  ></nz-alert>
+}
+
+<div class="chart-container">
+  <div [id]="chartContainerId" style="width: 100%; height: 400px"></div>
+</div>
+
+<div class="chart-container">
+  <div [id]="chartContainerIdSP1" style="width: 100%; height: 200px"></div>
+</div>
+
+<div class="chart-container">
+  <div [id]="chartContainerIdSP2" style="width: 100%; height: 200px"></div>
+</div>

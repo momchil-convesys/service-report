@@ -1,0 +1,66 @@
+@import "theme";
+
+app-chart-options-gui {
+  display: block;
+  padding: @padding-md;
+
+  // border: 5px solid @gray-5;
+  height: 100%;
+  overflow-y: scroll;
+
+  .y-axes-container {
+    display: flex;
+    gap: @margin-md;
+
+    & > * {
+      flex: 1;
+    }
+  }
+
+  & > .container {
+    display: flex;
+    gap: @margin-sm;
+    height: 100%;
+
+    .nav-pane {
+      flex: 0 0 auto;
+
+      overflow-y: auto;
+    }
+
+    .content-pane {
+      flex: 1;
+
+      overflow-y: auto;
+    }
+  }
+
+  app-cog-y-axis,
+  app-cog-x-axis,
+  app-cog-series {
+    display: block;
+    padding: @padding-md @padding-lg;
+    background-color: @gray-2;
+
+    margin-bottom: @margin-md;
+
+    .block {
+      display: flex;
+
+      & > * {
+        flex: 1;
+      }
+    }
+
+    section {
+      border-top: 1px solid @border-color-base;
+      margin: @margin-md 0;
+      padding-top: @padding-sm;
+
+      .section-subtitle {
+        color: @text-color-secondary;
+        margin: @margin-sm 0;
+      }
+    }
+  }
+}

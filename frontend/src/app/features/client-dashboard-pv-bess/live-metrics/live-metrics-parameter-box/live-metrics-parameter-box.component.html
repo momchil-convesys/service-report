@@ -1,0 +1,53 @@
+<h3 class="title">
+  <span class="title-content">
+    <ng-content></ng-content>
+  </span>
+</h3>
+
+@if (data) {
+  <div class="content" [class.content--emphasized]="emphasizeTotal">
+    <div class="plant-total">
+      <div class="label-row">
+        <div class="label">{{ label }}</div>
+      </div>
+
+      <div class="value-row">
+        @if (titleIcon) {
+          <span class="content-icon" aria-hidden="true">
+            <app-icons [icon]="titleIcon"></app-icons>
+            @if (titleArrowIcon) {
+              <app-icons [icon]="titleArrowIcon"></app-icons>
+            }
+          </span>
+        }
+        <div class="value">
+          <app-value-display [value]="data.total" [format]="data.format"></app-value-display>
+          @if (data.total !== null) {
+            <span class="unit">
+              {{ data.unit }}
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (showSubPlantValues) {
+      @for (subValue of data.perSubPlant; track $index; let i = $index) {
+        <div class="pm-specific">
+          <div class="label">
+            {{ data.subPlantLabels?.[i] ?? subPlantFallbackLabelPrefix + (i + 1) }}
+          </div>
+
+          <div class="value">
+            <app-value-display [value]="subValue" [format]="data.format"></app-value-display>
+            @if (subValue !== null) {
+              <span class="unit">
+                {{ data.unit }}
+              </span>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+}

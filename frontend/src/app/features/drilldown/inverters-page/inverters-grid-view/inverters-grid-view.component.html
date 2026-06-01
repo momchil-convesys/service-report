@@ -1,0 +1,39 @@
+<div class="scrollable-area">
+  <!-- Loading metadata -->
+  @if (loading && !metadata.length) {
+    <nz-spin i18n-nzTip="@@loading" nzTip="Loading..."></nz-spin>
+  }
+  <!--  -->
+  @else if (inverters.length === 0) {
+    <nz-empty
+      nzNotFoundImage="simple"
+      i18n-nzNotFoundContent
+      nzNotFoundContent="No inverters"
+    ></nz-empty>
+  }
+
+  <!--  -->
+  @for (tsMetadata of metadata; track tsMetadata.deviceId) {
+    <!--  -->
+    @if (tsMetadata.inverters.length > 0) {
+      <div class="inverters-grid">
+        <div class="ts-group-header">
+          {{ tsMetadata.displayName }}
+        </div>
+
+        <!--  -->
+        @for (inverter of tsMetadata.inverters; track inverter.inverterId) {
+          <!--  -->
+          @let inverterData = getInverterData(tsMetadata.deviceId, inverter.inverterId);
+
+          <app-inverter-grid-box
+            [metadata]="inverter"
+            [data]="inverterData"
+            [loading]="loading"
+            [stale]="(isStaleData(inverterData) | async) || false"
+          ></app-inverter-grid-box>
+        }
+      </div>
+    }
+  }
+</div>

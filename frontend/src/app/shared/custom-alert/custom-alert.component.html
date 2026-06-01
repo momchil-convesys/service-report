@@ -1,0 +1,24 @@
+<nz-alert
+  nzType="error"
+  [nzMessage]="errorTitle"
+  [nzDescription]="descriptionRef"
+  nzShowIcon
+  [nzBanner]="nzBanner"
+  [nzCloseable]="nzCloseable"
+></nz-alert>
+
+<ng-template #descriptionRef>
+  @if (errorMessages.length > 0) {
+    <!-- If there is only one error message, display it as a single div -->
+    @if (errorMessages.length === 1) {
+      {{ errorMessages[0] }}
+      <!-- If there are multiple error messages, display them in a list -->
+    } @else {
+      <ul>
+        @for (message of errorMessages; track $index) {
+          <li>{{ message }}</li>
+        }
+      </ul>
+    }
+  }
+</ng-template>

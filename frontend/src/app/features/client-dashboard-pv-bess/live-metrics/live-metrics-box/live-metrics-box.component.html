@@ -1,0 +1,52 @@
+<span class="subtle-title-base">{{ title }}</span>
+<table>
+  <tr>
+    <td colspan="2">
+      <div class="total-value-cell">
+        <div class="title-with-icon">
+          @if (icon) {
+            <div class="icon-container secondary-text-color">
+              <app-icons [icon]="icon" [scaleFactor]="0.8"></app-icons>
+              @if (arrowIcon) {
+                <app-icons [icon]="arrowIcon" [scaleFactor]="0.7"></app-icons>
+              }
+            </div>
+          }
+        </div>
+        <div class="total-value">
+          @let scaledValue = getScaledValue(data?.total ?? null);
+          <span nz-tooltip [nzTooltipTitle]="formatNumber(data?.total ?? null)">{{
+            scaledValue.value
+          }}</span>
+          @if (scaledValue.unit) {
+            <span class="unit"> {{ scaledValue.unit }}</span>
+          }
+        </div>
+      </div>
+    </td>
+  </tr>
+  <tr class="sub-plant-row">
+    <td>Sub Plant 1</td>
+    <td>
+      @let scaledValuePlant1 = getScaledValue(data?.subPlant1 ?? null);
+      <span nz-tooltip [nzTooltipTitle]="formatNumber(data?.subPlant1 ?? null)">{{
+        scaledValuePlant1.value
+      }}</span>
+      @if (scaledValuePlant1.unit) {
+        <span class="unit"> {{ scaledValuePlant1.unit }}</span>
+      }
+    </td>
+  </tr>
+  <tr class="sub-plant-row">
+    <td>Sub Plant 2</td>
+    <td>
+      @let scaledValuePlant2 = getScaledValue(data?.subPlant2 ?? null);
+      <span nz-tooltip [nzTooltipTitle]="formatNumber(data?.subPlant2 ?? null)">{{
+        scaledValuePlant2.value
+      }}</span>
+      @if (scaledValuePlant2.unit) {
+        <span class="unit"> {{ scaledValuePlant2.unit }}</span>
+      }
+    </td>
+  </tr>
+</table>

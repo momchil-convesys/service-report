@@ -1,0 +1,80 @@
+<nz-table
+  #alarmsTable
+  [nzData]="alarms || []"
+  [nzLoading]="loading"
+  [nzShowPagination]="false"
+  [nzSize]="'small'"
+  [nzBordered]="true"
+>
+  <thead>
+    <tr>
+      <th i18n>Alarm</th>
+      <th i18n>Severity</th>
+      <th i18n>Active instances</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (alarm of alarmsTable.data; track alarm.id) {
+      <tr
+        style="cursor: pointer"
+        [routerLink]="[alarm.id]"
+        routerLinkActive="ant-table-row-selected"
+        queryParamsHandling="merge"
+      >
+        <!-- <td
+          [nzExpand]="expandSet.has(alarm.id)"
+          (nzExpandChange)="onExpandChange(alarm.id, $event)"
+        ></td> -->
+        <td class="alarm-content">
+          <app-inverter-alarm-icon
+            [severity]="alarm.severity"
+            [inverse]="true"
+          ></app-inverter-alarm-icon>
+          <span class="alarm-message">{{ alarm.title }}</span>
+        </td>
+        <td class="uppercase">{{ alarm.severity }}</td>
+        <td>
+          {{ alarm.inverterEvents.length }}
+        </td>
+      </tr>
+      @if (expandSet.has(alarm.id)) {
+        <tr [nzExpand]="expandSet.has(alarm.id)">
+          <td colspan="5">
+            <nz-table
+              #innerTable
+              [nzData]="alarm.inverterEvents"
+              [nzShowPagination]="false"
+              [nzSize]="'small'"
+            >
+              <thead>
+                <tr>
+                  <th i18n>Inverter ID</th>
+                  <th i18n>Time of occurence</th>
+                  <th i18n>Active until</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (
+                  inverter of alarm.inverterEvents;
+                  track inverter.inverterId + inverter.interval.start
+                ) {
+                  <tr>
+                    <td>{{ inverter.inverterId }}</td>
+                    <td>{{ inverter.intervalZoned.start | date: "medium" }}</td>
+                    <td>
+                      @if (inverter.intervalZoned.end) {
+                        {{ inverter.intervalZoned.end | date: "medium" }}
+                      } @else {
+                        <span i18n>currently active</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+</nz-table>

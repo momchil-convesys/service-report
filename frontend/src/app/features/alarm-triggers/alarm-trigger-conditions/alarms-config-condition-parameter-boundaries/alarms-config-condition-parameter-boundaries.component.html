@@ -1,0 +1,64 @@
+<div [formGroup]="formGroup" class="condition-form">
+  <nz-form-item>
+    <nz-form-control
+      nzValidateStatus="{{
+        formGroup.controls.parameter.invalid && formGroup.controls.parameter.dirty
+          ? 'error'
+          : undefined
+      }}"
+      i18n-nzErrorTip
+      nzErrorTip="This field is required!"
+    >
+      <nz-select
+        nzShowSearch
+        [nzLoading]="(parametersTemplateRequest$ | async)?.isLoading"
+        formControlName="parameter"
+        i18n-nzPlaceHolder
+        nzPlaceHolder="Select parameter"
+        style="min-width: 300px"
+      >
+        @if ((parametersTemplateRequest$ | async)?.data; as parameterTemplate) {
+          @for (parameter of parameterTemplate.parameters; track parameter.id) {
+            <nz-option [nzValue]="parameter.id" [nzLabel]="parameter.name"></nz-option>
+          }
+        }
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control>
+      <nz-select formControlName="comparisonOperator" style="min-width: 130px">
+        @for (comparisonOperator of comparisonOperatorsValues; track comparisonOperator) {
+          <nz-option
+            [nzValue]="comparisonOperator"
+            [nzLabel]="labelForComparisonOperator(comparisonOperator)"
+          ></nz-option>
+        }
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control
+      nzValidateStatus="{{
+        this.formGroup.controls.value.invalid && this.formGroup.controls.value.dirty
+          ? 'error'
+          : undefined
+      }}"
+      i18n-nzErrorTip
+      nzErrorTip="This field is required!"
+    >
+      <nz-input-number formControlName="value">
+        <span nzInputAddonAfter>
+          @if (this.formGroup.controls.parameter.value) {
+            <span nzAddOnAfter>{{ formGroup.controls.unit.value }}</span>
+          }
+          @if (!this.formGroup.controls.parameter.value) {
+            <span class="secondary-text-color" i18n>units</span>
+          }
+        </span>
+      </nz-input-number>
+    </nz-form-control>
+  </nz-form-item>
+</div>

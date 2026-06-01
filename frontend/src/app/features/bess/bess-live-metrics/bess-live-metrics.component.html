@@ -1,0 +1,239 @@
+<div class="scrollable-area">
+  <div class="content-column">
+    <!-- Main content -->
+    <div
+      class="content-area"
+      [class.grouped]="grouped && tsGroups.length && selectedAssetType === BESSAssetType.Inverter"
+    >
+      <!-- Loading -->
+      @if (loading && !assets.length) {
+        <nz-spin i18n-nzTip="@@loading" nzTip="Loading..."></nz-spin>
+      }
+
+      <!-- Empty state -->
+      @else if (assets.length === 0) {
+        <nz-empty nzNotFoundImage="simple">
+          <span>No {{ getSelectedAssetTypeLabel() | lowercase }}</span>
+        </nz-empty>
+      }
+
+      <!-- Inverters grid -->
+      @else {
+        <!-- Grouped view: Transformer Station -> Battery Container -> Inverters -->
+        @if (grouped && tsGroups.length && selectedAssetType === BESSAssetType.Inverter) {
+          @for (ts of tsGroups; track ts.id) {
+            <div class="group">
+              <div class="group-header">{{ ts.title }}</div>
+
+              @for (bb of ts.containers; track bb.id) {
+                <div class="group sub">
+                  <div class="group-header">{{ bb.title }}</div>
+                  <div
+                    class="inverters-grid"
+                    [class.any-asset]="selectedAssetType !== BESSAssetType.Inverter"
+                  >
+                    @for (assetId of bb.inverterIds; track assetId) {
+                      @if (shouldShowAsset(assetId)) {
+                        @let metrics = getAssetMetrics(assetId);
+                        @let parameterValue = getParameterValue(metrics);
+                        @let measurementTimestamp = getMeasurementTimestamp(metrics);
+
+                        <div
+                          class="inverter-box"
+                          nz-tooltip
+                          [nzTooltipTitle]="measurementTimestamp ? timestamp : null"
+                          [nzTooltipOverlayClassName]="'inverter-tooltip'"
+                        >
+                          <ng-template #timestamp>
+                            <div class="measurement-timestamp">
+                              Time of measurement
+                              <br />
+                              <span>{{ measurementTimestamp | date: "mediumDate" }}</span
+                              >,
+                              <b>{{ measurementTimestamp | date: "HH:mm:ss" }}</b>
+                            </div>
+                          </ng-template>
+                          <div class="inverter-name">
+                            {{ getAssetName(assetId, showShortNames) }}
+                          </div>
+
+                          <div class="power-display">
+                            @if (loading) {
+                              <div class="skeleton">
+                                <nz-skeleton [nzActive]="true" [nzParagraph]="false"></nz-skeleton>
+                              </div>
+                            } @else if (parameterValue !== null) {
+                              <div class="power-value">
+                                <span class="power-number">{{
+                                  parameterValue | number: "1.1-1"
+                                }}</span>
+                                @if (showUnit && selectedParam && selectedParam.unit) {
+                                  <span
+                                    class="power-unit"
+                                    [class.with-space]="shouldInsertSpace(selectedParam.unit)"
+                                    >{{ selectedParam.unit || "" }}</span
+                                  >
+                                }
+                              </div>
+                            } @else if (selectedParam) {
+                              <div class="power-value no-data">N/A</div>
+                            }
+                          </div>
+                        </div>
+                      }
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        }
+
+        <!-- Flat view -->
+        @else {
+          <div
+            class="inverters-grid"
+            [class.any-asset]="selectedAssetType !== BESSAssetType.Inverter"
+          >
+            @for (asset of assets; track asset.id) {
+              @if (shouldShowAsset(asset.id)) {
+                @let metrics = getAssetMetrics(asset.id);
+                @let parameterValue = getParameterValue(metrics);
+                @let measurementTimestamp = getMeasurementTimestamp(metrics);
+                <div
+                  class="inverter-box"
+                  nz-tooltip
+                  [nzTooltipTitle]="measurementTimestamp ? timestamp : null"
+                  [nzTooltipOverlayClassName]="'inverter-tooltip'"
+                >
+                  <ng-template #timestamp>
+                    <div class="measurement-timestamp">
+                      Time of measurement
+                      <br />
+                      <b>{{ measurementTimestamp | date: "medium" }}</b>
+                    </div>
+                  </ng-template>
+
+                  <div class="inverter-name">
+                    {{ showShortNames ? getShortAssetName(asset) : asset.name }}
+                  </div>
+
+                  <div class="power-display">
+                    @if (loading) {
+                      <div class="skeleton">
+                        <nz-skeleton [nzActive]="true" [nzParagraph]="false"></nz-skeleton>
+                      </div>
+                    } @else if (parameterValue !== null) {
+                      @let selectedParam = getSelectedParameter();
+                      <div class="power-value">
+                        <span class="power-number">{{ parameterValue | number: "1.1-1" }}</span>
+                        @if (showUnit && selectedParam && selectedParam.unit) {
+                          <span
+                            class="power-unit"
+                            [class.with-space]="shouldInsertSpace(selectedParam.unit)"
+                            >{{ selectedParam.unit || "" }}</span
+                          >
+                        }
+                      </div>
+                    } @else if (selectedParam) {
+                      <div class="power-value no-data">N/A</div>
+                    }
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  <aside class="parameter-column">
+    <div class="parameter-header">
+      <div class="selector-group">
+        <div class="selector-label">Asset Type</div>
+        <nz-select
+          class="asset-type-select"
+          [ngModel]="selectedAssetType"
+          (ngModelChange)="onAssetTypeChange($event)"
+          nzPlaceHolder="Select asset type"
+          [nzDisabled]="assetTypeOptions.length === 0"
+        >
+          @for (option of assetTypeOptions; track option.type) {
+            <nz-option
+              [nzValue]="option.type"
+              [nzLabel]="option.label + ' (' + option.count + ')'"
+            ></nz-option>
+          }
+        </nz-select>
+      </div>
+
+      <div class="selector-group">
+        <div class="selector-label">Display Parameter</div>
+        @if (metadata$ | async; as metadata) {
+          <app-bess-parameter-selector
+            class="parameter-select"
+            [bessMetadata]="metadata"
+            [assetType]="selectedAssetType"
+            [selectedParameterKey]="selectedParameterKey"
+            (parameterChange)="onParameterChange($event)"
+            placeholder="Select parameter"
+          ></app-bess-parameter-selector>
+        }
+      </div>
+
+      @let selectedParam = getSelectedParameter();
+
+      @if (selectedParam) {
+        <div class="slider-container">
+          <div class="slider-header">
+            <span class="slider-label">Filter Range</span>
+            @if (isFilterActive()) {
+              <button nz-button nzType="default" nzSize="small" (click)="clearFilter()">
+                Clear filter
+              </button>
+            }
+          </div>
+
+          <nz-slider
+            [nzMin]="paramMin"
+            [nzMax]="paramMax"
+            [ngModel]="sliderValue"
+            (ngModelChange)="onSliderChange($event)"
+            [nzRange]="true"
+            [nzStep]="1"
+            class="filter-slider"
+          ></nz-slider>
+
+          <div class="slider-value-range">
+            @if (selectedParam) {
+              <span class="range-label">From</span>
+              <span class="range-value">{{ sliderValue[0] | number: "1.0-1" }}</span>
+              <span
+                class="range-unit"
+                [class.with-space]="
+                  selectedParam.unit ? shouldInsertSpace(selectedParam.unit) : true
+                "
+                >{{ selectedParam.unit }}</span
+              >
+              <span class="range-separator">to</span>
+              <span class="range-value">{{ sliderValue[1] | number: "1.0-1" }}</span>
+              <span
+                class="range-unit"
+                [class.with-space]="
+                  selectedParam.unit ? shouldInsertSpace(selectedParam.unit) : true
+                "
+                >{{ selectedParam.unit }}</span
+              >
+            }
+          </div>
+        </div>
+      }
+
+      <div class="toggle-group">
+        <label nz-checkbox [(ngModel)]="showShortNames"> Short Names </label>
+        <label nz-checkbox [(ngModel)]="showUnit"> Show Unit </label>
+      </div>
+    </div>
+  </aside>
+</div>

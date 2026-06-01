@@ -1,0 +1,36 @@
+@import "theme";
+
+app-task-group-status {
+  display: inline-block;
+  padding: 0 10px;
+
+  font-size: 80%;
+  line-height: 20px;
+  border-radius: 10px;
+
+  border: 1px solid transparent;
+
+  &.not-started {
+    color: @gray-7;
+    background: @gray-2;
+    border-color: @gray-6;
+  }
+
+  &.in-progress {
+    color: @gold-7;
+    background: @gold-1;
+    border-color: @gold-6 !important;
+  }
+
+  &.done {
+    color: @green-7;
+    background: @green-1;
+    border-color: @green-6 !important;
+  }
+
+  &.approved {
+    color: white;
+    background: @green-6;
+    border-color: @green-6;
+  }
+}

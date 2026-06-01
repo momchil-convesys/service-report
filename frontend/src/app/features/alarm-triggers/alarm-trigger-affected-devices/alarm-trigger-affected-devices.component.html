@@ -1,0 +1,117 @@
+<nz-table
+  nzShowPagination="false"
+  nzBordered="true"
+  nzSize="small"
+  [nzData]="affectedDevicesDetails"
+  #affectedDevicesTable
+  [nzLoading]="(actionRequest$ | async)?.isLoading"
+  nzTableLayout="auto"
+>
+  <thead>
+    <tr>
+      <th i18n>Device</th>
+      <th nzAlign="right" i18n>Events</th>
+      <th nzAlign="right" i18n>Trigger status</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (row of affectedDevicesTable.data; track trackByFn($index, row)) {
+      <tr>
+        <td>
+          <app-device-link
+            [deviceId]="row.deviceId"
+            [devicePath]="true"
+            [deviceLink]="true"
+          ></app-device-link>
+        </td>
+
+        <td nzAlign="right">
+          @if (row.eventsCount > 0) {
+            <a
+              [routerLink]="'/alarm-events'"
+              [queryParams]="{
+                triggerId: row.trigerId,
+                triggerType: row.trigerType,
+                deviceId: row.deviceId,
+              }"
+            >
+              {{ row.eventsCount }}
+              <ng-container [ngPlural]="row.eventsCount">
+                <ng-template ngPluralCase="=1" i18n>event</ng-template>
+                <ng-template ngPluralCase="other" i18n>events</ng-template>
+              </ng-container>
+            </a>
+          }
+          @if (row.eventsCount === 0) {
+            <span i18n>No events</span>
+          }
+        </td>
+
+        <td nzAlign="right">
+          <div class="trigger-status-cell-content">
+            @if (row.mutedUntilTimestamp && row.status !== "disabled") {
+              <span class="status" [ngClass]="row.status">{{
+                triggerStatusLabels[row.status]
+              }}</span>
+              <ng-container i18n>until</ng-container>
+              <app-relative-timestamp
+                [timestamp]="row.mutedUntilTimestamp"
+                [plain]="true"
+              ></app-relative-timestamp>
+              <button
+                nz-button
+                nzSize="small"
+                (click)="onAlterTriggerStateForDevices(row.deviceId, 'unmute')"
+                [disabled]="row.status !== 'muted'"
+                i18n
+              >
+                Unmute
+              </button>
+            }
+
+            <nz-switch
+              [ngModel]="row.status !== 'disabled'"
+              (click)="onSwitchModelChange(row.deviceId, row.status === 'disabled')"
+              i18n-nzCheckedChildren="trigger status"
+              nzCheckedChildren="Enabled"
+              i18n-nzUnCheckedChildren="trigger status"
+              nzUnCheckedChildren="Disabled"
+              [nzControl]="true"
+            ></nz-switch>
+          </div>
+        </td>
+      </tr>
+    }
+
+    @if (affectedDevicesDetails.length > 1) {
+      <tr>
+        <td class="footer-cell" nzAlign="right" colspan="3">
+          <button
+            nz-button
+            nzSize="small"
+            (click)="onAlterTriggerStateForDevices(undefined, 'unmute')"
+            i18n
+          >
+            Unmute all
+          </button>
+          <button
+            nz-button
+            nzSize="small"
+            (click)="onAlterTriggerStateForDevices(undefined, 'enable')"
+            i18n
+          >
+            Enable all
+          </button>
+          <button
+            nz-button
+            nzSize="small"
+            (click)="onAlterTriggerStateForDevices(undefined, 'disable')"
+            i18n
+          >
+            Disable all
+          </button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>

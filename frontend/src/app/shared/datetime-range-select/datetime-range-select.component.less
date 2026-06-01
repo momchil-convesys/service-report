@@ -1,0 +1,37 @@
+@import "theme";
+app-datetime-range-select {
+  display: flex;
+
+  column-gap: @margin-xs;
+  row-gap: @margin-xss;
+
+  flex-wrap: wrap;
+
+  app-datetime-with-navigation {
+    .ant-picker {
+      width: 170px; // To fit week "From ..."
+    }
+
+    .ant-picker-large {
+      width: 180px; // To fit longest month + year
+    }
+  }
+
+  &.default-size {
+    .ant-radio-button-wrapper {
+      font-size: @font-size-sm;
+      font-weight: bold;
+      padding: 0 8px;
+    }
+  }
+
+  .integration-period-block {
+    display: flex;
+    align-items: center;
+    column-gap: @margin-xss;
+
+    .label {
+      font-size: @font-size-sm;
+    }
+  }
+}

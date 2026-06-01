@@ -1,0 +1,25 @@
+@switch (value) {
+  @case (ErrorStackIndexValue.NotAvailable) {
+    <app-device-state [fixedWidth]="true" variant="error-stack"></app-device-state>
+  }
+
+  @case (ErrorStackIndexValue.Ok) {
+    <i nz-icon nzTheme="outline" nzType="check" class="ok"></i>
+  }
+
+  @case (ErrorStackIndexValue.Warning) {
+    <app-device-state
+      [state]="{ baseState: DeviceState.Warning }"
+      [fixedWidth]="true"
+      variant="error-stack"
+    ></app-device-state>
+  }
+
+  @case (ErrorStackIndexValue.Error) {
+    <app-device-state
+      [state]="{ baseState: DeviceState.Error }"
+      [fixedWidth]="true"
+      variant="error-stack"
+    ></app-device-state>
+  }
+}

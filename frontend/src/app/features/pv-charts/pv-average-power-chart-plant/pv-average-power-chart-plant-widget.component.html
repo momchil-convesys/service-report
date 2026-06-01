@@ -1,0 +1,52 @@
+<nz-card class="custom-card" nzBordered="true" nzSize="small">
+  <div class="card-header">
+    <div class="card-title">
+      <span>
+        <ng-container i18n>Average power (every 15 min)</ng-container>&nbsp;
+        <app-live-data-indicator></app-live-data-indicator>
+      </span>
+
+      <div
+        class="extra-hint"
+        nz-tooltip
+        i18n-nzTooltipTitle
+        nzTooltipTitle="Average power data is from power meter."
+      >
+        <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+        <ng-container i18n>Power meter</ng-container>
+      </div>
+    </div>
+    <div class="card-extra">
+      <app-datetime-range-select
+        (modelChange)="onDatetimeRangeChange($event)"
+        [defaultOption]="'day'"
+        [customRangeTypeOptions]="['day', 'week']"
+        [timeZone]="(timeZone$ | async) || undefined"
+        [showIntegrationPeriod]="false"
+      >
+      </app-datetime-range-select>
+      <app-highcharts-export-option
+        [chartComponent]="chartComponent"
+        [disabled]="(chartDataRequest$ | async)?.isLoading || false"
+        [filename]="(chartDataRequest$ | async)?.data?.exportFileName"
+      ></app-highcharts-export-option>
+    </div>
+  </div>
+
+  @if ((chartDataRequest$ | async)?.error; as error) {
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load data"
+      [nzDescription]="error.message"
+      nzShowIcon
+    ></nz-alert>
+  }
+
+  <app-pv-average-power-chart-plant
+    [data]="(chartDataRequest$ | async)?.data"
+    [loading]="(chartDataRequest$ | async)?.isLoading"
+    [context]="chartContext$ | async"
+    #chartComponent
+  ></app-pv-average-power-chart-plant>
+</nz-card>

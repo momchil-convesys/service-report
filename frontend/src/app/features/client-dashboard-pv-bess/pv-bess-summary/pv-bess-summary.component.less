@@ -1,0 +1,120 @@
+@import "theme";
+
+app-pv-bess-summary {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: @padding-md @padding-lg;
+  background-color: @component-background;
+  border-radius: @border-radius-base;
+  border: 1px solid @border-color-split;
+
+  section {
+    margin-bottom: @margin-lg;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .indicator-item {
+    margin-bottom: @margin-md;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .pv-indicator {
+    display: flex;
+    flex-direction: column;
+    gap: @margin-xss;
+
+    .label {
+      font-size: 0.875rem;
+      color: @text-color-secondary;
+    }
+  }
+
+  .capacity-power {
+    margin: @margin-xss 0;
+    margin-bottom: @margin-xs;
+    display: flex;
+    flex-direction: column;
+    gap: @margin-xss;
+    line-height: 1;
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: @font-size-sm;
+
+      .label {
+        color: @text-color-secondary;
+      }
+
+      app-value-display {
+        color: @text-color;
+      }
+    }
+  }
+
+  .bess-section,
+  .pv-section {
+    padding-bottom: @padding-md;
+    border-bottom: 1px solid @border-color-base;
+
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+
+  .schedule-box {
+    background-color: #ffdb8c33; //@background-color-light;
+    // border: 1px solid @border-color-base;
+    border-radius: @border-radius-base;
+    padding: @padding-sm;
+
+    .schedule-box-header {
+      margin-bottom: @margin-xs;
+      // font-size: @font-size-sm;
+      // color: @text-color-secondary;
+    }
+
+    .schedule-box-content {
+      display: flex;
+      flex-direction: column;
+      gap: @margin-xss;
+    }
+
+    .schedule-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: @font-size-sm;
+
+      .schedule-label {
+        color: @text-color-secondary;
+      }
+
+      &.schedule-link-row {
+        margin-top: @margin-xs;
+        padding-top: @padding-xs;
+        border-top: 1px solid @border-color-split;
+        justify-content: flex-start;
+      }
+    }
+
+    .schedule-link {
+      color: @primary-color;
+      text-decoration: none;
+      font-size: @font-size-sm;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

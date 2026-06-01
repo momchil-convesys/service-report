@@ -1,0 +1,170 @@
+<nz-table
+  [nzData]="data"
+  [nzScroll]="{
+    x: data.length
+      ? '' + (data.length * columnWidth - headerWidth)
+      : '' + headerWidth + columnWidth,
+  }"
+  nzShowPagination="false"
+  nzBordered="true"
+  nzSize="small"
+  nzTableLayout="fixed"
+  [nzLoading]="isLoading"
+  [style.max-width]="isSingleDevice ? '600px' : undefined"
+>
+  <thead>
+    <tr class="grid-keepr">
+      <th [nzLeft]="!isSingleDevice" [nzWidth]="headerWidth + 'px'" class="header-cell"></th>
+
+      @for (deviceMetrics of data; track deviceMetrics.deviceId) {
+        <th [nzWidth]="columnWidth * 0.6 + 'px'"></th>
+        <th [nzWidth]="columnWidth * 0.4 + 'px'"></th>
+      }
+    </tr>
+
+    <tr>
+      <th [nzLeft]="!isSingleDevice" class="header-cell">&nbsp;</th>
+
+      @for (deviceMetrics of data; track deviceMetrics.deviceId) {
+        <th colspan="2">
+          <app-device-link [deviceId]="deviceMetrics.deviceId"></app-device-link>
+        </th>
+      }
+
+      @if (!isSingleDevice) {
+        <th class="space-buffer-col"></th>
+      }
+    </tr>
+
+    <tr>
+      <th i18n [nzLeft]="!isSingleDevice">Device state</th>
+      @for (deviceMetrics of data; track deviceMetrics.deviceId) {
+        <th nzAlign="center" colspan="2">
+          <!-- TODO: show extended state -->
+          <app-device-state
+            [state]="deviceMetrics.state ? { baseState: deviceMetrics.state } : deviceMetrics.state"
+            variant="full"
+          ></app-device-state>
+        </th>
+      }
+
+      @if (!isSingleDevice) {
+        <th class="space-buffer-col"></th>
+      }
+    </tr>
+
+    <tr>
+      <th [nzLeft]="!isSingleDevice">
+        <ng-container i18n>Time of measurement</ng-container>
+        <br />
+        (<ng-container i18n>in plant time zone</ng-container>)
+      </th>
+      @for (deviceMetrics of data; track deviceMetrics.deviceId) {
+        <th nzAlign="center" colspan="2">
+          {{ deviceMetrics.timestamp | date: "d MMMM y" }}
+          <br />
+          {{ deviceMetrics.timestamp | date: "HH:mm:ss" }}
+        </th>
+      }
+
+      @if (!isSingleDevice) {
+        <th class="space-buffer-col"></th>
+      }
+    </tr>
+  </thead>
+
+  <tbody>
+    <!-- Use grouped parameters when shouldUseParameterGroupingByName is true -->
+    @if (shouldUseParameterGroupingByName) {
+      @for (groupedParameter of groupedParameters; track groupedParameter.name) {
+        <tr>
+          <td [nzLeft]="!isSingleDevice" class="header-cell">
+            {{ groupedParameter.name }}
+          </td>
+          @for (deviceMetrics of data; track deviceMetrics.deviceId) {
+            @let value = getGroupedParameterValue(deviceMetrics, groupedParameter);
+            <td class="value-cell">
+              @if (value !== null) {
+                {{ value | number: "0.0-10" }}
+              } @else {
+                &mdash;
+              }
+            </td>
+            <td class="unit-cell">
+              @if (value !== undefined) {
+                <app-device-parameter-unit-display
+                  [unit]="getGroupedParameterUnit(groupedParameter)"
+                ></app-device-parameter-unit-display>
+              }
+            </td>
+          }
+          @if (!isSingleDevice) {
+            <td class="space-buffer-col"></td>
+          }
+        </tr>
+      }
+    }
+    <!-- Use original logic when shouldUseParameterGroupingByName is false -->
+    @else {
+      @for (parameter of parameters; track parameter.id) {
+        <tr>
+          <td [nzLeft]="!isSingleDevice" class="header-cell">
+            {{ parameter.name }}
+          </td>
+          @for (deviceMetrics of data; track deviceMetrics.deviceId) {
+            @if (deviceMetrics.transformedValues; as values) {
+              <td class="value-cell">
+                @if (values[parameter.id] !== undefined) {
+                  @if (values[parameter.id].transformedValue !== null) {
+                    {{ values[parameter.id].transformedValue }}
+                  } @else {
+                    &mdash;
+                  }
+                }
+              </td>
+              <td class="unit-cell">
+                @if (values[parameter.id] !== undefined) {
+                  <span
+                    [class.transformed]="values[parameter.id].isTransformed"
+                    nz-tooltip
+                    [nzTooltipTrigger]="values[parameter.id].isTransformed ? 'hover' : null"
+                    [nzTooltipTitle]="
+                      values[parameter.id].originalValueFormatted +
+                      ' ' +
+                      values[parameter.id].originalUnit
+                    "
+                  >
+                    <app-device-parameter-unit-display
+                      [unit]="values[parameter.id].transformedUnit"
+                    ></app-device-parameter-unit-display>
+                  </span>
+                }
+              </td>
+            } @else {
+              <td class="value-cell">
+                @if (deviceMetrics.values[parameter.id] !== undefined) {
+                  @if (deviceMetrics.values[parameter.id] !== null) {
+                    {{ deviceMetrics.values[parameter.id] | number: "0.0-10" }}
+                  } @else {
+                    &mdash;
+                  }
+                }
+              </td>
+              <td class="unit-cell">
+                @if (deviceMetrics.values[parameter.id] !== undefined) {
+                  <app-device-parameter-unit-display
+                    [unit]="parameter.unit"
+                  ></app-device-parameter-unit-display>
+                }
+              </td>
+            }
+          }
+
+          @if (!isSingleDevice) {
+            <td class="space-buffer-col"></td>
+          }
+        </tr>
+      }
+    }
+  </tbody>
+</nz-table>

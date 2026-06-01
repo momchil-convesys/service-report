@@ -1,0 +1,21 @@
+<nz-select
+  i18n-nzPlaceHolder
+  nzPlaceHolder="Select device software version"
+  [nzLoading]="(request$ | async)?.isLoading"
+  [ngModel]="valueModel"
+  (ngModelChange)="onSelectedValueChange($event)"
+>
+  @for (group of groupedMetadata$ | async; track group.manufacturer) {
+    <nz-option-group [nzLabel]="group.manufacturer">
+      @for (deviceMetadata of group.list; track deviceMetadata.id) {
+        <nz-option
+          [nzValue]="deviceMetadata.id"
+          [nzLabel]="deviceMetadata.displayString"
+          nzCustomContent
+        >
+          Version {{ deviceMetadata.softwareVersion }}
+        </nz-option>
+      }
+    </nz-option-group>
+  }
+</nz-select>

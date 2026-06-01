@@ -1,0 +1,37 @@
+@let sidebarVisible = sidebarService.sidebarVisible$ | async;
+
+<!-- 
+  We are recreating the button here,
+  because the tooltip should also be recreated
+  between changing states. 
+  Otherwise, the tooltip text changes immediately on click
+  while the hide/show animation is still running.
+-->
+
+@if (sidebarVisible) {
+  <button
+    nz-button
+    nzType="default"
+    class="nav-up"
+    (click)="sidebarService.toggleSideBar()"
+    nz-tooltip
+    [nzTooltipTitle]="hidePlantsText"
+    nzTooltipPlacement="topLeft"
+  >
+    <span nz-icon [nzType]="'left'" nzTheme="outline"></span>
+    <span i18n="@@plants" class="nav-up-text">Plants</span>
+  </button>
+} @else {
+  <button
+    nz-button
+    nzType="default"
+    class="nav-up"
+    (click)="sidebarService.toggleSideBar()"
+    nz-tooltip
+    [nzTooltipTitle]="showPlantsText"
+    nzTooltipPlacement="topLeft"
+  >
+    <span nz-icon [nzType]="'menu-unfold'" nzTheme="outline"></span>
+    <span i18n="@@plants" class="nav-up-text">Plants</span>
+  </button>
+}

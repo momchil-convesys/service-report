@@ -1,0 +1,38 @@
+@if (state && state.baseState; as baseState) {
+  @if (isWarning && variant !== "error-stack") {
+    <div class="special-case" [ngClass]="size === 'large' ? 'large' : ''">
+      <span class="part-on">
+        <span class="text">
+          {{
+            variant === "full" ? fullLabelForState(DeviceState.On) : labels[DeviceState.On]
+          }}</span
+        >
+      </span>
+      <span class="part-wrn">
+        <i nz-icon nzType="warning" nzTheme="fill"></i>
+        @if (variant === "full") {
+          <span class="text">{{ fullLabelForState(DeviceState.Warning) }}</span>
+        }
+      </span>
+    </div>
+  } @else {
+    <div
+      class="default-case"
+      [class]="cssClasses[baseState]"
+      [ngClass]="size === 'large' ? 'large' : ''"
+    >
+      @if (state.intermediateState) {
+        {{ state.intermediateState.code }}: {{ state.intermediateState.label }}
+      } @else {
+        {{ labels[baseState] }}
+      }
+
+      <!-- TODO: Special case for inverters overview page -->
+      @if (state.baseState === DeviceState.On && state.intermediateStateCode === 513) {
+        <span nz-icon nzType="vertical-align-top" nzTheme="outline" class="power-limit-icon"></span>
+      }
+    </div>
+  }
+} @else {
+  <span class="null-value">&mdash;</span>
+}

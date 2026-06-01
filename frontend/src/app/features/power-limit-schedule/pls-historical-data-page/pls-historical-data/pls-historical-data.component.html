@@ -1,0 +1,43 @@
+<nz-spin [nzSpinning]="(dataRequest$ | async)?.isLoading">
+  <!-- 
+    Range picker is inside spinner 
+    to avoid multiple consequtive clicks
+    which sometimes causes an issue 
+  -->
+  <app-datetime-range-select
+    (modelChange)="onDatetimeRangeChange($event)"
+    [size]="'large'"
+    [showPredefinedOptions]="false"
+    [timeZone]="(timeZone$ | async) || undefined"
+  ></app-datetime-range-select>
+
+  @if ((dataRequest$ | async)?.error; as error) {
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load data"
+      [nzDescription]="error.message"
+      nzShowIcon
+    ></nz-alert>
+  }
+
+  @if ((dataRequestFinishedData$ | async) !== null && (dataRequestFinishedData$ | async); as data) {
+    @if (chartContext$ | async; as context) {
+      <app-pls-historical-data-chart
+        [data]="data"
+        [loading]="false"
+        [context]="context"
+      ></app-pls-historical-data-chart>
+    }
+
+    @if (deviceChartContexts$ | async; as contexts) {
+      @for (context of contexts; track $index) {
+        <app-pls-historical-data-chart-device
+          [data]="data"
+          [loading]="false"
+          [context]="context"
+        ></app-pls-historical-data-chart-device>
+      }
+    }
+  }
+</nz-spin>

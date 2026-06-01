@@ -1,0 +1,88 @@
+<nz-tree-view [nzTreeControl]="treeControl" [nzDataSource]="dataSource" nzBlockNode="true">
+  <nz-tree-node
+    *nzTreeNodeDef="let node"
+    [nzTreeNodePadding]="node.level"
+    nzTreeNodePaddingIndent="40px"
+    [ngClass]="{
+      'task-node-type-item': !node.expandable,
+      'task-node-type-group': node.expandable,
+      selected: node.id === (selectedTask$ | async)?.id,
+      disabled: node.disabled | async,
+    }"
+  >
+    <nz-tree-node-toggle class="node-toggle">
+      @if (node.expandable) {
+        <span nz-icon nzType="caret-down" nzTreeNodeToggleRotateIcon></span>
+      }
+    </nz-tree-node-toggle>
+
+    <nz-tree-node-option (click)="onNodeClick(node)">
+      <div class="node-content">
+        <div class="header">
+          @if (node.origin.isLeaf) {
+            <app-task-status
+              [status]="node.origin.status"
+              [index]="node.origin.index"
+              class="prefix"
+            ></app-task-status>
+          }
+          @if (!node.origin.isLeaf) {
+            <span
+              nz-icon
+              [nzType]="treeControl.isExpanded(node) ? 'folder-open' : 'folder'"
+              nzTheme="fill"
+              class="prefix"
+              style="font-size: 120%"
+            ></span>
+          }
+
+          @if (node.origin.isLeaf) {
+            <span class="title">
+              {{ node.name }}
+            </span>
+          }
+          @if (!node.origin.isLeaf) {
+            <span class="title">
+              {{ node.name }}
+            </span>
+          }
+
+          @if (!node.origin.isLeaf) {
+            <div class="aside">
+              <div class="assignee-container">
+                @if (node.origin.assignedTo) {
+                  <app-user-link
+                    [userId]="node.origin.assignedTo"
+                    style="color: #0077bb"
+                  ></app-user-link>
+                }
+                @if (!node.origin.assignedTo) {
+                  <span style="color: gray">Not assigned</span>
+                }
+              </div>
+              <div class="status-container">
+                <app-task-group-status [status]="node.origin.status"></app-task-group-status>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </nz-tree-node-option>
+  </nz-tree-node>
+</nz-tree-view>
+
+@if (ticket && ticket.id) {
+  <div class="detail-block">
+    @if (selectedTask$ | async; as taskNode) {
+      @if (taskNode.isLeaf) {
+        <app-ticket-task-edit [task]="taskNode" [ticketId]="ticket.id"></app-ticket-task-edit>
+      }
+      @if (!taskNode.isLeaf) {
+        <app-ticket-task-group-edit [taskGroup]="taskNode" [ticketId]="ticket.id">
+        </app-ticket-task-group-edit>
+      }
+    } @else {
+      <p>Select task to edit/preview.</p>
+    }
+  </div>
+}

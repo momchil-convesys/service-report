@@ -1,0 +1,19 @@
+<h1>Custom Data View</h1>
+
+<p>
+  {{ dataViewConfig | json }}
+</p>
+
+@if (dataViewConfig) {
+  <button nz-button nzType="default" nzDanger (click)="onDelete(dataViewConfig.id)">
+    Delete data view
+  </button>
+
+  <div class="chart-container">
+    <div [id]="chartContainerId" style="width: 100%; height: 350px"></div>
+  </div>
+
+  @if (chart) {
+    <app-chart-options-gui [chart]="chart"></app-chart-options-gui>
+  }
+}

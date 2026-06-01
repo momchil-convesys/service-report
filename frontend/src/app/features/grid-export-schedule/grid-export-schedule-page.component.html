@@ -1,0 +1,53 @@
+<nz-alert
+  i18n-nzMessage
+  nzType="warning"
+  i18n-nzMessage
+  nzMessage="Under development!"
+  nzShowIcon
+  nzBanner="true"
+></nz-alert>
+
+<div class="page-content">
+  <div class="left-pane" [class.collapsed]="showDetail">
+    <h2 i18n>Grid Export Schedule</h2>
+
+    @if (syncService.hasPermissionToToggleScheduleStatus) {
+      <div class="current-schedule-block">
+        <ul class="custom-list">
+          <li
+            class="list-item active-schedule-nav"
+            routerLink="settings"
+            routerLinkActive="is-active"
+          >
+            <div class="left icon-slot">
+              <span nz-icon nzType="setting" nzTheme="outline"></span>
+            </div>
+
+            <div i18n class="left">Settings</div>
+            <div class="right">
+              <span nz-icon nzType="right" nzTheme="outline"></span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    }
+
+    <h3 i18n>Schedules list</h3>
+    <div class="list-block">
+      <app-ges-history-list-loader></app-ges-history-list-loader>
+    </div>
+  </div>
+
+  <div class="right-pane" [class.collapsed]="!showDetail">
+    @if (showDetail) {
+      <button nz-button nzType="default" [routerLink]="'./'" class="nav-up">
+        <span nz-icon nzType="left" nzTheme="outline"></span>&nbsp;<ng-container i18n
+          >All schedules</ng-container
+        >
+      </button>
+    }
+
+    <router-outlet (activate)="onChildRouteActivate()" (deactivate)="onChildRouteDeactivate()">
+    </router-outlet>
+  </div>
+</div>

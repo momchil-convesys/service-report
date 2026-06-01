@@ -1,0 +1,21 @@
+<div class="task-list-edit-block">
+  <h1>Task list edit</h1>
+  <app-task-tree-edit
+    [treeRootNode]="rootNode"
+    [selectedIds]="(selectedNodeIds$ | async) || []"
+    (nodeSelect)="onNodeSelect($event)"
+    (nodeMove)="onNodeMove($event)"
+  ></app-task-tree-edit>
+</div>
+
+<div class="task-definition-block">
+  @if (selectedNode$ | async; as node) {
+    <h1>{{ node.isLeaf ? "Edit task" : "Edit group" }}</h1>
+    <app-task-form
+      [node]="node"
+      (save)="onSave($event)"
+      (cancel)="onCancel()"
+      (delete)="onDelete($event)"
+    ></app-task-form>
+  }
+</div>

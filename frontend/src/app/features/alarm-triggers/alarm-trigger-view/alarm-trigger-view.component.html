@@ -1,0 +1,121 @@
+<nz-descriptions nzBordered="true" nzSize="middle" [nzColumn]="1">
+  <nz-descriptions-item i18n-nzTitle nzTitle="Description">
+    {{ selectedTrigger.description }}
+  </nz-descriptions-item>
+
+  <!-- <nz-descriptions-item i18n nzTitle="Trigger type"> -->
+  <nz-descriptions-item i18n-nzTitle nzTitle="Trigger type">
+    <app-alarm-type [type]="selectedTrigger.type" variant="full"></app-alarm-type>
+  </nz-descriptions-item>
+
+  <nz-descriptions-item i18n-nzTitle nzTitle="Device type">
+    <app-device-metadata-display
+      [deviceMetadataId]="selectedTrigger.deviceMetadataId!"
+    ></app-device-metadata-display>
+  </nz-descriptions-item>
+
+  <nz-descriptions-item i18n-nzTitle nzTitle="Trigger when">
+    @if (selectedTrigger.triggerIf === "all") {
+      <ng-container i18n> ALL </ng-container>
+    }
+    @if (selectedTrigger.triggerIf === "any") {
+      <ng-container i18n> ANY </ng-container>
+    }
+    <ng-container i18n> of the conditions are satisfied </ng-container>
+  </nz-descriptions-item>
+
+  <nz-descriptions-item i18n-nzTitle nzTitle="Conditions">
+    @for (condition of selectedTrigger.conditions; track $index) {
+      <app-alarm-trigger-condition-preview
+        [condition]="condition"
+        [type]="selectedTrigger.type"
+      ></app-alarm-trigger-condition-preview>
+      <!-- <ng-container *ngTemplateOutlet="andOr"></ng-container> -->
+    }
+  </nz-descriptions-item>
+
+  <nz-descriptions-item i18n-nzTitle nzTitle="On new event">
+    @if (selectedTrigger.muteDurationMinutes >= 0) {
+      <ng-container i18n>Mute trigger for</ng-container>
+      <ng-container [ngPlural]="selectedTrigger.muteDurationMinutes">
+        {{ selectedTrigger.muteDurationMinutes }}
+        <ng-template ngPluralCase="=1" i18n="@@minute">minute</ng-template>
+        <ng-template ngPluralCase="other" i18n="@@minutes">minutes</ng-template>
+      </ng-container>
+    }
+    @if (selectedTrigger.muteDurationMinutes < 0) {
+      <ng-container i18n> Disable trigger until user manually enables it </ng-container>
+    }
+  </nz-descriptions-item>
+
+  <nz-descriptions-item i18n-nzTitle nzTitle="Notify by e-mail">
+    @if (selectedTrigger.notifyUsersByEmail && selectedTrigger.notifyUsersByEmail.length > 0) {
+      @for (user of selectedTrigger.notifyUsersByEmail; track user.id) {
+        <div>
+          {{ user.displayName }}
+        </div>
+      }
+    } @else {
+      <ng-container i18n>Disabled</ng-container>
+    }
+  </nz-descriptions-item>
+
+  @if (selectedTrigger.created; as info) {
+    <nz-descriptions-item i18n-nzTitle nzTitle="Created">
+      {{ info.timestamp | date: "d MMMM y" }}
+      <span i18n>at</span>
+      {{ info.timestamp | date: "HH:mm" }}
+      <ng-container i18n>by</ng-container>
+      {{ info.user.displayName }}
+    </nz-descriptions-item>
+  }
+
+  @if (selectedTrigger.lastModified; as info) {
+    <nz-descriptions-item i18n-nzTitle nzTitle="Last modified">
+      {{ info.timestamp | date: "d MMMM y" }}
+      <span i18n>at</span>
+      {{ info.timestamp | date: "HH:mm" }}
+      <ng-container i18n>by</ng-container>
+      {{ info.user.displayName }}
+    </nz-descriptions-item>
+  }
+
+  <nz-descriptions-item i18n-nzTitle nzTitle="Initiated events">
+    @if (selectedTrigger.relatedEventsCount > 0) {
+      <a
+        [routerLink]="'/alarm-events'"
+        [queryParams]="{ triggerId: selectedTrigger.id, triggerType: selectedTrigger.type }"
+      >
+        {{ selectedTrigger.relatedEventsCount }}
+        <ng-container [ngPlural]="selectedTrigger.relatedEventsCount">
+          <ng-template ngPluralCase="=1" i18n>event</ng-template>
+          <ng-template ngPluralCase="other" i18n>events</ng-template>
+        </ng-container>
+      </a>
+    } @else {
+      <ng-container i18n>This trigger has not initiated any alarm events yet.</ng-container>
+    }
+  </nz-descriptions-item>
+</nz-descriptions>
+
+<button i18n class="edit-trigger-button" nz-button nzType="primary" (click)="onEdit()">
+  Edit trigger
+</button>
+
+<nz-divider></nz-divider>
+
+<h2 i18n>Affected devices</h2>
+<app-alarm-trigger-affected-devices
+  [trigger]="selectedTrigger"
+></app-alarm-trigger-affected-devices>
+
+<ng-template #andOr>
+  <div class="and-or">
+    @if (selectedTrigger.triggerIf === "any") {
+      <small i18n>OR</small>
+    }
+    @if (selectedTrigger.triggerIf === "all") {
+      <small i18n>AND</small>
+    }
+  </div>
+</ng-template>

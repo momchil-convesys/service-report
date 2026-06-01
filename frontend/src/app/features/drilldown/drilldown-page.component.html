@@ -1,0 +1,26 @@
+@if ((deviceId$ | async) === null) {
+  <nz-tabs
+    nzTabPosition="top"
+    nzSize="small"
+    [nzAnimated]="false"
+    nzLinkRouter
+    nzLinkExact="false"
+    nzType="card"
+  >
+    <nz-tab>
+      <a *nzTabLink nz-tab-link [routerLink]="'inverters'" i18n>Inverters</a>
+    </nz-tab>
+
+    <nz-tab>
+      <a *nzTabLink nz-tab-link [routerLink]="'active-alarms'" i18n>Active alarms</a>
+    </nz-tab>
+
+    <nz-tab>
+      <a *nzTabLink nz-tab-link [routerLink]="'alarms'" i18n>Alarms history</a>
+    </nz-tab>
+  </nz-tabs>
+}
+
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

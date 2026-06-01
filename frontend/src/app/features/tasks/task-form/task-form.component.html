@@ -1,0 +1,72 @@
+<form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <nz-form-item>
+    <nz-form-label>Title</nz-form-label>
+    <nz-form-control>
+      <nz-input-group>
+        <input type="text" nz-input formControlName="title" />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="task-node-definition-description">Description</nz-form-label>
+    <nz-form-control>
+      <nz-input-group>
+        <textarea
+          id="task-node-definition-description"
+          nz-input
+          rows="3"
+          [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+          formControlName="description"
+        ></textarea>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  @if (!node.isLeaf) {
+    <nz-form-item>
+      <label nz-checkbox formControlName="forceOrder">
+        <span>Force tasks order</span>
+      </label>
+    </nz-form-item>
+  }
+
+  <!-- <ng-container *ngIf="node.isLeaf">
+    <nz-form-item>
+      <nz-form-label>Task type</nz-form-label>
+      <nz-form-control>
+        <nz-radio-group>
+          <label nz-radio nzValue="inspect">Inspect (Проверка)</label>
+          <label nz-radio nzValue="perform">Perform (Изпълнение)</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Required data</nz-form-label>
+      <nz-form-control>
+        <label nz-checkbox> Photos are requered </label>
+      </nz-form-control>
+      <nz-form-control>
+        <label nz-checkbox> Notes are requered </label>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Options</nz-form-label>
+      <nz-form-control>
+        <label nz-checkbox>Show option to skip task (for conditional tasks)</label>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-container> -->
+
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="default" type="button" nzDanger (click)="onDelete()">Delete</button>
+      &nbsp;
+      <button nz-button nzType="default" type="button" (click)="onCancel()">Cancel</button>
+      &nbsp;
+      <button nz-button nzType="primary" type="submit">Save</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

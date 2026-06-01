@@ -1,0 +1,132 @@
+import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewEncapsulation,
+} from '@angular/core';
+import { NzUploadFile, NzUploadXHRArgs } from 'ng-zorro-antd/upload';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { CustomError } from '../../../constants';
+import { ApiService } from '../../../data/api';
+import { PowerLimitScheduleDTO } from '../_data/dto';
+import { PlsService } from '../_data/pls-sync.service';
+
+@Component({
+  selector: 'app-pls-file-upload',
+  templateUrl: './pls-file-upload.component.html',
+  styleUrls: ['./pls-file-upload.component.less'],
+  encapsulation: ViewEncapsulation.None,
+  standalone: false,
+})
+export class PlsFileUploadComponent implements OnChanges, OnInit, OnDestroy {
+  @Input() plantId: string | undefined;
+  @Output() fileUpload = new EventEmitter<PowerLimitScheduleDTO>();
+
+  fileList: NzUploadFile[] = [];
+
+  customError$ = new BehaviorSubject<CustomError | null>(null);
+
+  private _subscription: Subscription | undefined;
+
+  constructor(
+    private api: ApiService,
+    private plsService: PlsService,
+  ) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.fileList = [];
+  }
+
+  ngOnInit(): void {
+    this._subscription = this.plsService.resetFileList$.subscribe((plantId) => {
+      if (plantId === this.plantId) {
+        this.fileList = [];
+      }
+    });
+  }
+  ngOnDestroy(): void {
+    this._subscription?.unsubscribe();
+  }
+
+  setUploadHeaders = (file: any) => {
+    return {
+      'Content-Type': 'multipart/form-data',
+      Accept: 'application/json',
+    };
+  };
+
+  customRequest = (item: NzUploadXHRArgs): Subscription => {
+    this.customError$.next(null);
+
+    if (this.plantId === undefined) {
+      throw `${this.constructor.name}: Missing plant ID!`;
+    }
+
+    const url = this.constructFileUrl(this.plantId);
+
+    const formData = new FormData();
+    formData.append(item.file.name, item.postFile as File);
+
+    return this.api.http
+      .post<PowerLimitScheduleDTO>(url, formData, {
+        reportProgress: true,
+        withCredentials: false,
+        observe: 'response',
+      })
+      .subscribe({
+        next: (event: HttpEvent<PowerLimitScheduleDTO>) => {
+          switch (event.type) {
+            case HttpEventType.Sent:
+              break;
+
+            case HttpEventType.UploadProgress:
+              item.onProgress && item.onProgress(event, item.file);
+              break;
+
+            case HttpEventType.Response:
+              {
+                const scheduleItem: PowerLimitScheduleDTO | null = event.body;
+                item.onSuccess && item.onSuccess(event.body, item.file, event);
+
+                if (scheduleItem) {
+                  this.fileUpload.next(scheduleItem);
+                }
+              }
+
+              break;
+          }
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error('Failed to upload file! ERROR:', err, item);
+
+          item.onError && item.onError(err.error || err, item.file);
+
+          this.customError$.next({
+            title: `Failed to upload file "${item.file.name}"`,
+            error: err,
+          });
+
+          this.fileList = [];
+        },
+        complete: () => {},
+      });
+  };
+
+  onUpload = (file: NzUploadFile): string | Observable<string> => {
+    if (this.plantId === undefined) {
+      throw `${this.constructor.name}: Missing plant ID!`;
+    }
+
+    return this.constructFileUrl(this.plantId);
+  };
+
+  private constructFileUrl(plantId: string): string {
+    return `${this.api.baseUrl}/power-limit-schedules/${plantId}/upload`;
+  }
+}

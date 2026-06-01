@@ -1,0 +1,41 @@
+@import "theme";
+
+app-inverters-grid-view {
+  display: block;
+
+  position: relative;
+
+  height: 100%;
+  overflow: auto;
+
+  nz-spin {
+    min-height: 104px; // equals loading block
+    height: 100%;
+  }
+
+  .scrollable-area {
+    min-height: 100%;
+
+    display: flex;
+    gap: @margin-xs;
+
+    padding: @padding-md;
+    padding-top: @padding-sm;
+
+    overflow: auto;
+  }
+
+  .inverters-grid {
+    min-width: 150px;
+
+    display: flex;
+    flex-direction: column;
+    // gap: 1px;
+
+    .ts-group-header {
+      font-weight: bold;
+      margin-bottom: 2px;
+      margin-left: 22px; // align with inverter name
+    }
+  }
+}

@@ -1,0 +1,61 @@
+@import "theme";
+
+app-faults-table {
+  display: block;
+
+  .search-block {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: @margin-sm;
+  }
+
+  .options-block {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @margin-xs;
+
+    margin-bottom: @margin-sm;
+
+    div:first-child {
+      flex: 1 1 auto;
+    }
+
+    div:last-child {
+      flex: 0 0 auto;
+    }
+
+    a {
+      margin-left: 10px;
+    }
+  }
+
+  .group-header-cell {
+    background: @table-header-bg;
+  }
+
+  .severity {
+    text-transform: uppercase;
+    font-size: 80%;
+    letter-spacing: 1px;
+    color: @text-color-secondary;
+  }
+
+  .fault-code {
+    color: @text-color-secondary;
+  }
+
+  .ant-table-thead th.ant-table-column-sort.ant-fix::before,
+  .ant-table-thead th.ant-table-column-has-sorters.ant-fix:hover::before,
+  .ant-fix::before {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 1px;
+    height: 1.6em;
+    background-color: rgba(0, 0, 0, 0.06) !important;
+    transform: translateY(-50%);
+    transition: background-color 0.3s;
+    content: "";
+  }
+}

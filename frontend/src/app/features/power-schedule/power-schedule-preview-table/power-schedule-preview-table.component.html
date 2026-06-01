@@ -1,0 +1,160 @@
+<nz-table
+  #basicTable
+  [nzData]="tableData"
+  [nzFrontPagination]="false"
+  nzSize="small"
+  nzBordered="true"
+  nzTableLayout="auto"
+  [nzScroll]="{ x: showEnergyEquivalentColumns ? '1220px' : '880px' }"
+>
+  <thead>
+    <tr>
+      <th nzAlign="left" nzWidth="260px">
+        <ng-container i18n>Interval</ng-container>
+        <br />
+        <span class="secondary-text" i18n>in plant time zone</span>
+      </th>
+
+      <th nzAlign="right" nzWidth="180px">
+        <ng-container i18n>PV power setpoint</ng-container>
+        @if (pvAdjustmentPercentageFormatted) {
+          <span style="padding: 8px">|</span>{{ pvAdjustmentPercentageFormatted }}
+        }
+        <br />
+        <span class="secondary-text" i18n>in kW</span>
+      </th>
+
+      @if (showEnergyEquivalentColumns) {
+        <th nzAlign="right" nzWidth="120px">
+          <ng-container i18n>Energy equivalent</ng-container>
+        </th>
+      }
+
+      <th nzAlign="right" nzWidth="180px">
+        <ng-container i18n>BESS power setpoint</ng-container>
+        @if (bessAdjustmentPercentageFormatted) {
+          <span style="padding: 8px">|</span>{{ bessAdjustmentPercentageFormatted }}
+        }
+        <br />
+        <span class="secondary-text" i18n>in kW (positive → discharge, negative → charge)</span>
+      </th>
+
+      @if (showEnergyEquivalentColumns) {
+        <th nzAlign="right" nzWidth="120px">
+          <ng-container i18n>Energy equivalent</ng-container>
+        </th>
+      }
+
+      <th nzAlign="right" nzWidth="120px">
+        <ng-container i18n>Grid export power</ng-container>
+        <br />
+        <span class="secondary-text" i18n>in kW</span>
+      </th>
+
+      <th nzAlign="right" nzWidth="120px">
+        <ng-container i18n>Grid import power</ng-container>
+        <br />
+        <span class="secondary-text" i18n>in kW</span>
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    @for (row of basicTable.data; track $index) {
+      <tr [class]="getRowClass(row) | async">
+        <td>
+          <span class="secondary-text">
+            {{ row.zonedInterval.start | date: "EEEE, d MMMM" }}
+            <span style="padding: 0 8px">|</span>
+          </span>
+          <span style="white-space: nowrap">
+            {{ row.zonedInterval.start | date: "HH:mm" }}–{{
+              row.zonedInterval.end | date: "HH:mm"
+            }}
+          </span>
+        </td>
+
+        <td nzAlign="right">
+          @if (shouldShowPvAdjustedValue(row)) {
+            @if (row.pvPowerSetpoint !== null) {
+              <span class="secondary-text">
+                <app-power-schedule-setpoint-value
+                  [value]="row.pvPowerSetpoint"
+                ></app-power-schedule-setpoint-value>
+                <span style="padding: 0 4px">|</span>
+              </span>
+            }
+          }
+          <app-power-schedule-setpoint-value
+            [value]="getPvPowerSetpointAdjusted(row) ?? row.pvPowerSetpoint"
+          ></app-power-schedule-setpoint-value>
+        </td>
+
+        @if (showEnergyEquivalentColumns) {
+          <td nzAlign="right">
+            @if (getPvEnergyEquivalent(row); as energyEquivalent) {
+              <app-pls-equivalent-icon [hint]="'pvSetpoint'"></app-pls-equivalent-icon>
+              <app-value-display
+                [value]="energyEquivalent"
+                [format]="'1.0-0'"
+                [unit]="' kWh'"
+              ></app-value-display>
+            }
+          </td>
+        }
+
+        <td nzAlign="right">
+          <span
+            [class.charge]="row.bessPowerSetpoint !== null && row.bessPowerSetpoint < 0"
+            [class.discharge]="row.bessPowerSetpoint !== null && row.bessPowerSetpoint > 0"
+          >
+            @if (shouldShowBessAdjustedValue(row)) {
+              @if (row.bessPowerSetpoint !== null) {
+                <span class="secondary-text">
+                  <app-power-schedule-setpoint-value
+                    [value]="row.bessPowerSetpoint"
+                    [showPlusSignIfPositive]="true"
+                  ></app-power-schedule-setpoint-value>
+                  <span style="padding: 0 4px">|</span>
+                </span>
+              }
+            }
+            <app-power-schedule-setpoint-value
+              [value]="getBessPowerSetpointAdjusted(row) ?? row.bessPowerSetpoint"
+              [showPlusSignIfPositive]="true"
+            ></app-power-schedule-setpoint-value>
+          </span>
+        </td>
+
+        @if (showEnergyEquivalentColumns) {
+          <td nzAlign="right">
+            @if (getBessEnergyEquivalent(row); as energyEquivalent) {
+              <app-pls-equivalent-icon [hint]="'bessSetpoint'"></app-pls-equivalent-icon>
+              <app-value-display
+                [value]="energyEquivalent"
+                [format]="'1.0-0'"
+                [unit]="' kWh'"
+              ></app-value-display>
+            }
+          </td>
+        }
+
+        <td nzAlign="right">
+          @let exportPower = getGridExportPower(row);
+          <app-power-schedule-setpoint-value
+            [value]="exportPower"
+            [class.bold]="exportPower !== 0"
+          ></app-power-schedule-setpoint-value>
+        </td>
+
+        <td nzAlign="right">
+          @let importPower = getGridImportPower(row);
+          <app-power-schedule-setpoint-value
+            [value]="importPower"
+            [class.bold]="importPower !== 0"
+          ></app-power-schedule-setpoint-value>
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>

@@ -1,0 +1,51 @@
+@import "theme";
+
+app-power-schedule-manual-adjustment-cell-history {
+  .trigger-icon {
+    font-size: 16px;
+    color: @blue-7;
+    margin-left: @margin-xss;
+    cursor: pointer;
+  }
+
+  .interval-with-tooltip {
+    cursor: pointer;
+    color: @blue-7;
+    border-bottom: 1px dashed @blue-7;
+  }
+}
+
+.power-schedule-history-popover {
+  .popover-section {
+    margin-bottom: @margin-xs;
+  }
+
+  .priority-mode-title {
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .popover-table {
+    border-collapse: separate;
+    border-spacing: @padding-sm 0;
+    margin-left: -@padding-sm;
+    margin-right: -@padding-sm;
+  }
+
+  .popover-table th,
+  .popover-table td {
+    padding: 2px 0 4px 0;
+  }
+
+  .popover-table th {
+    line-height: 1.2;
+    font-size: 12px;
+    vertical-align: bottom;
+  }
+
+  .g-schedule-status {
+    font-size: 10px;
+  }
+}

@@ -1,0 +1,9 @@
+@if (productionValue && productionValue < 0) {
+  <span> Invalid data </span>
+} @else {
+  <app-value-display
+    [format]="'1.0-2'"
+    [unit]="' kWh'"
+    [value]="productionValue"
+  ></app-value-display>
+}

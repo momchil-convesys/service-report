@@ -1,0 +1,27 @@
+<div class="item-header">
+  <div class="title">{{ entry.origin.location }} — {{ entry.destination.location }}</div>
+  <div>{{ entry.distance }} km</div>
+</div>
+<div class="item-content text-muted small">
+  <div class="duration">
+    <div class="time">
+      {{ originDate | date: "mediumDate" }}
+      {{ originDate | date: "HH:mm" }}
+      –
+      {{ sameDate ? "" : (destinationDate | date: "mediumDate") }}
+      {{ destinationDate | date: "HH:mm" }}
+    </div>
+    <div>{{ durationHours }} h {{ durationMinutes | number: "1.0-0" }} min</div>
+  </div>
+  @for (person of entry.personsParticipated; track person) {
+    <div><i nz-icon nzType="user" nzTheme="outline"></i>&nbsp;{{ person }}</div>
+  }
+
+  @if (entry.vehiclesCount > 1) {
+    <div>Number of vehicles: {{ entry.vehiclesCount }}</div>
+  }
+  <!-- <div *ngIf="entry.otherExpenses?.length > 0">
+    Additional expenses:
+    <div class="other-expenses-value">{{ entry.otherExpenses }}</div>
+  </div> -->
+</div>

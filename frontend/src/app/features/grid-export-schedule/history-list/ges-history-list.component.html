@@ -1,0 +1,31 @@
+@if (!loading && data.length === 0) {
+  <div class="empty-list">
+    <nz-empty
+      nzNotFoundImage="simple"
+      i18n-nzNotFoundContent
+      nzNotFoundContent="Schedules list is empty"
+    ></nz-empty>
+  </div>
+}
+
+<ul class="custom-list">
+  @for (item of data; track item.id) {
+    <li
+      class="list-item"
+      [routerLink]="item.id"
+      routerLinkActive="is-active"
+      queryParamsHandling="merge"
+    >
+      <div class="header">
+        {{ item.title }}
+        <br />
+        <div class="subtitle">
+          {{ item.subtitle }}
+        </div>
+      </div>
+      <div class="status">
+        <app-ges-status [schedule]="item"></app-ges-status>
+      </div>
+    </li>
+  }
+</ul>

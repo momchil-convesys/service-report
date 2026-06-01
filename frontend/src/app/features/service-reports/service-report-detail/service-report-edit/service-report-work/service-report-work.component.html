@@ -1,0 +1,40 @@
+<app-list-details-layout
+  listTitle="Works performed"
+  [emptyList]="entries.length === 0 ? 'No work entered!' : ''"
+>
+  <ng-container listItems>
+    @for (entry of entries; track $index; let i = $index) {
+      <li
+        class="list-group-item entry"
+        [ngClass]="{ 'list-group-item-secondary': selectedEntryIndex === i }"
+      >
+        <app-works-entry-view [entry]="entry"></app-works-entry-view>
+        <div class="item-actions">
+          <!-- <button
+          type="button"
+          class="btn btn-link btn-sm"
+          (click)="selectedEntryIndex === i ? onReset() : onChangeSelectedEntry(i)"
+        >
+          {{ selectedEntryIndex === i ? 'Cancel' : 'Edit' }}
+        </button> -->
+          <button
+            nz-button
+            nzType="link"
+            (click)="selectedEntryIndex === i ? onReset() : onChangeSelectedEntry(i)"
+          >
+            {{ selectedEntryIndex === i ? "Cancel" : "Edit" }}
+          </button>
+        </div>
+      </li>
+    }
+  </ng-container>
+
+  <app-work-entry-form
+    entryForm
+    [entryData]="selectedEntryData$ | async"
+    (submitForm)="onSubmit($event)"
+    (resetForm)="onReset()"
+    (deleteEntry)="onDelete()"
+  >
+  </app-work-entry-form>
+</app-list-details-layout>

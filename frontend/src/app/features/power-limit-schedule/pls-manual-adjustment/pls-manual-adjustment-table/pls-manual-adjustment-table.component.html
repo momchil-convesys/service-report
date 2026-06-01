@@ -1,0 +1,264 @@
+<nz-table
+  #basicTable
+  [nzData]="listOfMapData"
+  [nzFrontPagination]="false"
+  nzSize="small"
+  nzBordered="true"
+  [nzLoading]="loading"
+  nzTableLayout="auto"
+>
+  <thead>
+    <tr>
+      <th nzWidth="110px" i18n>Interval</th>
+
+      <th nzAlign="right">
+        <ng-container i18n>Original schedule assignment</ng-container>
+        @if (scheduleAdjustmentPercentageFormatted) {
+          <span style="padding: 8px">|</span>{{ scheduleAdjustmentPercentageFormatted }}
+        }
+      </th>
+      @if (powerLimitType === "power") {
+        <th nzAlign="left" i18n>Energy equivalent</th>
+      }
+
+      <th nzAlign="right" i18n>Production</th>
+
+      <th nzAlign="right" i18n>Deviation from original target</th>
+
+      <th nzAlign="right" i18n>Schedule details</th>
+
+      <th nzAlign="right">
+        <ng-container i18n>Custom schedule assignment</ng-container>
+        @if (scheduleAdjustmentPercentageFormatted) {
+          <span style="padding: 8px">|</span>{{ scheduleAdjustmentPercentageFormatted }}
+        }
+      </th>
+      @if (powerLimitType === "power") {
+        <th nzAlign="left" i18n>Energy equivalent</th>
+      }
+
+      <th nzAlign="right" i18n>Deviation from custom target</th>
+
+      <th nzAlign="center" i18n>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (data of basicTable.data; track data.key) {
+      <!-- Iterate over group rows -->
+
+      @for (row of mapOfExpandedData[data.key]; track row.key) {
+        <!-- Iterate over sub rows -->
+
+        @if ((row.parent && row.parent.expand) || !row.parent) {
+          <tr [class]="getRowClass(row)" (click)="toggleExpandGroupRow(row)">
+            @if (row.hourIntervalData) {
+              <td
+                [nzShowExpand]="!!row.children"
+                [nzExpand]="row.expand"
+                (nzExpandChange)="collapse(mapOfExpandedData[data.key], row, $event)"
+                [attr.colspan]="powerLimitType === 'power' ? 10 : 8"
+                class="group-row-cell"
+              >
+                {{ row.hourIntervalData.interval.start | date: "HH:mm" }}–{{
+                  row.hourIntervalData.interval.end | date: "HH:mm"
+                }}
+              </td>
+            } @else if (row.subIntervalData) {
+              <!-- Sub interval (E.g: 15 min interval row) -->
+
+              @let activeRecord = row.subIntervalData.targetLimitDetails.activeRecord;
+
+              <td nzAlign="right">
+                {{ row.subIntervalData.interval.start | date: "HH:mm" }}–{{
+                  row.subIntervalData.interval.end | date: "HH:mm"
+                }}
+              </td>
+
+              <!-- 
+              Original schedule target
+      -->
+              <td nzAlign="right">
+                @let targetLimitOriginal =
+                  row.subIntervalData.targetLimitDetails.activeRecord?.targetLimitOriginal;
+
+                <!-- Show only when alteration is applied (coefficient !== 1) -->
+                @if (targetLimitOriginal?.value_Mega !== targetLimitOriginal?.valueAdjusted_Mega) {
+                  @if (targetLimitOriginal?.value_Mega; as value_Mega) {
+                    <span class="secondary-text">
+                      <app-pls-value-formatted [value]="value_Mega"></app-pls-value-formatted>
+                      <span style="padding: 0 4px">|</span>
+                    </span>
+                  }
+                }
+
+                <app-pls-value-formatted
+                  [value]="targetLimitOriginal?.valueAdjusted_Mega"
+                  [unit]="getUnitSuffixFormatted()"
+                ></app-pls-value-formatted>
+              </td>
+
+              <!--
+              Equivalent energy limit (Only when limit type is 'power')
+      -->
+
+              @if (powerLimitType === "power") {
+                <td nzAlign="left">
+                  @let targetLimitOriginal =
+                    row.subIntervalData.targetLimitDetails.activeRecord?.energyLimitEquivalent
+                      ?.targetLimitOriginal;
+
+                  <!-- Show only for non null and non zero values -->
+                  @if (targetLimitOriginal?.valueAdjusted_Mega) {
+                    <app-pls-equivalent-icon></app-pls-equivalent-icon>
+
+                    <app-pls-value-formatted
+                      [value]="targetLimitOriginal?.valueAdjusted_Mega"
+                      [unit]="' MWh'"
+                    ></app-pls-value-formatted>
+                  }
+                </td>
+              }
+
+              <!-- 
+              Production
+      -->
+              <td nzAlign="right" style="font-weight: bold; white-space: nowrap">
+                <app-value-display
+                  [value]="row.subIntervalData.production_MWh"
+                  [format]="row.subIntervalData.production_MWh !== 0 ? '1.3-3' : '1.0-3'"
+                  [unit]="' MWh'"
+                ></app-value-display>
+              </td>
+
+              <!-- 
+              Deviation from original target
+      -->
+              <td
+                nzAlign="right"
+                [class.value-warning]="
+                  row.subIntervalData.deviationFromOriginalTarget.isOverTreshold
+                "
+                style="white-space: nowrap"
+              >
+                <app-value-display
+                  [value]="row.subIntervalData.deviationFromOriginalTarget.value"
+                  [format]="'1.0-3'"
+                  [unit]="' kWh'"
+                  [showPlusSignIfPositive]="true"
+                ></app-value-display>
+              </td>
+
+              <!-- 
+              Schedule details
+      -->
+              <td nzAlign="right">
+                <app-pls-manual-adjustment-cell-target
+                  [data]="row.subIntervalData"
+                  [unitSuffixFormatted]="getUnitSuffixFormatted()"
+                ></app-pls-manual-adjustment-cell-target>
+              </td>
+
+              <!-- 
+              Schedule target
+      -->
+              <td nzAlign="right">
+                @if (
+                  activeRecord?.targetLimit?.value_Mega !==
+                  activeRecord?.targetLimitOriginal?.value_Mega
+                ) {
+                  @let targetLimit = activeRecord?.targetLimit;
+
+                  <!-- Show only when alteration is applied (coefficient !== 1) -->
+                  @if (targetLimit?.value_Mega !== targetLimit?.valueAdjusted_Mega) {
+                    @if (targetLimit?.value_Mega; as value_Mega) {
+                      <span class="secondary-text">
+                        <app-pls-value-formatted [value]="value_Mega"></app-pls-value-formatted>
+                        <span style="padding: 0 4px">|</span>
+                      </span>
+                    }
+                  }
+
+                  <app-pls-value-formatted
+                    [value]="targetLimit?.valueAdjusted_Mega"
+                    [unit]="getUnitSuffixFormatted()"
+                  ></app-pls-value-formatted>
+                }
+              </td>
+
+              <!--
+              Equivalent energy limit (Only when limit type is 'power')
+      -->
+
+              @if (powerLimitType === "power") {
+                <td nzAlign="left">
+                  @if (
+                    activeRecord?.targetLimit?.value_Mega !==
+                    activeRecord?.targetLimitOriginal?.value_Mega
+                  ) {
+                    @let targetLimit =
+                      row.subIntervalData.targetLimitDetails.activeRecord?.energyLimitEquivalent
+                        ?.targetLimit;
+
+                    <!-- Show only for non null and non zero values -->
+                    @if (targetLimit?.valueAdjusted_Mega) {
+                      <app-pls-equivalent-icon></app-pls-equivalent-icon>
+
+                      <app-pls-value-formatted
+                        [value]="targetLimit?.valueAdjusted_Mega"
+                        [unit]="' MWh'"
+                      ></app-pls-value-formatted>
+                    }
+                  }
+                </td>
+              }
+
+              <!-- 
+              Deviation from target
+      -->
+              <td
+                nzAlign="right"
+                [class.value-warning]="row.subIntervalData.deviationFromTarget.isOverTreshold"
+                style="white-space: nowrap"
+              >
+                @if (
+                  row.subIntervalData.deviationFromTarget.value !==
+                  row.subIntervalData.deviationFromOriginalTarget.value
+                ) {
+                  <app-value-display
+                    [value]="row.subIntervalData.deviationFromTarget.value"
+                    [format]="'1.0-3'"
+                    [unit]="' kWh'"
+                    [showPlusSignIfPositive]="true"
+                  ></app-value-display>
+                }
+              </td>
+
+              <!-- 
+              Actions
+      -->
+              <td nzAlign="center" style="padding: 0">
+                <button
+                  [class.hidden]="getRowClass(row) === 'past'"
+                  nz-button
+                  nzSize="small"
+                  nzType="default"
+                  (click)="onClickAdjust(row)"
+                  i18n
+                >
+                  Adjust&hellip;
+                </button>
+              </td>
+            }
+          </tr>
+
+          <!-- Expandable sub row -->
+          <!-- <tr [nzExpand]="expandSet.has(row.key) && getRowClass(row) !== 'past'">
+      <span>Adjust schedule assignment</span>
+      <br />
+      <button nz-button (click)="onClickAdjust(row)">Adjust assignment&hellip;</button>
+    </tr> -->
+        }
+      }
+    }
+  </tbody>
+</nz-table>

@@ -1,0 +1,30 @@
+<div class="historical-data-chart-widget">
+  <div class="parameter-selector-header">
+    <span class="parameter-label">Historical Parameter:</span>
+    @if (bessMetadata) {
+      <app-bess-parameter-selector
+        [bessMetadata]="bessMetadata"
+        [assetType]="BESSAssetType.BatteryContainer"
+        [selectedParameterKey]="selectedParameterKey"
+        (parameterChange)="onParameterChange($event)"
+        placeholder="Select parameter"
+      ></app-bess-parameter-selector>
+    }
+
+    <div class="range-selector">
+      <app-datetime-range-select
+        defaultOption="day"
+        [customRangeTypeOptions]="['day']"
+        [showPredefinedOptions]="false"
+        [showIntegrationPeriod]="false"
+        [initialDate]="selectedDay"
+        [model]="selectedRange"
+        (modelChange)="onRangeChange($event)"
+      ></app-datetime-range-select>
+    </div>
+  </div>
+
+  @if (chartRequest) {
+    <app-historical-data-chart [request]="chartRequest"></app-historical-data-chart>
+  }
+</div>

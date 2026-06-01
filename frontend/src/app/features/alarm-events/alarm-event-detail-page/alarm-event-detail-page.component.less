@@ -1,0 +1,83 @@
+@import "theme";
+
+app-alarm-event-detail-page {
+  display: block;
+  padding: @padding-md @padding-lg;
+
+  max-width: 800px;
+
+  background: white;
+
+  .ant-timeline {
+    margin-top: @margin-sm;
+  }
+
+  .ant-timeline-item {
+    padding-bottom: @padding-xs;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+
+  .ant-timeline-item-last > .ant-timeline-item-content {
+    min-height: 0;
+  }
+
+  .ant-descriptions-item-label {
+    max-width: 200px;
+
+    vertical-align: top;
+  }
+
+  .irrelevant-trigger-warning {
+    margin-bottom: @margin-xs;
+  }
+
+  .acknowledge-action-block {
+    margin-top: @margin-md;
+
+    nz-alert {
+      margin-bottom: @margin-sm;
+    }
+  }
+
+  & > nz-spin {
+    min-height: 100px;
+  }
+
+  app-alarm-trigger-link {
+    padding: @padding-md;
+    background: @background-color-base;
+    // border: 1px solid @border-color-base;
+    border-radius: 2px;
+  }
+
+  nz-descriptions {
+    margin-bottom: @margin-md;
+  }
+
+  .event-header {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: @margin-md;
+
+    h1 {
+      margin: 0;
+    }
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    padding: @padding-sm;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    .ant-descriptions-bordered.ant-descriptions-middle .ant-descriptions-item-label,
+    .ant-descriptions-bordered.ant-descriptions-middle .ant-descriptions-item-content {
+      padding: @padding-xs @padding-sm;
+    }
+  }
+}

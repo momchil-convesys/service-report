@@ -1,0 +1,369 @@
+@if (form) {
+  <nz-spin [nzSpinning]="loadingMessage" [nzTip]="loadingMessage || ''" nzSize="large">
+    <form (ngSubmit)="onSubmit()" [formGroup]="form" nz-form nzLayout="vertical">
+      @if (customError) {
+        <app-custom-alert
+          [customError]="customError"
+          [nzBanner]="true"
+          [nzCloseable]="false"
+        ></app-custom-alert>
+      }
+
+      @if (data) {
+        <div class="content">
+          <div class="intro">
+            <div class="description">
+              {{ data.interval.start | date: "EEEE, d MMMM" }}
+              <br />
+              <b>
+                {{ data.interval.start | date: "HH:mm" }}–{{ data.interval.end | date: "HH:mm" }}
+              </b>
+            </div>
+          </div>
+
+          <div class="power-controls">
+            <!-- PV Power Control -->
+            @if (type === "pv") {
+              <div class="power-control-group">
+                <h2 i18n>PV power setpoint</h2>
+                <nz-radio-group class="power-options" formControlName="pvPowerOption">
+                  <label
+                    nz-radio
+                    nzValue="set"
+                    [class.active]="form.controls.pvPowerOption.value === 'set'"
+                  >
+                    <div class="radio-content">
+                      <nz-form-item>
+                        <nz-form-label nzFor="pv-power">
+                          <span i18n>New value</span>
+                        </nz-form-label>
+                        <nz-form-control
+                          nzValidateStatus="{{
+                            form.controls.pvPowerOption.value === 'set' &&
+                            form.controls.pvPowerValue.invalid &&
+                            form.controls.pvPowerValue.dirty
+                              ? 'error'
+                              : undefined
+                          }}"
+                          [nzErrorTip]="pvPowerErrors"
+                        >
+                          <nz-input-group nzSize="large" [nzAddOnAfter]="'kW'">
+                            <input
+                              type="text"
+                              name="pv-power"
+                              nz-input
+                              autocomplete="off"
+                              [required]="form.controls.pvPowerOption.value === 'set'"
+                              formControlName="pvPowerValue"
+                              #pvPowerInput
+                            />
+                          </nz-input-group>
+                          @if (
+                            form.controls.pvPowerValue.valid && calculatedPvPowerAdjustmentHint
+                          ) {
+                            <div class="hints">
+                              @if (pvScheduleAdjustmentCoefficient !== 1) {
+                                <div>
+                                  <span class="secondary-text">
+                                    {{
+                                      calculatedPvPowerAdjustmentHint.adjustmentPercentageFormatted
+                                    }}
+                                    =
+                                  </span>
+                                  <app-power-schedule-setpoint-value
+                                    [value]="calculatedPvPowerAdjustmentHint.adjustedValue_kW"
+                                    [unit]="' kW'"
+                                  ></app-power-schedule-setpoint-value>
+                                </div>
+                              }
+                              @if (calculatedPvPowerAdjustmentHint.energyEquivalent_kWh) {
+                                <div>
+                                  <app-pls-equivalent-icon
+                                    [hint]="'pvSetpoint'"
+                                  ></app-pls-equivalent-icon>
+                                  <app-value-display
+                                    [value]="calculatedPvPowerAdjustmentHint.energyEquivalent_kWh"
+                                    [format]="'1.0-0'"
+                                    [unit]="' kWh'"
+                                  ></app-value-display>
+                                </div>
+                              }
+                            </div>
+                          }
+                          <ng-template #pvPowerErrors>
+                            @if (form.controls.pvPowerValue.hasError("required")) {
+                              <ng-container i18n>Please provide a value!</ng-container>
+                            }
+                            @if (form.controls.pvPowerValue.hasError("invalidNumber")) {
+                              <ng-container i18n
+                                >Provided value is not a valid number.</ng-container
+                              >
+                            }
+                            @if (form.controls.pvPowerValue.hasError("min")) {
+                              <ng-container i18n>Value should be &ge; 0!</ng-container>
+                            }
+                          </ng-template>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                  </label>
+
+                  @if (originalPvPower !== null && originalPvPower !== undefined) {
+                    <label
+                      nz-radio
+                      nzValue="reset"
+                      [class.active]="form.controls.pvPowerOption.value === 'reset'"
+                    >
+                      <div class="radio-content">
+                        <span i18n>Reset to original value</span>
+                        <br />
+                        @if (shouldShowOriginalPvPowerAdjusted()) {
+                          <span class="secondary-text">
+                            <app-power-schedule-setpoint-value
+                              [value]="originalPvPower"
+                              [unit]="' kW'"
+                            ></app-power-schedule-setpoint-value>
+                            <span style="padding: 0 4px">|</span>
+                          </span>
+                        }
+                        <app-power-schedule-setpoint-value
+                          [value]="getOriginalPvPowerAdjusted() ?? originalPvPower"
+                          [unit]="' kW'"
+                          [bold]="true"
+                        ></app-power-schedule-setpoint-value>
+                      </div>
+                    </label>
+                  }
+
+                  <label
+                    nz-radio
+                    nzValue="revoke"
+                    [class.active]="form.controls.pvPowerOption.value === 'revoke'"
+                  >
+                    <div class="radio-content">
+                      <span i18n>Set to unlimited</span>
+                    </div>
+                  </label>
+                </nz-radio-group>
+              </div>
+
+              <ng-container *ngTemplateOutlet="priorityMode"></ng-container>
+            }
+
+            <!-- BESS Power Control -->
+            @if (type === "bess") {
+              <div class="power-control-group">
+                <h2 i18n>BESS power setpoint</h2>
+                <nz-radio-group class="power-options" formControlName="bessPowerOption">
+                  <label
+                    nz-radio
+                    nzValue="set"
+                    [class.active]="form.controls.bessPowerOption.value === 'set'"
+                  >
+                    <div class="radio-content">
+                      <nz-form-item>
+                        <nz-form-label nzFor="bess-power">
+                          <span i18n>New value</span>
+                        </nz-form-label>
+                        <nz-form-control
+                          nzValidateStatus="{{
+                            form.controls.bessPowerOption.value === 'set' &&
+                            form.controls.bessPowerValue.invalid &&
+                            form.controls.bessPowerValue.dirty
+                              ? 'error'
+                              : undefined
+                          }}"
+                          [nzErrorTip]="bessPowerErrors"
+                        >
+                          <nz-input-group nzSize="large" [nzAddOnAfter]="'kW'">
+                            <input
+                              type="text"
+                              name="bess-power"
+                              nz-input
+                              autocomplete="off"
+                              [required]="form.controls.bessPowerOption.value === 'set'"
+                              formControlName="bessPowerValue"
+                              #bessPowerInput
+                            />
+                          </nz-input-group>
+                          @if (
+                            form.controls.bessPowerValue.valid && calculatedBessPowerAdjustmentHint
+                          ) {
+                            <div class="hints">
+                              @if (bessScheduleAdjustmentCoefficient !== 1) {
+                                <div>
+                                  <span class="secondary-text">
+                                    {{
+                                      calculatedBessPowerAdjustmentHint.adjustmentPercentageFormatted
+                                    }}
+                                    =
+                                  </span>
+                                  <app-power-schedule-setpoint-value
+                                    [value]="calculatedBessPowerAdjustmentHint.adjustedValue_kW"
+                                    [unit]="' kW'"
+                                  ></app-power-schedule-setpoint-value>
+                                </div>
+                              }
+                              @if (calculatedBessPowerAdjustmentHint.energyEquivalent_kWh) {
+                                <div>
+                                  <app-pls-equivalent-icon
+                                    [hint]="'bessSetpoint'"
+                                  ></app-pls-equivalent-icon>
+                                  <app-value-display
+                                    [value]="calculatedBessPowerAdjustmentHint.energyEquivalent_kWh"
+                                    [format]="'1.0-0'"
+                                    [unit]="' kWh'"
+                                  ></app-value-display>
+                                </div>
+                              }
+                            </div>
+                          }
+                          <ng-template #bessPowerErrors>
+                            @if (form.controls.bessPowerValue.hasError("required")) {
+                              <ng-container i18n>Please provide a value!</ng-container>
+                            }
+                            @if (form.controls.bessPowerValue.hasError("invalidNumber")) {
+                              <ng-container i18n
+                                >Provided value is not a valid number.</ng-container
+                              >
+                            }
+                          </ng-template>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                  </label>
+
+                  <label
+                    nz-radio
+                    nzValue="reset"
+                    [class.active]="form.controls.bessPowerOption.value === 'reset'"
+                  >
+                    <div class="radio-content">
+                      <span i18n>Reset to original value</span>
+                      <br />
+                      <span
+                        [class.charge]="originalBessPower && originalBessPower < 0"
+                        [class.discharge]="originalBessPower && originalBessPower > 0"
+                      >
+                        @if (shouldShowOriginalBessPowerAdjusted()) {
+                          <span class="secondary-text">
+                            <app-power-schedule-setpoint-value
+                              [value]="originalBessPower"
+                              [unit]="' kW'"
+                              [showPlusSignIfPositive]="true"
+                            ></app-power-schedule-setpoint-value>
+                            <span style="padding: 0 4px">|</span>
+                          </span>
+                        }
+                        <app-power-schedule-setpoint-value
+                          [value]="getOriginalBessPowerAdjusted() ?? originalBessPower"
+                          [unit]="' kW'"
+                          [bold]="true"
+                          [showPlusSignIfPositive]="true"
+                        ></app-power-schedule-setpoint-value>
+                      </span>
+                    </div>
+                  </label>
+
+                  @if (canSetBessToNl()) {
+                    <label
+                      nz-radio
+                      nzValue="revoke"
+                      [class.active]="form.controls.bessPowerOption.value === 'revoke'"
+                    >
+                      <div class="radio-content">
+                        <span i18n>Set to unlimited (NL)</span>
+                      </div>
+                    </label>
+                  }
+                </nz-radio-group>
+              </div>
+
+              <ng-container *ngTemplateOutlet="priorityMode"></ng-container>
+            }
+
+            <!-- Priority Mode Control -->
+            @if (type === "priorityMode") {
+              <ng-container *ngTemplateOutlet="priorityMode"></ng-container>
+            }
+
+            <ng-template #priorityMode>
+              <div class="power-control-group">
+                <h2 i18n>Priority mode</h2>
+                <nz-form-item>
+                  <!-- <nz-form-label nzFor="priority-mode">
+                  <span i18n>Priority Mode</span>
+                </nz-form-label> -->
+                  <nz-form-control
+                    nzValidateStatus="{{
+                      form.controls.priorityMode.invalid && form.controls.priorityMode.dirty
+                        ? 'error'
+                        : undefined
+                    }}"
+                    [nzErrorTip]="priorityModeErrors"
+                  >
+                    <nz-select
+                      name="priority-mode"
+                      nzSize="large"
+                      formControlName="priorityMode"
+                      nzPlaceHolder="Select priority mode"
+                    >
+                      @for (mode of priorityModes; track mode.id) {
+                        <nz-option [nzValue]="mode.id" [nzLabel]="mode.id"> </nz-option>
+                      }
+                    </nz-select>
+                    <ng-template #priorityModeErrors>
+                      @if (form.controls.priorityMode.hasError("required")) {
+                        <ng-container i18n>Please select a priority mode.</ng-container>
+                      }
+                      @if (form.controls.priorityMode.hasError("priorityModeRestrictions")) {
+                        <div i18n>
+                          Selected priority mode is not compatible with current PV/BESS setpoints:
+                        </div>
+                        <ul style="margin: 8px 0 0 16px">
+                          @for (v of getPriorityModeRestrictionViolations(); track v) {
+                            <li>{{ v }}</li>
+                          }
+                        </ul>
+                      }
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="passcode-container">
+            <nz-form-item>
+              <nz-form-label i18n>Master control password</nz-form-label>
+              <nz-form-control
+                nzValidateStatus="{{
+                  form.controls.passcode.invalid && form.controls.passcode.dirty
+                    ? 'error'
+                    : undefined
+                }}"
+                i18n-nzErrorTip
+                nzErrorTip="Password is required to perform this operation!"
+              >
+                <input
+                  type="password"
+                  name="master-password"
+                  nz-input
+                  nzSize="large"
+                  autocomplete="current-password"
+                  [required]="true"
+                  formControlName="passcode"
+                />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      }
+
+      <div class="actions">
+        <button type="button" nz-button nzSize="large" (click)="onCancel()" i18n>Cancel</button>
+        <button type="submit" nz-button nzSize="large" nzType="primary" i18n>Submit</button>
+      </div>
+    </form>
+  </nz-spin>
+}

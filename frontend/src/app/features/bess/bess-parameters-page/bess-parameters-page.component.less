@@ -1,0 +1,84 @@
+@import "theme";
+
+app-bess-parameters-page {
+  display: block;
+
+  .params-wrapper {
+    padding: @padding-md;
+    display: flex;
+    flex-direction: column;
+    gap: @margin-lg;
+  }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: @margin-md;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: @margin-md;
+
+      .filter-controls {
+        display: flex;
+        align-items: center;
+        gap: @margin-md;
+        flex: 1;
+        justify-content: flex-end;
+
+        .search-input {
+          flex: 0 1 auto;
+          min-width: 300px;
+          max-width: 400px;
+        }
+
+        .filter-control {
+          display: flex;
+          align-items: center;
+          gap: @margin-sm;
+          flex-shrink: 0;
+
+          .filter-label {
+            font-weight: 500;
+            color: @text-color;
+            font-size: @font-size-base;
+            white-space: nowrap;
+          }
+
+          .asset-type-filter {
+            min-width: 200px;
+          }
+        }
+      }
+    }
+
+    .bindings-subsection {
+      display: flex;
+      flex-direction: column;
+      gap: @margin-sm;
+    }
+  }
+
+  nz-spin {
+    min-height: 120px;
+    width: 100%;
+  }
+
+  .vendor-name {
+    font-weight: 500;
+    color: @primary-color;
+  }
+
+  code {
+    font-size: @font-size-sm;
+    background-color: @gray-2;
+    padding: 2px 6px;
+    border-radius: @border-radius-sm;
+  }
+
+  .ant-table.ant-table-small .ant-table-tbody > tr > td {
+    padding: @padding-xss @padding-xs;
+  }
+}

@@ -1,0 +1,19 @@
+<h2>Active schedule</h2>
+
+@if (activeSchedule$ | async; as activeSchedule) {
+  <app-power-limit-schedule-indicator
+    [currentSchedule]="activeSchedule"
+    [mode]="'block'"
+    [fileLink]="activeSchedule.fileRefId ? '../' + activeSchedule.fileRefId : undefined"
+  ></app-power-limit-schedule-indicator>
+
+  <br />
+
+  <app-pls-active-schedule-chart
+    [data]="activeSchedule"
+    [loading]="false"
+    [context]="chartContext$ | async"
+  ></app-pls-active-schedule-chart>
+} @else {
+  <div class="no-active-schedule">There is no currently active schedule assignment.</div>
+}

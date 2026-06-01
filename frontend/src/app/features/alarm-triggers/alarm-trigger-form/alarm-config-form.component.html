@@ -1,0 +1,319 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="form" nz-form nzLayout="vertical">
+  <div class="content">
+    <nz-form-item>
+      <nz-form-label nzRequired i18n>Title</nz-form-label>
+      <nz-form-control
+        nzValidateStatus="{{
+          form.controls.title.invalid && form.controls.title.dirty ? 'error' : undefined
+        }}"
+        i18n-nzErrorTip
+        nzErrorTip="This field is required!"
+      >
+        <input nz-input formControlName="title" name="title" required />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label i18n>Description / Notes</nz-form-label>
+      <nz-form-control>
+        <textarea nz-input formControlName="description" rows="3"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-divider></nz-divider>
+
+    <ng-container>
+      <h2 i18n>Trigger type</h2>
+
+      @if (selectedTrigger) {
+        <app-alarm-type [type]="selectedTrigger.type" variant="full"></app-alarm-type>
+      }
+
+      @if (!selectedTrigger) {
+        <p i18n>Choose the type of conditions/rules that should trigger an alarm.</p>
+        <nz-radio-group class="alarm-type-block" formControlName="type">
+          @for (option of triggerTypeOptions; track option) {
+            <label nz-radio [nzValue]="option.value">
+              {{ option.label }}
+            </label>
+          }
+        </nz-radio-group>
+      }
+    </ng-container>
+
+    <nz-divider></nz-divider>
+
+    <ng-container>
+      <h2 i18n>Device manufacturer / software version</h2>
+
+      @if (selectedTrigger && form.controls.deviceMetadataId.value) {
+        <app-device-metadata-display
+          [deviceMetadataId]="form.controls.deviceMetadataId.value"
+        ></app-device-metadata-display>
+      } @else {
+        <p i18n>
+          Some alarm triggers are defined for a specific device version, because parameters and
+          faults may vary.
+        </p>
+        <nz-form-item>
+          <nz-form-control
+            nzValidateStatus="{{
+              form.controls.deviceMetadataId.invalid && form.controls.deviceMetadataId.dirty
+                ? 'error'
+                : undefined
+            }}"
+            i18n-nzErrorTip
+            nzErrorTip="This field is required!"
+          >
+            <app-device-metadata-select
+              (valueChange)="onDeviceMetadataSelectionChange($event)"
+            ></app-device-metadata-select>
+          </nz-form-control>
+        </nz-form-item>
+      }
+
+      <nz-divider></nz-divider>
+    </ng-container>
+
+    <!-- Conditions -->
+    <ng-container>
+      <h2 i18n>Conditions</h2>
+      <p i18n>Define rules that will trigger an alarm event if the conditions are met.</p>
+
+      @if (form.controls.deviceMetadataId.value === null) {
+        <p>
+          <nz-alert
+            nzType="warning"
+            i18n-nzMessage
+            nzMessage="Please choose trigger type and specify device version first!"
+            nzShowIcon
+          ></nz-alert>
+        </p>
+      }
+
+      <!-- <p *ngIf="conditionsArray.dirty && conditionsArray.invalid && conditionsArray.length === 0"> -->
+      @if (form.controls.conditions.dirty && form.controls.conditions.length === 0) {
+        <p>
+          <nz-alert
+            nzType="error"
+            i18n-nzMessage
+            nzMessage="Alarm trigger should have at least one condition!"
+            nzShowIcon
+          ></nz-alert>
+        </p>
+      }
+
+      @if (form.controls.deviceMetadataId.value !== null) {
+        <div class="conditions-container">
+          @for (formGroup of form.controls.conditions.controls; track formGroup; let i = $index) {
+            <div class="condition-container">
+              @switch (form.controls.type.value) {
+                @case (AlarmTriggerType.ParameterBoundaries) {
+                  <app-alarms-config-condition-parameter-boundaries
+                    [formGroup]="fakeTypeCastConditionForm(formGroup)"
+                    [metadataId]="form.controls.deviceMetadataId.value"
+                  ></app-alarms-config-condition-parameter-boundaries>
+                }
+
+                @case (AlarmTriggerType.FaultRecurrence) {
+                  <app-alarms-config-condition-fault-occurence
+                    [formGroup]="fakeTypeCastConditionForm(formGroup)"
+                    [metadataId]="form.controls.deviceMetadataId.value"
+                  ></app-alarms-config-condition-fault-occurence>
+                }
+
+                @case (AlarmTriggerType.DeviceStateChange) {
+                  <app-alarm-config-condition-device-state-change
+                    [formGroup]="fakeTypeCastConditionForm(formGroup)"
+                    [metadataId]="form.controls.deviceMetadataId.value"
+                  ></app-alarm-config-condition-device-state-change>
+                }
+              }
+
+              <button
+                nz-button
+                type="button"
+                nzType="text"
+                class="remove-condition-button"
+                nzDanger
+                (click)="onRemoveCondition(i)"
+              >
+                <i nz-icon nzType="delete" nzTheme="outline"></i>
+                <span i18n>Remove</span>
+              </button>
+            </div>
+            <ng-container *ngTemplateOutlet="andOr"></ng-container>
+          }
+        </div>
+
+        <div class="conditions-list-actions">
+          @if (form.controls.conditions.value.length > 1) {
+            <div>
+              <span i18n>Tirgger an alarm when </span>
+              <nz-select nzSize="small" formControlName="triggerIf">
+                <nz-option i18n-nzLabel nzValue="any" nzLabel="Any"></nz-option>
+                <nz-option i18n-nzLabel nzValue="all" nzLabel="All"></nz-option>
+              </nz-select>
+              <span i18n> of the conditions are satisfied.</span>
+            </div>
+          }
+
+          <button
+            class="add-condition-button"
+            nz-button
+            type="button"
+            nzType="dashed"
+            (click)="onAddCondition(undefined)"
+          >
+            <i nz-icon nzType="plus"></i>
+            <span i18n>Add condition</span>
+          </button>
+        </div>
+      }
+
+      <nz-divider></nz-divider>
+    </ng-container>
+
+    <!-- Actions -->
+    <h2 i18n>Actions</h2>
+    <p i18n>Configure what happens after an alarm event is fired.</p>
+    <ng-container>
+      <div class="action-row">
+        <h3 i18n>Mute / Disable</h3>
+        <p i18n>
+          After an alarm event is fired the trigger can be disabled or muted for a certain period,
+          to prevent excessive firing of events while the conditions are still true.
+        </p>
+
+        <nz-form-item>
+          <nz-radio-group class="post-event-action" formControlName="muteAction">
+            <label nz-radio nzValue="mute">
+              <ng-container i18n> Mute trigger for affected device for </ng-container>
+              &nbsp;
+              <nz-form-control
+                nzValidateStatus="{{
+                  form.controls.muteDurationMinutes.invalid &&
+                  form.controls.muteDurationMinutes.dirty
+                    ? 'error'
+                    : undefined
+                }}"
+                i18n-nzErrorTip
+                nzErrorTip="This field is required!"
+              >
+                <nz-input-number
+                  formControlName="muteDurationMinutes"
+                  [nzMin]="1"
+                  [nzStep]="1"
+                  [required]="form.controls.muteAction.value === 'mute'"
+                >
+                  <span i18n="@@minutes" nzInputAddonAfter>minutes</span>
+                </nz-input-number>
+              </nz-form-control>
+            </label>
+
+            <label i18n nz-radio nzValue="disable">
+              Disable trigger for affected device until user manually enables it.
+            </label>
+          </nz-radio-group>
+        </nz-form-item>
+      </div>
+
+      <div class="action-row">
+        <h3 i18n>Email notifications</h3>
+        <p i18n>Notify selected users by e-mail when an alarm event is fired.</p>
+        <nz-form-item>
+          <nz-form-control>
+            <app-alarm-trigger-notify-users-select
+              #notifyUsersSelect
+              [model]="form.controls.notifyUsersByEmail.value"
+              [filterByMetadataId]="form.controls.deviceMetadataId.value"
+            ></app-alarm-trigger-notify-users-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </ng-container>
+
+    <nz-divider></nz-divider>
+
+    <!-- Affected devices -->
+    <ng-container>
+      <h2 i18n>Affected devices</h2>
+      <p i18n>Attach the trigger to a set of devices.</p>
+      <app-device-select
+        #deviceSelect
+        [selectedDeviceIds]="form.controls.affectedDeviceIds.value"
+        [filterByMetadataId]="form.controls.deviceMetadataId.value"
+      ></app-device-select>
+    </ng-container>
+
+    @if (selectedTrigger) {
+      <nz-divider></nz-divider>
+      @if (selectedTrigger.relatedEventsCount) {
+        <nz-alert nzType="info" [nzMessage]="linkToEvents" nzShowIcon> </nz-alert>
+      }
+      <ng-template #linkToEvents>
+        <ng-container i18n>Alarm events initiated by this trigger:</ng-container>
+        <a
+          [routerLink]="'/alarm-events'"
+          [queryParams]="{ triggerId: selectedTrigger.id, triggerType: selectedTrigger.type }"
+        >
+          {{ selectedTrigger.relatedEventsCount }}
+          <ng-container [ngPlural]="selectedTrigger.relatedEventsCount">
+            <ng-template ngPluralCase="=1" i18n>event</ng-template>
+            <ng-template ngPluralCase="other" i18n>events</ng-template>
+          </ng-container>
+        </a>
+      </ng-template>
+      @if (!selectedTrigger.relatedEventsCount) {
+        <nz-alert
+          nzType="info"
+          i18n-nzMessage
+          nzMessage="This trigger has not initiated any alarm events yet."
+          nzShowIcon
+        >
+        </nz-alert>
+      }
+    }
+  </div>
+
+  <div class="footer">
+    @if (selectedTrigger) {
+      <app-alarm-trigger-delete-action
+        class="left-align"
+        [trigger]="selectedTrigger"
+        (delete)="onDeleteAlarmTrigger($event)"
+      ></app-alarm-trigger-delete-action>
+    }
+
+    <button
+      nz-button
+      nzSize="large"
+      nzType="default"
+      type="button"
+      role="button"
+      (click)="onCancel()"
+      i18n
+    >
+      Cancel
+    </button>
+    <button nz-button nzSize="large" nzType="primary" type="submit">
+      @if (!selectedTrigger) {
+        <ng-container i18n>Create alarm trigger</ng-container>
+      }
+      @if (selectedTrigger) {
+        <ng-container i18n>Save changes</ng-container>
+      }
+    </button>
+  </div>
+</form>
+
+<ng-template #andOr>
+  <div class="and-or">
+    @if (form.controls.triggerIf.value === "any") {
+      <small i18n>OR</small>
+    }
+    @if (form.controls.triggerIf.value === "all") {
+      <small i18n>AND</small>
+    }
+  </div>
+</ng-template>

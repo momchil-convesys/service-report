@@ -1,0 +1,135 @@
+@let plant = (plantRequest$ | async)?.data;
+<!--  -->
+@let deviceRequest = deviceRequest$ | async;
+<!--  -->
+@let device = deviceRequest?.data;
+
+<header>
+  <div class="page-title">
+    <h1>
+      <app-sidebar-toggle-button></app-sidebar-toggle-button>
+
+      @if (deviceRequest) {
+        @if (deviceRequest.isLoading) {
+          <span>{{ "Loading..." }}</span>
+        }
+        @if (deviceRequest.data?.name) {
+          <span>{{ deviceRequest.data?.name }}</span>
+        }
+
+        @if (device) {
+          <app-device-state-dynamic
+            [device]="device"
+            [variant]="'full'"
+            [size]="'large'"
+          ></app-device-state-dynamic>
+        }
+
+        <app-inverter-power-limit-indicator
+          [mode]="'tag'"
+          [powerLimit]="device?.powerLimitSubject | async"
+          routerLink="inverter-control"
+        ></app-inverter-power-limit-indicator>
+
+        @if (device && device.monbatActiveScheduleSubject) {
+          <app-monbat-schedule-indicator
+            [activeSchedule]="device.monbatActiveScheduleSubject | async"
+            [plantId]="plant?.id"
+            [deviceId]="device?.id"
+            [mode]="'tag'"
+          ></app-monbat-schedule-indicator>
+        }
+      }
+    </h1>
+
+    <p>{{ plant?.name }}</p>
+  </div>
+
+  @if (!isWind(device)) {
+    <nz-tabs
+      [nzAnimated]="false"
+      nzSize="large"
+      class="primary-tabset"
+      nzLinkRouter
+      nzLinkExact="false"
+    >
+      <nz-tab>
+        <a i18n *nzTabLink nz-tab-link routerLink="overview">Overview</a>
+      </nz-tab>
+
+      @if (showFaultsTab(plant)) {
+        <nz-tab>
+          <a i18n *nzTabLink nz-tab-link routerLink="faults">Faults</a>
+        </nz-tab>
+      }
+
+      @if (!isBattery(device)) {
+        <nz-tab>
+          <a i18n *nzTabLink nz-tab-link routerLink="device-metrics">Device metrics</a>
+        </nz-tab>
+
+        @if (showFaultsTab(plant)) {
+          <nz-tab>
+            <a i18n *nzTabLink nz-tab-link routerLink="fault-counters">Fault counters</a>
+          </nz-tab>
+        }
+      }
+
+      @if (isSolar(device)) {
+        @if (showInverterControl) {
+          <nz-tab>
+            <a i18n *nzTabLink nz-tab-link routerLink="inverter-control">Inverter control</a>
+          </nz-tab>
+        }
+
+        @if (showInvertersTab(plant)) {
+          <nz-tab>
+            <a *nzTabLink nz-tab-link routerLink="drilldown" class="tab-with-custom-tab-badge">
+              <span i18n>Inverters</span>
+              @if (device && device.id && plant && plant.id) {
+                <app-active-alarms-count
+                  [context]="{
+                    plantId: plant.id,
+                    tsId: device.id,
+                  }"
+                ></app-active-alarms-count>
+              }
+            </a>
+          </nz-tab>
+        }
+      }
+
+      @if (isBattery(device)) {
+        <nz-tab>
+          <a i18n *nzTabLink nz-tab-link routerLink="device-metrics">Device metrics</a>
+        </nz-tab>
+
+        <nz-tab>
+          <a i18n *nzTabLink nz-tab-link routerLink="strings">Strings</a>
+        </nz-tab>
+
+        @if (showInverterControl) {
+          <nz-tab>
+            <a i18n *nzTabLink nz-tab-link routerLink="inverter-control">Inverter control</a>
+          </nz-tab>
+        }
+
+        @if (showMonbatScheduleTab(device)) {
+          <nz-tab>
+            <a i18n *nzTabLink nz-tab-link routerLink="monbat-schedule">Schedule</a>
+          </nz-tab>
+        }
+      }
+
+      @if (device?.deviceSpecificMetadata?.hasTemperatureSensors) {
+        <nz-tab>
+          <a i18n *nzTabLink nz-tab-link routerLink="temperature-sensors">Temperature sensors</a>
+        </nz-tab>
+      }
+    </nz-tabs>
+  }
+</header>
+
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,53 @@
+<div class="header">
+  <h2>
+    <ng-container i18n>Device metrics</ng-container>&nbsp;
+    <app-live-data-indicator
+      i18n-title
+      title="Data is updated live. No need to refresh the page."
+    ></app-live-data-indicator>
+  </h2>
+  @if (!isSingleDevice()) {
+    <div class="right-align">
+      <ng-container i18n>View as&nbsp;</ng-container>
+      <nz-radio-group [(ngModel)]="selectedView" nzButtonStyle="solid">
+        <label nz-radio-button nzValue="table" i18n>Table</label>
+        <label nz-radio-button nzValue="charts" i18n>Charts</label>
+      </nz-radio-group>
+    </div>
+  }
+</div>
+
+@if (error$ | async; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Failed to load data"
+    [nzDescription]="error.message"
+    nzShowIcon
+  ></nz-alert>
+}
+
+@if (selectedView === "table") {
+  <app-device-metrics-table
+    [parameters]="parameters$ | async"
+    [data]="(metricsLiveData$ | async) || []"
+    [isLoading]="(isLoading$ | async) || false"
+    [isSingleDevice]="isSingleDevice()"
+    [shouldUseParameterGroupingByName]="
+      context?.scope?.plant?.plantSpecificMetadata?.shouldUseParameterGroupingByName || false
+    "
+  ></app-device-metrics-table>
+}
+
+@if (selectedView === "charts") {
+  <app-device-metrics-charts
+    [parameters]="parameters$ | async"
+    [data]="(metricsLiveData$ | async) || []"
+    [isLoading]="(isLoading$ | async) || false"
+    [visibleParameterIds]="getVisibleParameterIdsForCharts()"
+    [shouldUseParameterGroupingByName]="
+      context?.scope?.plant?.plantSpecificMetadata?.shouldUseParameterGroupingByName || false
+    "
+    (visibleParametersChange)="onChartVisibleParametsChange($event)"
+  ></app-device-metrics-charts>
+}

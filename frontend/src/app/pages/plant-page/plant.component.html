@@ -1,0 +1,183 @@
+@let plant = plant$ | async;
+
+<header>
+  <div class="page-title">
+    <div class="flex-row">
+      <app-sidebar-toggle-button></app-sidebar-toggle-button>
+
+      <div class="title-container">
+        <h1>
+          @if (plant?.name; as plantName) {
+            {{ plantName }}
+          } @else {
+            <ng-container i18n="@@loading">Loading...</ng-container>
+          }
+        </h1>
+
+        @if (!isWind(plant)) {
+          @if (deviceCountByState$ | async; as deviceCountBystate) {
+            <div class="devices-count-container">
+              <div i18n class="devices-label">Devices:</div>
+
+              @for (state of deviceStates; track state) {
+                @if (deviceCountBystate[state] > 0) {
+                  <div class="device-count-state">
+                    {{ deviceCountBystate[state] }} &times;
+                    <app-device-state
+                      [state]="{ baseState: state }"
+                      [fixedWidth]="false"
+                    ></app-device-state>
+                  </div>
+                }
+              }
+
+              @if (deviceCountWithPowerLimit$ | async; as count) {
+                <nz-divider nzType="vertical"></nz-divider>
+
+                <span class="power-limit-tag" routerLink="inverter-control">
+                  {{ count }}
+                  <ng-container [ngPlural]="count">
+                    <ng-template ngPluralCase="=1" i18n="@@device">device</ng-template>
+                    <ng-template ngPluralCase="other" i18n="@@devices"
+                      >devices</ng-template
+                    > </ng-container
+                  >&nbsp;<ng-container i18n>with power limit</ng-container>
+                </span>
+              }
+            </div>
+          }
+        }
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="active-schedule-container">
+        @if (plant?.activeBESSSchedule$ | async; as activeBESSSchedule) {
+          <div>
+            <app-bess-schedule-indicator
+              [currentSchedule]="activeBESSSchedule"
+              [fileLink]="bessScheduleLink(plant, activeBESSSchedule)"
+            ></app-bess-schedule-indicator>
+          </div>
+        }
+
+        @if (plant?.activePowerLimitSchedule$ | async; as activePowerLimitSchedule) {
+          <div>
+            <app-power-limit-schedule-indicator
+              [currentSchedule]="activePowerLimitSchedule"
+              [fileLink]="plsLink(plant, activePowerLimitSchedule)"
+            ></app-power-limit-schedule-indicator>
+          </div>
+        }
+      </div>
+
+      <div
+        class="time-container"
+        nz-tooltip
+        [nzTooltipTitle]="timeTooltip"
+        [nzTooltipPlacement]="'topRight'"
+      >
+        <nz-icon nzType="clock-circle" nzTheme="outline"></nz-icon>
+        {{ currentTime$ | async | date: "HH:mm:ss" }}
+        <ng-template #timeTooltip>
+          @if (plant?.timeZone; as timeZone) {
+            <div>Time in plant time zone ({{ timeZone }})</div>
+          }
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  @if (!isWind(plant)) {
+    <nz-tabs
+      [nzAnimated]="false"
+      nzSize="large"
+      class="primary-tabset"
+      nzLinkRouter
+      nzLinkExact="false"
+    >
+      @if (showBESSRelatedTabs(plant)) {
+        <nz-tab>
+          <a i18n *nzTabLink nz-tab-link routerLink="pv-bess-overview">Dashboard</a>
+        </nz-tab>
+
+        <!-- TODO: BESS module is not fully implemented yet. -->
+        <!-- @let bessId = getBessId(plant);
+        <nz-tab>
+          <a i18n *nzTabLink nz-tab-link routerLink="bess/{{ bessId }}">BESS</a>
+        </nz-tab> -->
+      }
+
+      <nz-tab>
+        <a *nzTabLink nz-tab-link routerLink="overview">{{ getOverviewTabTitle(plant) }}</a>
+      </nz-tab>
+
+      @if (showReactivePower(plant)) {
+        <nz-tab>
+          <a i18n *nzTabLink nz-tab-link routerLink="reactive-power">Reactive power</a>
+        </nz-tab>
+      }
+
+      @if (showExtendedPlantMetrics(plant)) {
+        <nz-tab>
+          <a i18n *nzTabLink nz-tab-link routerLink="plant-metrics">Plant metrics</a>
+        </nz-tab>
+      }
+
+      @if (showFaultsTab(plant)) {
+        <nz-tab>
+          <a i18n *nzTabLink nz-tab-link routerLink="faults">Faults</a>
+        </nz-tab>
+      }
+
+      <nz-tab>
+        <a i18n *nzTabLink nz-tab-link routerLink="device-metrics">Device metrics</a>
+      </nz-tab>
+
+      @if (showInvertersTab(plant)) {
+        <nz-tab>
+          <a *nzTabLink nz-tab-link routerLink="drilldown" class="tab-with-custom-tab-badge">
+            <span i18n>Inverters</span>
+            <app-active-alarms-count
+              [context]="{ plantId: plant?.id || '', tsId: null }"
+            ></app-active-alarms-count>
+          </a>
+        </nz-tab>
+      }
+
+      @if (isSolar(plant)) {
+        @if (showInverterControl) {
+          <nz-tab>
+            <a i18n *nzTabLink nz-tab-link routerLink="inverter-control">Inverter control</a>
+          </nz-tab>
+        }
+
+        @if (showPowerLimitSchedule(plant)) {
+          <nz-tab>
+            <a i18n *nzTabLink nz-tab-link routerLink="power-limit-schedule"
+              >Power limit schedule</a
+            >
+          </nz-tab>
+        }
+
+        @if (showPowerSchedule(plant)) {
+          <nz-tab>
+            <a i18n *nzTabLink nz-tab-link routerLink="power-schedule">Power schedule</a>
+          </nz-tab>
+        }
+
+        <!-- <nz-tab *ngIf="showGridExportSchedule">
+        <a i18n *nzTabLink nz-tab-link routerLink="grid-export-schedule">Grid export schedule</a>
+      </nz-tab> -->
+      }
+
+      <!-- <nz-tab *ngIf="isSolar(plant)">
+      <a *nzTabLink nz-tab-link routerLink="weather"> Weather </a>
+    </nz-tab> -->
+    </nz-tabs>
+  }
+</header>
+
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,40 @@
+<h3>Choose inverter schema</h3>
+<div class="schema-options">
+  @for (schema of schemas; track schema.id; let i = $index) {
+    <label class="schema-option" [class.selected]="i === materialsService.selectedSchemaIndex" [for]="'schema-' + schema.id">
+      <input
+        class="schema-radio"
+        type="radio"
+        name="schemaSelect"
+        [id]="'schema-' + schema.id"
+        [value]="i"
+        [checked]="i === materialsService.selectedSchemaIndex"
+        (change)="onSchemaSelectionChange($event.target)"
+      />
+      <span class="schema-copy">
+        <ng-container *ngTemplateOutlet="schemaView; context: { $implicit: schema }"></ng-container>
+      </span>
+    </label>
+  }
+</div>
+<!-- <hr />
+<div class="form-row">
+  <div class="form-group col-auto">
+    <button type="button" class="btn btn-primary" (click)="onSelectFromSchema(modalTemplate)">
+      Select items from schema
+    </button>
+  </div>
+</div> -->
+
+<ng-template #schemaView let-schema>
+  <span class="radio-label-title">{{ schema.name }}</span>
+  <span class="schema-details text-muted small">
+    {{ schema.dateModified }}
+    <span class="separator">|</span>
+    Version {{ schema.version }}
+    <span class="separator">|</span>
+    {{ schema.description }}
+    <!-- <span class="separator">|</span>
+    ID: {{ schema.id }} -->
+  </span>
+</ng-template>

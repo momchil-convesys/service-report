@@ -1,0 +1,28 @@
+<h2>Settings</h2>
+
+@if (error$ | async; as error) {
+  <div class="error-block">
+    <nz-alert
+      nzType="error"
+      [nzMessage]="error.title"
+      [nzDescription]="error.description"
+      nzShowIcon
+    ></nz-alert>
+  </div>
+}
+
+<app-ges-settings-form
+  [currentSettings]="currentSettingsValue$ | async"
+  [isLoading]="currentSettingsLoading$ | async"
+  [plantId]="(plant$ | async)?.id"
+  (submitForm)="onSubmit($event)"
+></app-ges-settings-form>
+
+<nz-divider></nz-divider>
+
+<h3>Settings history</h3>
+
+<app-ges-settings-history
+  [data]="(settingsHistoryRequest$ | async)?.data"
+  [isLoading]="(settingsHistoryRequest$ | async)?.isLoading"
+></app-ges-settings-history>

@@ -1,0 +1,6 @@
+<div class="active-alarms-count" role="status" aria-label="Active alarms count">
+  @if (severity$ | async; as severity) {
+    <!--  -->
+    <app-inverter-alarm-icon [severity]="severity" [inverse]="true"></app-inverter-alarm-icon>
+  }
+</div>

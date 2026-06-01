@@ -1,0 +1,44 @@
+@import "theme";
+
+app-weather-page {
+  .chart-sets-container {
+    margin-top: @margin-lg;
+
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    gap: @margin-sm;
+
+    .chart-sets-nav {
+      flex: 0 0 230px;
+      border-right: 1px solid @border-color-split;
+      padding-right: @padding-sm;
+    }
+
+    .chart-sets-panel {
+      flex: 1 1 600px;
+      overflow: hidden;
+    }
+  }
+
+  @media (max-width: @breakpoint-lg) {
+    .chart-sets-container {
+      flex-direction: column;
+
+      .chart-sets-nav {
+        flex: 0 0 100%;
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid @border-color-split;
+        margin-bottom: @margin-sm;
+      }
+
+      .context-select-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+    }
+  }
+}

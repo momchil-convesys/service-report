@@ -1,0 +1,89 @@
+@if (data) {
+  @if (data.targetLimitDetails.history.length > 1) {
+    <span nz-popover [nzPopoverContent]="contentTemplate" nzPopoverPlacement="leftBottom">
+      <span nz-icon nzType="history" nzTheme="outline" class="trigger-icon" #popoverOrigin></span>
+
+      <ng-template #contentTemplate>
+        <div style="margin-bottom: 8px">
+          <div class="secondary-text">Interval</div>
+          {{ data.interval.start | date: "HH:mm" }}–{{ data.interval.end | date: "HH:mm" }}
+        </div>
+
+        <div>
+          <div class="secondary-text" style="margin-bottom: 4px">Previous values</div>
+
+          <table class="popover-table">
+            @for (
+              record of data.targetLimitDetails.history;
+              track record.applicableRange.from;
+              let i = $index
+            ) {
+              <tr style="text-align: right">
+                <td style="padding-right: 8px">
+                  <div>
+                    <!-- <span class="secondary-text">From</span> -->
+                    <span class="secondary-text-size">
+                      {{ record.applicableRange.from | date: "HH:mm:ss" }}
+                    </span>
+                  </div>
+                  <div>
+                    <!-- <span class="secondary-text">To</span> -->
+                    <span class="secondary-text-size">
+                      {{ record.applicableRange.to | date: "HH:mm:ss" }}
+                    </span>
+                  </div>
+                </td>
+
+                @if (record.scheduleStatus === "disabled") {
+                  <td colspan="2" style="text-align: right">
+                    <span class="secondary-text-size" style="font-weight: bold; color: #d9343a">
+                      DISABLED
+                    </span>
+                  </td>
+                } @else {
+                  <td>
+                    <!-- Show only when alteration is applied (coefficient !== 1) -->
+                    @if (record.targetLimit.value_Mega !== record.targetLimit.valueAdjusted_Mega) {
+                      @if (record.targetLimit.value_Mega) {
+                        <span class="secondary-text">
+                          <app-pls-value-formatted
+                            [value]="record.targetLimit.value_Mega"
+                            [unit]="unitSuffixFormatted"
+                          ></app-pls-value-formatted>
+                          &nbsp;&nbsp;|
+                        </span>
+                      }
+                    }
+                  </td>
+
+                  <td>
+                    <app-pls-value-formatted
+                      [value]="record.targetLimit.valueAdjusted_Mega"
+                      [unit]="unitSuffixFormatted"
+                    ></app-pls-value-formatted>
+                  </td>
+                }
+              </tr>
+            }
+          </table>
+        </div>
+      </ng-template>
+    </span>
+  }
+
+  @if (data.targetLimitDetails.history.length === 1) {
+    @let scheduleStatus = data.targetLimitDetails.history[0].scheduleStatus;
+
+    @if (scheduleStatus === "enabled") {
+      <span class="secondary-text-size" style="font-weight: bold; color: #14995d"> ENABLED </span>
+    }
+
+    @if (scheduleStatus === "disabled") {
+      <span class="secondary-text-size" style="font-weight: bold; color: #d9343a"> DISABLED </span>
+    }
+
+    @if (scheduleStatus === "draft") {
+      <span class="secondary-text-size" style="font-weight: bold; color: #99acbd"> DRAFT </span>
+    }
+  }
+}

@@ -1,0 +1,56 @@
+<nz-table
+  #basicTable
+  [nzData]="parameters"
+  nzOuterBordered="false"
+  nzSize="small"
+  nzFrontPagination="false"
+  [nzLoading]="loading"
+>
+  <thead>
+    <tr>
+      <th i18n>Inverter metrics</th>
+      <th colspan="2">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="line-height: 1.3">
+      <td>
+        <ng-container i18n>Time of measurement</ng-container><br />
+        (<ng-container i18n>in plant time zone</ng-container>)
+      </td>
+      <td colspan="2" style="text-align: center">
+        @if (deviceMetrics) {
+          <div>{{ deviceMetrics.timestamp | date: "mediumDate" }}</div>
+          <div>
+            <b>{{ deviceMetrics.timestamp | date: "HH:mm:ss" }}</b>
+          </div>
+        }
+      </td>
+    </tr>
+
+    @for (parameter of parameters; track parameter.id) {
+      <tr>
+        <td>{{ parameter.name }}</td>
+
+        <td class="value-cell">
+          @if (deviceMetrics) {
+            <!--  -->
+            @if (parameter.type === "number") {
+              <app-value-display
+                [value]="getValueForParameterId_asNumber(parameter.id)"
+                [format]="'1.0-3'"
+              ></app-value-display>
+            } @else {
+              {{ getValueForParameterId(parameter.id) }}
+            }
+          }
+        </td>
+        <td class="unit-cell">
+          <app-device-parameter-unit-display
+            [unit]="parameter.unit"
+          ></app-device-parameter-unit-display>
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>

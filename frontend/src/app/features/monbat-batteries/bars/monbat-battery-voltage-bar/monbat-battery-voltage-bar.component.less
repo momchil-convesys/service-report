@@ -1,0 +1,33 @@
+@import "theme";
+
+app-monbat-battery-voltage-bar {
+  display: flex;
+  flex-wrap: wrap;
+
+  align-items: center;
+  column-gap: @margin-xs;
+
+  .bar {
+    border-radius: 2px;
+    overflow: hidden;
+
+    height: 12px;
+    width: 100px;
+
+    background-color: @gray-3;
+
+    .fill {
+      height: 100%;
+      background: @blue-4;
+    }
+  }
+
+  .value {
+    min-width: 80px;
+    text-align: right;
+  }
+
+  .full-height.bar {
+    height: 22px;
+  }
+}

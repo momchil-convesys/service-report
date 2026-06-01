@@ -1,0 +1,88 @@
+<!-- <nz-breadcrumb>
+  <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+  <nz-breadcrumb-item>
+    <a>Application List</a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>An Application</nz-breadcrumb-item>
+</nz-breadcrumb> -->
+
+@if (chart) {
+  <div class="container">
+    <div class="nav-pane">
+      <!-- <a (click)="selectSection('yAxes')">Y axes</a>
+    <a (click)="selectSection('xAxes')">X axes</a>
+    <a (click)="selectSection('series')">Series</a> -->
+
+      <app-cog-tree-nav
+        [chart]="chart"
+        (selectionChange)="onSelectionContextChange($event)"
+      ></app-cog-tree-nav>
+    </div>
+
+    <div class="content-pane">
+      <!--  -->
+      @if (selectionContext && selectionContext.section === "yAxis") {
+        <h2>Y Axis</h2>
+
+        <section class="y-axes-container">
+          <!--  -->
+          @let axis = findYAxis(chart, selectionContext.objectId);
+          <!--  -->
+          @if (axis) {
+            <app-cog-y-axis
+              [axis]="axis"
+              (optionChange)="onAxisOptionChange($event, axis)"
+            ></app-cog-y-axis>
+          }
+        </section>
+      }
+
+      <!--  -->
+      @else if (selectionContext && selectionContext.section === "xAxis") {
+        <h2>X Axis</h2>
+
+        <section class="y-axes-container">
+          <!--  -->
+          @let axis = findXAxis(chart, selectionContext.objectId);
+          <!--  -->
+          @if (axis) {
+            <app-cog-x-axis
+              [axis]="axis"
+              (optionChange)="onAxisOptionChange($event, axis)"
+            ></app-cog-x-axis>
+          }
+        </section>
+      }
+
+      <!--  -->
+      @else if (selectionContext && selectionContext.section === "series") {
+        <h2>Series</h2>
+
+        <section class="y-axes-container">
+          <!--  -->
+          @let series = findSeries(chart, selectionContext.objectId);
+          <!--  -->
+          @if (series) {
+            <app-cog-series
+              [series]="series"
+              (optionChange)="onSeriesOptionChange($event, series)"
+            ></app-cog-series>
+          }
+        </section>
+      }
+
+      <!--  -->
+      @else if (selectionContext && selectionContext.section === "plotOptions") {
+        <h2>Plot options</h2>
+
+        <section class="y-axes-container">
+          <app-cog-plot-options
+            [plotOptions]="chart.options.plotOptions"
+            [series]="chart.series"
+            (optionChange)="onPlotOptionChange($event, chart)"
+          ></app-cog-plot-options>
+        </section>
+      }
+    </div>
+  </div>
+}

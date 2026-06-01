@@ -1,0 +1,40 @@
+<ul>
+  @for (activityItem of activityItems$ | async; track activityItem.id) {
+    <li>
+      @if (activityItem.type === ActivityType.AddedComment) {
+        {{ asComment(activityItem.details).message }}
+      } @else {
+        {{ activityItem.details | json }}
+      }
+
+      <br />
+
+      <small>
+        <app-relative-timestamp
+          [timestamp]="activityItem.timestamp"
+          [plain]="true"
+        ></app-relative-timestamp>
+        by
+        <app-user-link [userId]="activityItem.userId"></app-user-link>
+      </small>
+      <br />
+      <a (click)="onDeleteComment(activityItem)"> <small>Delete</small> </a>
+    </li>
+  }
+</ul>
+
+<form (ngSubmit)="onAddComment()" [formGroup]="form" nz-form nzLayout="vertical">
+  <nz-form-item style="max-width: 600px">
+    <nz-form-label nzRequired nzFor="ticket-comment-message">Message</nz-form-label>
+    <nz-form-control [nzErrorTip]="commentMessageErrorTemplate">
+      <textarea nz-input formControlName="message" rows="3" id="ticket-comment-message"></textarea>
+      <ng-template #commentMessageErrorTemplate let-control>
+        @if (control.hasError("required")) {
+          This field is required!
+        }
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+
+  <button nz-button type="submit">Add comment</button>
+</form>

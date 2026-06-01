@@ -1,0 +1,106 @@
+<div class="header">
+  @if (!onDashboard) {
+    <app-nav-up [label]="'All schedules'"></app-nav-up>
+    <h2 i18n>Schedule preview with manual adjustments</h2>
+    <div class="table-toggle-container">
+      @if (tableVisible) {
+        <button nz-button nzType="default" (click)="toggleTableVisibility()">
+          <span nz-icon [nzType]="'line-chart'" nzTheme="outline"></span>
+          <span i18n>Show chart</span>
+        </button>
+      } @else {
+        <button nz-button nzType="default" (click)="toggleTableVisibility()">
+          <span nz-icon [nzType]="'table'" nzTheme="outline"></span>
+          <span i18n>Show table</span>
+        </button>
+      }
+    </div>
+  }
+  <div class="range-select-container">
+    <app-datetime-range-select
+      (modelChange)="onDatetimeRangeChange($event)"
+      [defaultOption]="'day'"
+      [timeZone]="(plant$ | async)?.timeZone || undefined"
+      [showPredefinedOptions]="false"
+      [showIntegrationPeriod]="false"
+    >
+    </app-datetime-range-select>
+  </div>
+  <div class="export-container">
+    <app-highcharts-export-option
+      [chartComponent]="chartPVComponent"
+      [disabled]="(trackingDataRequest$ | async)?.isLoading ?? false"
+      [filename]="(trackingDataRequest$ | async)?.data?.exportFileName"
+      [limitedOptions]="true"
+    ></app-highcharts-export-option>
+  </div>
+</div>
+
+@if ((trackingDataRequest$ | async)?.error; as error) {
+  @if (noSchedule) {
+    <div class="empty-container">
+      <nz-empty
+        nzSize="large"
+        nzNotFoundImage="simple"
+        i18n-nzNotFoundContent
+        nzNotFoundContent="No schedule data available. This usually means that there was no schedule file uploaded for the selected period."
+      ></nz-empty>
+    </div>
+  } @else {
+    <app-custom-alert
+      [customError]="{
+        title: getErrorTitle(),
+        error: error,
+      }"
+    ></app-custom-alert>
+  }
+}
+
+@let loading = (trackingDataRequest$ | async)?.isLoading ?? false;
+
+@if (loading) {
+  <div class="empty-container">
+    <nz-spin i18n-nzTip="@@loading" nzTip="Loading..."></nz-spin>
+  </div>
+}
+
+@if (!noSchedule && !loading) {
+  <div [class.view-container]="!onDashboard">
+    <div class="charts-container" [class.take-all-height]="true" [class.hidden]="tableVisible">
+      <app-power-schedule-tracking-chart-pv
+        [dataRequest]="trackingDataRequest$ | async"
+        [data]="undefined"
+        [loading]="(trackingDataRequest$ | async)?.isLoading ?? false"
+        [context]="chartContext$ | async"
+        [optimizeForDashboard]="onDashboard"
+        #chartPVRef
+      ></app-power-schedule-tracking-chart-pv>
+
+      <app-power-schedule-tracking-chart-bess
+        [dataRequest]="trackingDataRequest$ | async"
+        [data]="undefined"
+        [loading]="(trackingDataRequest$ | async)?.isLoading ?? false"
+        [context]="chartContext$ | async"
+        [optimizeForDashboard]="onDashboard"
+      ></app-power-schedule-tracking-chart-bess>
+
+      <app-power-schedule-tracking-chart-grid
+        [dataRequest]="trackingDataRequest$ | async"
+        [data]="undefined"
+        [loading]="(trackingDataRequest$ | async)?.isLoading ?? false"
+        [context]="chartContext$ | async"
+        [optimizeForDashboard]="onDashboard"
+      ></app-power-schedule-tracking-chart-grid>
+    </div>
+
+    @if (!onDashboard) {
+      <div class="table-container" [class.hidden]="!tableVisible">
+        <app-power-schedule-manual-adjustment-table
+          [plant]="plant$ | async"
+          [targetRange]="targetRange$ | async"
+          [dataRequest]="trackingDataRequest$ | async"
+        ></app-power-schedule-manual-adjustment-table>
+      </div>
+    }
+  </div>
+}

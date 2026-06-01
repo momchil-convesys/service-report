@@ -1,0 +1,142 @@
+@import "theme";
+
+// Icon beside Power meter
+.extra-hint [nzType="info-circle"] {
+  padding-right: @padding-xss;
+}
+
+a.close-page-button {
+  display: block;
+  padding: 0 16px;
+  padding-bottom: 6px;
+
+  font-size: 40px;
+  line-height: 1;
+
+  margin-left: auto;
+
+  color: @text-color;
+
+  &:hover {
+    background-color: @background-color-light;
+  }
+}
+
+.close-popover-button {
+  display: none; // display only on touch devices
+
+  padding: @padding-xs @padding-md;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  font-size: 28px;
+  line-height: 1;
+
+  color: @text-color;
+
+  &:hover {
+    background-color: @background-color-light;
+  }
+
+  @media (hover: none) {
+    display: block;
+  }
+}
+
+.faults-select-drawer {
+  max-width: 700px;
+
+  .ant-drawer-body {
+    padding-top: 8px;
+    padding-bottom: 0;
+  }
+}
+
+.secondary-text-color {
+  color: @text-color-secondary;
+}
+
+.secondary-text-color-inverse {
+  color: @text-color-secondary-inverse;
+}
+
+.secondary-text-size {
+  font-size: @font-size-sm;
+}
+
+.secondary-text {
+  .secondary-text-color();
+  .secondary-text-size();
+}
+
+.secondary-text-inverse {
+  .secondary-text-color-inverse();
+  .secondary-text-size();
+}
+
+.strike-through-text {
+  text-decoration: line-through;
+}
+
+.subtle-title-base {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: @font-size-sm;
+  letter-spacing: 0.5px;
+}
+
+.subtle-title {
+  .subtle-title-base();
+  color: @text-color-secondary;
+}
+
+.subtle-title-inverse {
+  .subtle-title-base();
+  color: @text-color-secondary-inverse;
+}
+
+.right-align {
+  margin-left: auto;
+}
+
+@media (max-width: 700px) {
+  .faults-select-drawer {
+    .ant-drawer-header {
+      padding: 8px 12px;
+    }
+
+    .ant-drawer-body {
+      padding: 0 12px;
+    }
+  }
+}
+
+@media (max-width: @breakpoint-sm) {
+  .ant-radio-button-wrapper {
+    padding: 0 8px; // by default is 15px
+  }
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.2;
+  }
+}
+
+nz-empty {
+  color: @text-color-secondary;
+  flex: 1; // If inside a flex container
+
+  .ant-empty-image {
+    height: 40px;
+    margin-top: 20px;
+  }
+}
+
+.tooltip-table-compact {
+  tr > td {
+    padding: 0;
+  }
+}

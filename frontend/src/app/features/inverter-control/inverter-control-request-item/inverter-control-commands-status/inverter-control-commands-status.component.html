@@ -1,0 +1,39 @@
+@if (requestItem) {
+  <span class="commands-status-title" i18n>Commands status</span>
+  <ul class="inverters-list">
+    @for (command of requestItem.commandsStatus; track command.timestamp) {
+      <li class="inverters-list-item">
+        <app-device-link
+          [deviceId]="command.deviceId"
+          [devicePath]="false"
+          [deviceLink]="false"
+        ></app-device-link
+        >:
+        <span class="command-status">{{ inverterControlCommandStatusLabels[command.status] }}</span>
+
+        @if (command.timestamp) {
+          <app-relative-timestamp
+            [timestamp]="command.timestamp"
+            [plain]="true"
+          ></app-relative-timestamp>
+        }
+      </li>
+    }
+  </ul>
+  @if (hasPendingCommands(requestItem)) {
+    <div class="actions">
+      <button
+        nz-button
+        nzType="default"
+        nzSize="small"
+        (click)="onRefresh(requestItem.id, $event)"
+        [nzLoading]="loading"
+      >
+        @if (!loading) {
+          <span nz-icon nzType="reload" nzTheme="outline"></span>
+        }
+        <span i18n>Refresh commands status</span>
+      </button>
+    </div>
+  }
+}

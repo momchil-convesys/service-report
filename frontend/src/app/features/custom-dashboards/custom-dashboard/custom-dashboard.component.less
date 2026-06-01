@@ -1,0 +1,79 @@
+@import "theme";
+
+app-custom-dashboard {
+  display: block;
+  padding: @padding-md @padding-lg;
+
+  background-color: @background-color-base;
+  height: 100%;
+  overflow: auto;
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: @margin-sm;
+    margin-bottom: @margin-xs;
+
+    h1 {
+      margin: 0;
+    }
+
+    .ant-divider-vertical {
+      border-color: @border-color-base;
+    }
+  }
+
+  gridstack {
+    margin: -2px; // compensate for items spacing
+  }
+
+  .grid-stack-item:not(.ui-draggable-disabled) .grid-stack-item-content {
+    cursor: move;
+  }
+
+  .grid-stack-item-content {
+    background-color: white;
+  }
+
+  .grid-stack-placeholder > .placeholder-content {
+    background-color: @gray-4;
+  }
+
+  .edit-mode .ant-card-bordered {
+    border-color: @purple-6;
+  }
+
+  .edit-mode .grid-stack-item:not(.grid-stack-placeholder) {
+    animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  gridstack:not(.edit-mode) .delete-widget-button {
+    display: none;
+  }
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}

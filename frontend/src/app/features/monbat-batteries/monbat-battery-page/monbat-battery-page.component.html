@@ -1,0 +1,89 @@
+@if (battery$ | async; as battery) {
+  <div class="header">
+    <h1>
+      {{ battery.displayName }}
+    </h1>
+
+    <div>
+      <div i18n class="parameter-title">Voltage</div>
+      <app-monbat-battery-voltage-bar
+        [voltage]="battery.voltage"
+        [fullHeight]="true"
+      ></app-monbat-battery-voltage-bar>
+    </div>
+
+    <div>
+      <div i18n class="parameter-title">Temperature</div>
+      <app-monbat-battery-temperature-bar
+        [temperature]="battery.temperature"
+        [fullHeight]="true"
+      ></app-monbat-battery-temperature-bar>
+    </div>
+
+    <!-- <div>
+      <div class="parameter-title">State of charge</div>
+      <app-monbat-battery-charge-bar [percentage]="battery.soc"></app-monbat-battery-charge-bar>
+    </div> -->
+  </div>
+
+  <div class="sub-header">
+    <h3 i18n>Historical data</h3>
+    @if (timeRange$ | async; as timeRange) {
+      <app-datetime-range-filter
+        (rangeChange)="onTimeRangeChange($event)"
+        (predefinedRangeChange)="onPredefinedTimeRangeChange($event)"
+        [initialRange]="timeRange"
+        [showTime]="true"
+        [predefinedRanges]="timeRanges"
+        [rounded]="false"
+      ></app-datetime-range-filter>
+    }
+
+    @if (timeRange$ | async; as timeRange) {
+      <div class="extras">
+        @if (timeRange !== "realTime") {
+          @if (historicalDataRequest$ | async; as dataRequest) {
+            <app-highcharts-export-option
+              [chartComponent]="chartComponent"
+              [disabled]="(historicalDataRequest$ | async)?.isLoading !== false"
+              [filename]="(historicalDataRequest$ | async)?.data?.exportFileName"
+            ></app-highcharts-export-option>
+          }
+        }
+      </div>
+    }
+  </div>
+
+  @if (timeRange$ | async; as timeRange) {
+    @if ((historicalDataRequest$ | async)?.error; as error) {
+      <nz-alert
+        nzType="error"
+        i18n-nzMessage
+        nzMessage="Failed to load data"
+        [nzDescription]="error.message"
+        nzShowIcon
+      ></nz-alert>
+    }
+
+    @if (timeRange === "realTime") {
+      @if (historicalDataRequest$ | async; as dataRequest) {
+        <app-monbat-battery-real-time-chart
+          [loading]="dataRequest.isLoading"
+          [data]="dataRequest.data"
+        ></app-monbat-battery-real-time-chart>
+      }
+    }
+
+    @if (timeRange !== "realTime") {
+      @if (historicalDataRequest$ | async; as dataRequest) {
+        <app-monbat-battery-historical-data-chart
+          [loading]="dataRequest.isLoading"
+          [data]="dataRequest.data"
+          #chartComponent
+        ></app-monbat-battery-historical-data-chart>
+      }
+    }
+  }
+} @else {
+  <a i18n nz-button routerLink="../.." queryParamsHandling="merge">All batteries</a>
+}

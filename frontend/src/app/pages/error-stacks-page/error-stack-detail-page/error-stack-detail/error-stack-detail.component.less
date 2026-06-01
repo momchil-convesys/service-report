@@ -1,0 +1,42 @@
+@import "theme";
+
+app-error-stack-detail {
+  display: block;
+  background: white;
+
+  header {
+    padding: @padding-md @padding-lg 0 @padding-lg;
+
+    .ant-divider.ant-divider-horizontal {
+      margin: @margin-md 0;
+    }
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+
+    flex-wrap: wrap-reverse;
+    gap: @margin-sm;
+
+    margin-bottom: @margin-xss;
+
+    h2 {
+      margin: 0;
+      flex: 1 1 auto;
+    }
+
+    a {
+    }
+  }
+
+  .current-index {
+    background-color: @error-stack-current-index-background !important;
+  }
+
+  app-error-stack-index-value {
+    display: inline-block;
+    vertical-align: top;
+    line-height: 20px;
+  }
+}

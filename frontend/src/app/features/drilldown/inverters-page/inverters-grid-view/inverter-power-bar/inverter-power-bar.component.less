@@ -1,0 +1,50 @@
+@import "theme";
+
+app-inverter-power-bar {
+  .bar-container {
+    width: 100%;
+
+    overflow: hidden;
+  }
+
+  .bar {
+    border-radius: 1px;
+    overflow: hidden;
+
+    .fill {
+      height: 100%;
+    }
+  }
+
+  &.active-power {
+    .bar-container {
+      border-radius: 1px;
+      background-color: #00305950; // @blue-10 with opacity
+      padding: 1px;
+    }
+
+    .bar {
+      height: 8px;
+    }
+
+    .bar .fill {
+      background-color: #ffe200;
+    }
+  }
+
+  &.performance-ratio {
+    .bar-container {
+      border-radius: 1px;
+      background-color: #00305900; // transparent
+      padding: 0;
+    }
+
+    .bar {
+      height: 4px;
+    }
+
+    .bar .fill {
+      background-color: #14995d;
+    }
+  }
+}

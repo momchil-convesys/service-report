@@ -1,0 +1,63 @@
+@if (containers.length > 0) {
+  <div class="bess-containers-bars-wrapper">
+    <div class="containers-row">
+      @for (c of containers; track c.id) {
+        <div class="container-card" [title]="c.name">
+          <div class="name" [attr.aria-label]="c.name">{{ c.name }}</div>
+
+          @let state = getContainerState(c);
+          <div class="capacity-power" aria-live="polite">
+            @if (state === "charging") {
+              <div class="stat-row">
+                <div class="label">Charging capacity</div>
+                <app-value-display
+                  [value]="c.chargeableCapacity?.value"
+                  unit=" kWh"
+                  format="1.0-0"
+                ></app-value-display>
+              </div>
+              <div class="stat-row">
+                <div class="label">Max charge power</div>
+                <app-value-display
+                  [value]="c.maximumChargePower?.value"
+                  unit=" kW"
+                  format="1.0-0"
+                ></app-value-display>
+              </div>
+            } @else {
+              <div class="stat-row">
+                <div class="label">Discharging capacity</div>
+                <app-value-display
+                  [value]="c.dischargeableCapacity?.value"
+                  unit=" kWh"
+                  format="1.0-0"
+                ></app-value-display>
+              </div>
+              <div class="stat-row">
+                <div class="label">Max discharge power</div>
+                <app-value-display
+                  [value]="c.maximumDischargePower?.value"
+                  unit=" kW"
+                  format="1.0-0"
+                ></app-value-display>
+              </div>
+            }
+          </div>
+
+          <app-bess-state-indicator
+            [data]="c.activePower"
+            [small]="true"
+          ></app-bess-state-indicator>
+
+          TODO: BESS Soc indicator (adapt to new data model)
+          <!-- <app-bess-soc-indicator
+            [data]="{ soc: c.soc, soh: c.soh }"
+            [small]="true"
+          ></app-bess-soc-indicator> -->
+        </div>
+      }
+    </div>
+  </div>
+} @else {
+  <div class="empty">No containers found</div>
+}

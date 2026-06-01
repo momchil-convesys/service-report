@@ -1,0 +1,92 @@
+<nz-card [nzBordered]="false" class="control-state-view-card">
+  <div class="control-state-header">
+    <h2 nz-typography nzType="secondary" class="panel-title">Control State</h2>
+  </div>
+
+  @if (controlStateLoading$ | async) {
+    <nz-skeleton [nzActive]="true" [nzParagraph]="{ rows: 4 }"></nz-skeleton>
+  } @else {
+    @if (controlState$ | async; as controlState) {
+      <!-- Control Mechanism - Emphasized -->
+      <div class="control-mechanism-section">
+        <div class="mechanism-badge">
+          <span class="mechanism-type">{{ getControlMechanismType(controlState) }}</span>
+        </div>
+        <div class="mechanism-details">
+          <span class="mechanism-text">{{ getControlMechanismDetails(controlState) }}</span>
+          <span class="mechanism-timestamp">{{ controlState.timestamp | date: "short" }}</span>
+        </div>
+      </div>
+
+      <!-- Compact Setpoints Table -->
+      <div class="setpoints-table-section">
+        <table class="setpoints-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="text-right" i18n>PV Power</th>
+              <th class="text-right" i18n>BESS Power</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="setpoint-type" i18n>Requested</td>
+              <td class="text-right">
+                <app-value-display
+                  [value]="controlState.requestedSetpoints.pvPower"
+                  unit=" kW"
+                  format="1.0-2"
+                ></app-value-display>
+              </td>
+              <td class="text-right">
+                <app-value-display
+                  [value]="controlState.requestedSetpoints.bessPower"
+                  unit=" kW"
+                  format="1.0-2"
+                ></app-value-display>
+              </td>
+            </tr>
+            <tr>
+              <td class="setpoint-type" i18n>Applied</td>
+              <td class="text-right">
+                <app-value-display
+                  [value]="controlState.appliedSetpoints.pvPower"
+                  unit=" kW"
+                  format="1.0-2"
+                ></app-value-display>
+              </td>
+              <td class="text-right">
+                <app-value-display
+                  [value]="controlState.appliedSetpoints.bessPower"
+                  unit=" kW"
+                  format="1.0-2"
+                ></app-value-display>
+              </td>
+            </tr>
+            <tr>
+              <td class="setpoint-type" i18n>Measured</td>
+              <td class="text-right">
+                <app-value-display
+                  [value]="controlState.measured.pvPower"
+                  unit=" kW"
+                  format="1.0-2"
+                ></app-value-display>
+              </td>
+              <td class="text-right">
+                <app-value-display
+                  [value]="controlState.measured.bessPower"
+                  unit=" kW"
+                  format="1.0-2"
+                ></app-value-display>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="no-data-message">
+        <p i18n>No control state data available</p>
+      </div>
+    }
+  }
+</nz-card>

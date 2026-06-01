@@ -1,0 +1,141 @@
+@let request = liveMetrics$ | async;
+<section class="live-metrics-widget">
+  @if (!request || request.isLoading) {
+    <nz-skeleton [nzActive]="true" [nzParagraph]="{ rows: 4 }"></nz-skeleton>
+  } @else if (request?.data; as data) {
+    @let values = data.values;
+
+    @if (values) {
+      @if (viewMode === "default") {
+        <div class="section">
+          <div class="boxes-row">
+            <app-live-metrics-box
+              [data]="values.gridPowerMV"
+              [baseUnit]="'W'"
+              [title]="getGridPowerTitle('MV')"
+              [icon]="values.gridPowerMV?.total !== 0 ? 'grid-icon' : undefined"
+              [arrowIcon]="getGridIconArrow(values.gridPowerMV?.total ?? null)"
+            >
+            </app-live-metrics-box>
+
+            <app-live-metrics-box
+              [data]="values.pvPower"
+              [baseUnit]="'W'"
+              [title]="'PV power'"
+              [icon]="'pv-output'"
+              [arrowIcon]="undefined"
+            >
+            </app-live-metrics-box>
+          </div>
+
+          <div class="bess-section">
+            <h4 class="subtle-title-base">BESS</h4>
+            <div class="bess-total">
+              <div class="bess-power-section">
+                <app-bess-state-indicator
+                  [data]="convertBessPowerToStateData(values.bessPower?.total, data.updatedAt)"
+                ></app-bess-state-indicator>
+              </div>
+              <div class="bess-soc-section">
+                <app-bess-soc-indicator
+                  [data]="convertBessPowerToSocData(data, 'total')"
+                ></app-bess-soc-indicator>
+              </div>
+            </div>
+            <div>
+              <div class="bess-power-section">
+                <app-bess-state-indicator
+                  [data]="convertBessPowerToStateData(values.bessPower?.subPlant1, data.updatedAt)"
+                  [subPlant]="true"
+                >
+                  Sub Plant 1
+                </app-bess-state-indicator>
+              </div>
+              <div class="bess-soc-section">
+                <app-bess-soc-indicator
+                  [data]="convertBessPowerToSocData(data, 'subPlant1')"
+                  [subPlant]="true"
+                ></app-bess-soc-indicator>
+              </div>
+            </div>
+            <div>
+              <div class="bess-power-section">
+                <app-bess-state-indicator
+                  [data]="convertBessPowerToStateData(values.bessPower?.subPlant2, data.updatedAt)"
+                  [subPlant]="true"
+                >
+                  Sub Plant 2
+                </app-bess-state-indicator>
+              </div>
+              <div class="bess-soc-section">
+                <app-bess-soc-indicator
+                  [data]="convertBessPowerToSocData(data, 'subPlant2')"
+                  [subPlant]="true"
+                ></app-bess-soc-indicator>
+              </div>
+            </div>
+          </div>
+        </div>
+      } @else if (viewMode === "high-voltage") {
+        <span class="warning-notice" nz-popover [nzPopoverContent]="popoverContent">
+          <nz-icon nzType="warning" nzTheme="outline" />
+          <span class="text" i18n>High voltage measurement notes</span>
+          <ng-template #popoverContent>
+            <div style="max-width: 280px">
+              <p>
+                Energy differences between MV (33 kV) and HV (110 kV) meters are used to calculate
+                energy losses.
+              </p>
+              <p>
+                The HV power meter reports energy in <b>100&nbsp;kWh&nbsp;steps</b> and is sampled
+                every <b>4&nbsp;seconds</b>.
+              </p>
+              <p>
+                This can cause temporary misalignment with MV measurements. As a result, calculated
+                energy losses may occasionally appear negative. This behavior is expected and does
+                not indicate actual energy gain or a system fault.
+              </p>
+            </div>
+          </ng-template>
+        </span>
+        <div class="grid-power-view">
+          <div class="mv">
+            <div class="title">Medium voltage<br />33 kV</div>
+            <app-live-metrics-box
+              [data]="values.gridPowerMV"
+              [baseUnit]="'W'"
+              [title]="getGridPowerTitle('MV')"
+              [icon]="values.gridPowerMV?.total !== 0 ? 'grid-icon' : undefined"
+              [arrowIcon]="getGridIconArrow(values.gridPowerMV?.total ?? null)"
+              [largeBox]="true"
+            >
+            </app-live-metrics-box>
+          </div>
+          <div class="hv">
+            <div class="title">High voltage<br />110 kV</div>
+            <app-live-metrics-box
+              [data]="values.gridPowerHV"
+              [baseUnit]="'W'"
+              [title]="getGridPowerTitle('HV')"
+              [icon]="values.gridPowerHV?.total !== 0 ? 'grid-icon' : undefined"
+              [arrowIcon]="getGridIconArrow(values.gridPowerHV?.total ?? null)"
+              [largeBox]="true"
+            >
+            </app-live-metrics-box>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="empty" i18n>Missing "values" property in the response.</div>
+    }
+  } @else {
+    <div class="empty" i18n>No live metrics available.</div>
+  }
+</section>
+
+@if (request?.data?.zonedUpdatedAt) {
+  <div class="timestamp secondary-text">
+    <ng-container i18n>Updated</ng-container>
+    {{ request?.data?.zonedUpdatedAt | date: "HH:mm:ss" }}
+  </div>
+}

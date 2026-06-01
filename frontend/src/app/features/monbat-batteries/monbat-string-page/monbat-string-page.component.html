@@ -1,0 +1,165 @@
+<!-- <div *ngIf="(batteryStringReq$ | async)?.isLoading" class="loading-block">
+  <nz-spin nzTip="Loading..."></nz-spin>
+</div>
+
+<div *ngIf="(batteryStringReq$ | async)?.error" class="error-block">
+  <nz-alert nzType="error" i18n-nzMessage nzMessage="Failed to load battery strings" nzShowIcon></nz-alert>
+</div> -->
+
+<!-- Battery strings are initially loaded from parent component and cached in a service. -->
+
+@if (batteryString$ | async; as batteryString) {
+  <div class="header">
+    <div class="sticky-header">
+      <div>
+        <h1>
+          {{ batteryString.displayName }}
+          <app-live-data-indicator [size]="'large'"></app-live-data-indicator>
+        </h1>
+        <!-- <p>{{ batteryString.batteries.length }} batteries</p> -->
+        <p>
+          <ng-container i18n>Values measured</ng-container><br />
+          {{ batteryString.timestamp | relativeDate: "mediumDate" }}
+          <ng-container i18n>at</ng-container>
+          {{ batteryString.timestamp | date: "HH:mm:ss" }}
+        </p>
+      </div>
+
+      <div class="value-block">
+        <!-- <h3>Current</h3> -->
+
+        <div class="electric-current">
+          <span i18n="@@electric-current" class="label">Current</span>
+          <app-value-display
+            [value]="batteryString.electricCurrent"
+            unit=" A"
+            format="1.2-2"
+          ></app-value-display>
+        </div>
+      </div>
+
+      @if (minMax$ | async; as minMax) {
+        <div class="value-block">
+          <!-- <h3>Voltage</h3> -->
+
+          <div class="min-max-container">
+            <div class="min">
+              <span i18n class="min-max-label">MIN Voltage</span>
+              <app-value-display
+                [value]="minMax.minVoltageBatt?.voltage"
+                unit=" V"
+                format="1.2-2"
+              ></app-value-display>
+              <div>
+                <ng-container
+                  [ngTemplateOutlet]="outlet.isActivated ? batteryLink : batteryAnchor"
+                  [ngTemplateOutletContext]="{ battery: minMax.minVoltageBatt }"
+                >
+                </ng-container>
+              </div>
+            </div>
+
+            <div class="max">
+              <span i18n class="min-max-label">MAX Voltage</span>
+              <app-value-display
+                [value]="minMax.maxVoltageBatt?.voltage"
+                unit=" V"
+                format="1.2-2"
+              ></app-value-display>
+              <div>
+                <ng-container
+                  [ngTemplateOutlet]="outlet.isActivated ? batteryLink : batteryAnchor"
+                  [ngTemplateOutletContext]="{ battery: minMax.maxVoltageBatt }"
+                >
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="value-block">
+          <!-- <h3>Temperature</h3> -->
+
+          <div class="min-max-container">
+            <div class="min">
+              <span i18n class="min-max-label">MIN Temperature</span>
+              <app-value-display
+                [value]="minMax.minTemperatureBatt?.temperature"
+                unit=" °C"
+                format="1.1-1"
+              ></app-value-display>
+              <div>
+                <ng-container
+                  [ngTemplateOutlet]="outlet.isActivated ? batteryLink : batteryAnchor"
+                  [ngTemplateOutletContext]="{ battery: minMax.minTemperatureBatt }"
+                >
+                </ng-container>
+              </div>
+            </div>
+
+            <div class="max">
+              <span i18n class="min-max-label">MAX Temperature</span>
+              <app-value-display
+                [value]="minMax.maxTemperatureBatt?.temperature"
+                unit=" °C"
+                format="1.1-1"
+              ></app-value-display>
+              <div>
+                <ng-container
+                  [ngTemplateOutlet]="outlet.isActivated ? batteryLink : batteryAnchor"
+                  [ngTemplateOutletContext]="{ battery: minMax.maxTemperatureBatt }"
+                >
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  @if (!outlet.isActivated) {
+    <div class="content">
+      <app-monbat-battery-table-view
+        [data]="batteryString.batteries"
+      ></app-monbat-battery-table-view>
+    </div>
+  }
+  <div class="historical-data-page" [class.visible]="outlet.isActivated">
+    @if (outlet.isActivated) {
+      <div class="battery-nav">
+        <div class="nav-item-sticky">
+          <a nz-button routerLink="./" queryParamsHandling="merge">
+            <span nz-icon nzType="arrow-left" nzTheme="outline"></span>&nbsp;
+            <span i18n>Back</span>
+          </a>
+        </div>
+        <ul class="battery-nav-list">
+          @for (battery of batteryString.batteries; track battery.id) {
+            <li
+              id="battery-nav-item-{{ battery.id }}"
+              class="battery-nav-item"
+              routerLink="batteries/{{ battery.id }}"
+              routerLinkActive="active"
+              queryParamsHandling="merge"
+            >
+              {{ battery.displayName }}
+            </li>
+          }
+        </ul>
+      </div>
+    }
+    <div class="battery-page-container">
+      <router-outlet #outlet="outlet"></router-outlet>
+    </div>
+  </div>
+}
+
+<ng-template #batteryAnchor let-battery="battery">
+  <a (click)="onClick(battery || undefined)"> [{{ battery?.displayName }}] </a>
+</ng-template>
+
+<ng-template #batteryLink let-battery="battery">
+  <a routerLink="batteries/{{ battery?.id }}" routerLinkActive="active" queryParamsHandling="merge">
+    [{{ battery?.displayName }}]
+  </a>
+</ng-template>

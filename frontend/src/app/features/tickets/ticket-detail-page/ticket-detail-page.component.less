@@ -1,0 +1,41 @@
+@import "theme";
+
+app-ticket-detail-page {
+  position: relative; // For sticky positioning task detail block
+
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+  padding: 2em;
+
+  background: white;
+
+  form {
+    max-width: 800px;
+  }
+
+  .tasks-block {
+    // max-width: 1200px;
+  }
+
+  .activity-block {
+    .item {
+      margin-top: 2em;
+      line-height: 1.2;
+
+      display: flex;
+
+      app-relative-timestamp {
+        min-width: 100px;
+      }
+
+      .something {
+        margin: 0 1em;
+
+        width: 3px;
+        height: 32px;
+        background-color: @blue-7;
+      }
+    }
+  }
+}

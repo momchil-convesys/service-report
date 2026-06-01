@@ -1,0 +1,264 @@
+<nz-spin [nzSpinning]="loadingMessage" [nzTip]="loadingMessage || ''" nzSize="large">
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" nz-form nzLayout="vertical">
+    @if (errorMessage) {
+      <nz-alert
+        nzType="error"
+        [nzMessage]="errorMessage.title"
+        [nzDescription]="errorMessage.description"
+        nzShowIcon
+        nzBanner="true"
+      ></nz-alert>
+    }
+
+    @if (activePowerLimitSchedule) {
+      <nz-alert
+        nzType="warning"
+        [nzMessage]="powerLimitScheduleEnabled"
+        [nzDescription]="unpredictableOutcome"
+        nzShowIcon
+        nzBanner="true"
+      ></nz-alert>
+    }
+
+    <div class="content">
+      @switch (form.controls.requestType.value) {
+        @case ("start-inverter") {
+          <div class="intro">
+            <span class="icon" nz-icon nzType="play-circle" nzTheme="outline"></span>
+            <div class="description">
+              <ng-container i18n>Confirm sending</ng-container>&nbsp;<b i18n>START</b><br />
+              <ng-container i18n>command to</ng-container>&nbsp;<b>{{
+                devices.length === 1 ? devices[0].name : "ALL inverters (" + devices.length + ")"
+              }}</b
+              >.
+            </div>
+          </div>
+        }
+
+        @case ("stop-inverter") {
+          <div class="intro">
+            <span class="icon" nz-icon nzType="poweroff" nzTheme="outline"></span>
+            <div class="description">
+              <ng-container i18n>Confirm sending</ng-container>&nbsp;<b i18n>STOP</b><br />
+              <ng-container i18n>command to</ng-container>&nbsp;<b>{{
+                devices.length === 1 ? devices[0].name : "ALL inverters (" + devices.length + ")"
+              }}</b
+              >.
+            </div>
+          </div>
+        }
+
+        @case ("limit-inverter-power") {
+          <div class="intro">
+            <span class="icon" nz-icon nzType="vertical-align-top" nzTheme="outline"></span>
+            <div class="description">
+              <ng-container i18n>Change power limit settings</ng-container>
+              <br />
+              <ng-container i18n>for</ng-container>
+              <b>
+                {{
+                  devices.length === 1 ? devices[0].name : "ALL inverters (" + devices.length + ")"
+                }}</b
+              >.
+            </div>
+          </div>
+          @if (ambiguousMaxValues) {
+            <nz-alert
+              class="ambiguous-values-warning"
+              nzType="warning"
+              [nzMessage]="ambiguousMaximumPowerValues"
+              [nzDescription]="inconsistentOrNotProvided"
+              [nzShowIcon]="false"
+            ></nz-alert>
+          }
+          <nz-radio-group class="power-limit-options" formControlName="powerLimitOption">
+            <label
+              nz-radio
+              nzValue="revoke"
+              [class.active]="form.controls.powerLimitOption.value === 'revoke'"
+            >
+              <div class="radio-content">
+                <b i18n>Remove power limit</b>
+                <br />
+                <ng-container i18n>Revoke currently applied power limit (if any).</ng-container>
+              </div>
+            </label>
+            <label
+              nz-radio
+              nzValue="set"
+              [class.active]="form.controls.powerLimitOption.value === 'set'"
+            >
+              <div class="radio-content">
+                <nz-form-item>
+                  <nz-form-label> <b i18n>Set power limit to</b> </nz-form-label>
+
+                  <div class="power-limit-value-controls">
+                    <nz-form-control
+                      nzValidateStatus="{{
+                        form.controls.powerLimitOption.value === 'set' &&
+                        form.controls.powerLimitValue.invalid &&
+                        form.controls.powerLimitValue.dirty
+                          ? 'error'
+                          : undefined
+                      }}"
+                      [nzErrorTip]="powerLimitErrors"
+                      [nzExtra]="minMaxTemplate"
+                    >
+                      <nz-input-group nzSize="large" [nzAddOnAfter]="addOnAfterTemplate">
+                        <input
+                          type="text"
+                          name="power-limit"
+                          nz-input
+                          autocomplete="off"
+                          [required]="form.controls.powerLimitOption.value === 'set'"
+                          formControlName="powerLimitValue"
+                          #powerLimitInput
+                        />
+                      </nz-input-group>
+                      <ng-template #addOnAfterTemplate>
+                        @if (powerLimitSettingMax !== undefined && !ambiguousMaxValues) {
+                          <nz-select formControlName="powerLimitValueUnit" nzSize="large">
+                            <nz-option nzLabel="kW" nzValue="kW"></nz-option>
+                            <nz-option nzLabel="%" nzValue="%"></nz-option>
+                          </nz-select>
+                        } @else {
+                          kW
+                        }
+                      </ng-template>
+                      <ng-template #minMaxTemplate>
+                        @if (
+                          powerLimitSettingMax !== undefined &&
+                          form.controls.powerLimitValueUnit.value === "kW"
+                        ) {
+                          <div>
+                            <ng-container i18n>From</ng-container>
+                            {{ 0 }}
+                            <ng-container i18n>to</ng-container>
+                            {{ powerLimitSettingMax }}
+                            <ng-container>kW</ng-container>
+                          </div>
+                        }
+                        @if (powerLimitValueKwEquivalent$ | async; as equivalent) {
+                          <div>
+                            <ng-container i18n>Equivalent to</ng-container>
+                            {{ equivalent }}
+                            <ng-container>kW</ng-container>
+                          </div>
+                        }
+                      </ng-template>
+                      <ng-template #powerLimitErrors>
+                        @if (form.controls.powerLimitValue.hasError("required")) {
+                          <ng-container i18n>
+                            Please provide a value for power limit!
+                          </ng-container>
+                        }
+                        @if (form.controls.powerLimitValue.hasError("min")) {
+                          <ng-container i18n> Value for power limit should be </ng-container>
+                          &ge; 0
+                          {{ form.controls.powerLimitValueUnit.value }}.
+                        }
+                        @if (form.controls.powerLimitValue.hasError("max")) {
+                          <ng-container i18n> Value for power limit should be </ng-container>
+                          &le;
+                          {{ this.powerLimitSettingMax }}
+                          {{ form.controls.powerLimitValueUnit.value }}.
+                        }
+                        @if (form.controls.powerLimitValue.hasError("invalidNumber")) {
+                          <ng-container i18n> Provided value is not a valid number. </ng-container>
+                        }
+                      </ng-template>
+                    </nz-form-control>
+
+                    <!-- <nz-slider
+                      [ngModel]="form.controls.powerLimitValue.value"
+                      (ngModelChange)="onSliderMove($event)"
+                      [ngModelOptions]="{ standalone: true }"
+                      [nzMin]="0"
+                      [nzMax]="powerLimitSettingMax"
+                      [nzStep]="1"
+                      [nzMarks]="getSliderMarks()"
+                      [nzTipFormatter]="sliderTooltipFormatter"
+                    ></nz-slider> -->
+                  </div>
+                </nz-form-item>
+              </div>
+            </label>
+          </nz-radio-group>
+        }
+
+        @default {
+          <ng-container i18n>Unknown command requested:</ng-container> {{ requestType }}
+        }
+      }
+
+      <!-- End of request specific content -->
+
+      <div class="passcode-container">
+        <input
+          class="autocomplete-hint"
+          type="text"
+          name="username"
+          autocomplete="username"
+          formControlName="usernameAutosaveHint"
+        />
+
+        <nz-form-item>
+          <nz-form-label i18n>Master control password</nz-form-label>
+          <nz-form-control
+            nzValidateStatus="{{
+              form.controls.passcode.invalid && form.controls.passcode.dirty ? 'error' : undefined
+            }}"
+            i18n-nzErrorTip
+            nzErrorTip="Password is required to perform this operation!"
+          >
+            <input
+              type="password"
+              name="master-password"
+              nz-input
+              nzSize="large"
+              autocomplete="current-password"
+              [required]="true"
+              formControlName="passcode"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" nz-button nzSize="large" (click)="onCancel()" i18n>Cancel</button>
+
+      @switch (requestType) {
+        @case ("start-inverter") {
+          <button type="submit" nz-button nzSize="large" nzType="primary">
+            <ng-container i18n>START</ng-container>&nbsp;{{
+              devices.length === 1 ? devices[0].name : allInverters
+            }}
+          </button>
+        }
+
+        @case ("stop-inverter") {
+          <button type="submit" nz-button nzSize="large" nzType="primary" nzDanger>
+            <ng-container i18n>STOP</ng-container>&nbsp;{{
+              devices.length === 1 ? devices[0].name : allInverters
+            }}
+          </button>
+        }
+
+        @case ("limit-inverter-power") {
+          <button type="submit" nz-button nzSize="large" nzType="primary" nzDanger>
+            {{
+              form.controls.powerLimitOption.value === "set" ? setPowerLimit : removePowerLimit
+            }}&nbsp;<ng-container i18n>for</ng-container>&nbsp;{{
+              devices.length === 1 ? devices[0].name : allInverters
+            }}
+          </button>
+        }
+
+        @default {
+          <ng-container i18n>Unknown command requested:</ng-container>{{ requestType }}
+        }
+      }
+    </div>
+  </form>
+</nz-spin>

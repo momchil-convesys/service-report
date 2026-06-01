@@ -1,0 +1,15 @@
+@if (schedule) {
+  @if (positionInTime(schedule); as positionInTime) {
+    <span
+      [class]="schedule.status"
+      [class.past]="positionInTime === 'past'"
+      [class.current]="positionInTime === 'present'"
+    >
+      @if (schedule.status === "enabled" && positionInTime === "present") {
+        current
+      } @else {
+        {{ schedule.status }}
+      }
+    </span>
+  }
+}

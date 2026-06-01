@@ -1,0 +1,28 @@
+<nz-spin [nzSpinning]="isLoading">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <section>
+      <h3 i18n>Minimum export price</h3>
+      <p i18n>Export to grid will be stopped if the price is lower than this value.</p>
+
+      <nz-input-number formControlName="minExportPrice" [nzStep]="1" style="min-width: 100px">
+        <span nzInputAddonAfter> BGN&thinsp;/&thinsp;MWh </span>
+      </nz-input-number>
+    </section>
+
+    <section>
+      <h3 i18n>Automatically enable new schedules</h3>
+      <p i18n>
+        When this setting is on, new schedules will be enabled by default. Otherwise schedules
+        should be enabled manually.
+      </p>
+
+      <div class="switch-row">
+        <nz-switch formControlName="autoEnableSchedules"></nz-switch>
+
+        <span i18n>Automatically enable new schedules</span>
+      </div>
+    </section>
+
+    <button nz-button nzSize="large" nzType="primary" type="submit">Save changes</button>
+  </form>
+</nz-spin>

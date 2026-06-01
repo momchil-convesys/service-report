@@ -1,0 +1,149 @@
+@import "theme";
+
+app-grid-export-schedule-page {
+  background-color: white;
+  display: block;
+
+  .current-schedule-block {
+    margin: @margin-sm 0 @margin-lg 0;
+  }
+
+  .no-active-schedule {
+    text-align: center;
+
+    padding: 20px; // keep same height as nav item
+
+    background-color: @gray-1;
+
+    border-radius: 2px;
+
+    font-size: @font-size-lg;
+    line-height: 1.5;
+
+    color: @text-color-secondary;
+
+    font-style: italic;
+  }
+
+  .icon-slot {
+    min-width: 28px;
+    line-height: 28px;
+    text-align: center;
+  }
+
+  .custom-list .list-item.active-schedule-nav {
+    margin-bottom: @margin-xss;
+
+    align-items: center;
+
+    padding: @padding-md;
+    border: 1px solid @border-color-split;
+
+    border-radius: 2px;
+
+    font-size: @font-size-lg;
+    line-height: 1.5;
+
+    .right {
+      margin-left: auto;
+    }
+
+    &:hover {
+      background-color: @gray-2;
+    }
+
+    &.is-active {
+      border-color: @blue-2;
+      background-color: @blue-2;
+    }
+  }
+
+  .upload-block {
+    margin-bottom: 10px;
+  }
+
+  .list-block {
+    nz-spin {
+      min-height: 150px;
+    }
+
+    app-ges-history-list {
+      text-align: left; // because nz-spin changes it to center
+    }
+  }
+
+  .page-content {
+    display: flex;
+    // flex-wrap: wrap;
+    padding: @padding-md @padding-lg;
+
+    & > .left-pane {
+      flex: 3 3 300px;
+      max-width: 600px;
+
+      padding-right: @padding-md;
+
+      border-right: 1px solid @border-color-split;
+    }
+
+    & > .right-pane {
+      flex: 5 5 500px;
+      max-width: 1200px;
+
+      padding-left: @padding-md;
+
+      overflow: hidden;
+    }
+
+    & > .right-pane.collapsed {
+      flex: 0 0 auto;
+    }
+  }
+
+  .nav-up {
+    display: none;
+  }
+
+  @media (max-width: @breakpoint-xl) {
+    .page-content {
+      & > .left-pane {
+        flex: 1;
+        max-width: 100%;
+      }
+
+      & > .left-pane {
+        border-right: 0;
+        margin-right: 0;
+        padding-right: 0;
+      }
+
+      & > .left-pane.collapsed {
+        display: none;
+      }
+
+      & > .right-pane.collapsed {
+        display: none;
+      }
+
+      & > .right-pane {
+        padding-left: 0;
+      }
+    }
+
+    .nav-up {
+      display: block;
+      margin-bottom: @padding-sm;
+    }
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    .page-content {
+      padding: @padding-xs @padding-sm;
+    }
+
+    .custom-list {
+      margin-left: -1 * @padding-sm;
+      margin-right: -1 * @padding-sm;
+    }
+  }
+}

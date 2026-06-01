@@ -1,0 +1,179 @@
+<nz-spin [nzSpinning]="loadingMessage" [nzTip]="loadingMessage || ''" nzSize="large">
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" nz-form nzLayout="vertical">
+    @if (customError) {
+      <app-custom-alert
+        [customError]="customError"
+        [nzBanner]="true"
+        [nzCloseable]="false"
+      ></app-custom-alert>
+    }
+
+    @if (form.errors && form.errors["originalValueUnknown"]) {
+      <nz-alert
+        nzType="error"
+        i18n-nzMessage
+        nzMessage="Missing original value"
+        i18n-nzDescription
+        nzDescription="We have lost the original target value, please choose another option!"
+        nzShowIcon
+        nzBanner="true"
+      ></nz-alert>
+    }
+
+    @if (data) {
+      <div class="content">
+        <div class="intro">
+          <app-power-limit-icon [scheduledLimit]="true"></app-power-limit-icon>
+
+          <div class="description">
+            {{ data.interval.start | date: "EEEE, d MMMM" }}
+            <br />
+            <b>
+              {{ data.interval.start | date: "HH:mm" }}–{{ data.interval.end | date: "HH:mm" }}
+            </b>
+          </div>
+        </div>
+
+        <nz-radio-group class="power-limit-options" formControlName="powerLimitOption">
+          <label
+            nz-radio
+            nzValue="set"
+            [class.active]="form.controls.powerLimitOption.value === 'set'"
+          >
+            <div class="radio-content">
+              <nz-form-item>
+                <nz-form-label> <b i18n>Target value</b> </nz-form-label>
+
+                <div class="power-limit-value-controls">
+                  <nz-form-control
+                    nzValidateStatus="{{
+                      form.controls.powerLimitOption.value === 'set' &&
+                      form.controls.powerLimitValue.invalid &&
+                      form.controls.powerLimitValue.dirty
+                        ? 'error'
+                        : undefined
+                    }}"
+                    [nzErrorTip]="powerLimitErrors"
+                    [nzExtra]="
+                      form.controls.powerLimitValue.valid && calculatedAdjustmentHint
+                        ? hintTemplate
+                        : undefined
+                    "
+                  >
+                    <nz-input-group nzSize="large" [nzAddOnAfter]="addOnAfterTemplate">
+                      <input
+                        type="text"
+                        name="power-limit"
+                        nz-input
+                        autocomplete="off"
+                        [required]="form.controls.powerLimitOption.value === 'set'"
+                        formControlName="powerLimitValue"
+                        #powerLimitInput
+                      />
+                    </nz-input-group>
+                    <ng-template #addOnAfterTemplate>{{ getUnitSuffixFormatted() }}</ng-template>
+                    <ng-template #hintTemplate>
+                      @if (calculatedAdjustmentHint) {
+                        <span i18n>Adjusted</span>
+                        ({{ calculatedAdjustmentHint.adjustmentPercentageFormatted }}) =
+                        <app-pls-value-formatted
+                          [value]="calculatedAdjustmentHint.adjustedValue_MWh"
+                          [unit]="getUnitSuffixFormatted()"
+                        ></app-pls-value-formatted>
+                      }
+                    </ng-template>
+                    <ng-template #powerLimitErrors>
+                      @if (form.controls.powerLimitValue.hasError("required")) {
+                        <ng-container i18n> Please provide a value! </ng-container>
+                      }
+                      @if (form.controls.powerLimitValue.hasError("min")) {
+                        <span i18n>Value should be</span> &ge; 0!
+                      }
+                      @if (form.controls.powerLimitValue.hasError("invalidNumber")) {
+                        <ng-container i18n> Provided value is not a valid number. </ng-container>
+                      }
+                    </ng-template>
+                  </nz-form-control>
+                </div>
+              </nz-form-item>
+            </div>
+          </label>
+
+          @if (originalValue !== undefined) {
+            <label
+              nz-radio
+              nzValue="reset"
+              [class.active]="form.controls.powerLimitOption.value === 'reset'"
+            >
+              <div class="radio-content">
+                <b i18n>Reset to original value</b>
+                <br />
+                <app-pls-value-formatted
+                  [value]="originalValue.value_Mega"
+                  [unit]="getUnitSuffixFormatted()"
+                ></app-pls-value-formatted>
+
+                @if (originalValue.valueAdjusted_Mega !== originalValue.value_Mega) {
+                  (<app-pls-value-formatted
+                    [value]="originalValue.valueAdjusted_Mega"
+                    [unit]="getUnitSuffixFormatted()"
+                  ></app-pls-value-formatted
+                  >)
+                }
+              </div>
+            </label>
+          }
+
+          <label
+            nz-radio
+            nzValue="revoke"
+            [class.active]="form.controls.powerLimitOption.value === 'revoke'"
+          >
+            <div class="radio-content">
+              <b i18n>No limit</b>
+              <br />
+              <ng-container i18n>Set to unlimited.</ng-container>
+            </div>
+          </label>
+        </nz-radio-group>
+
+        <div class="passcode-container">
+          <input
+            class="autocomplete-hint"
+            type="text"
+            name="username"
+            autocomplete="username"
+            formControlName="usernameAutosaveHint"
+          />
+
+          <nz-form-item>
+            <nz-form-label i18n>Master control password</nz-form-label>
+            <nz-form-control
+              nzValidateStatus="{{
+                form.controls.passcode.invalid && form.controls.passcode.dirty ? 'error' : undefined
+              }}"
+              i18n-nzErrorTip
+              nzErrorTip="Password is required to perform this operation!"
+            >
+              <input
+                type="password"
+                name="master-password"
+                nz-input
+                nzSize="large"
+                autocomplete="current-password"
+                [required]="true"
+                formControlName="passcode"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    }
+
+    <div class="actions">
+      <button type="button" nz-button nzSize="large" (click)="onCancel()" i18n>Cancel</button>
+
+      <button type="submit" nz-button nzSize="large" nzType="primary" i18n>Submit</button>
+    </div>
+  </form>
+</nz-spin>

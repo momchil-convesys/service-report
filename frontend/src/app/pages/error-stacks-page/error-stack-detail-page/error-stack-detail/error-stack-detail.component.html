@@ -1,0 +1,82 @@
+<header>
+  <div class="title">
+    @if (errorStackSummary) {
+      <h2>
+        {{ errorStackSummary.timestamp | date: "d MMMM y, HH:mm:ss" }}
+      </h2>
+    }
+    @if (!errorStackSummary) {
+      <h2>Loading error stack</h2>
+    }
+    <!-- <button nz-button nzType="default">
+      <i nz-icon nzType="download" nzTheme="outline"></i>
+      Download
+    </button> -->
+
+    <!-- <a
+      nz-button
+      class="back-button"
+      routerLink="../../../../faults-history"
+      queryParamsHandling="merge"
+      routerLinkActive="active"
+    >
+      <span nz-icon nzType="left" nzTheme="outline"></span>
+      Faults history
+    </a> -->
+  </div>
+  @if (errorStackSummary) {
+    <p>
+      <app-device-link [deviceId]="errorStackSummary.deviceId"></app-device-link>
+      <!-- <nz-divider nzType="vertical"></nz-divider>
+    <span style="text-transform: capitalize">{{ errorStackSummary.deviceSide }}</span> -->
+      @if (errorStackDetail && errorStackDetail.stackSize > 1) {
+        <nz-divider nzType="vertical"></nz-divider>
+        <nz-tag class="current-index">
+          <ng-container i18n>Current index:</ng-container>
+          {{ errorStackDetail.currentIndex }}
+        </nz-tag>
+      }
+    </p>
+  }
+  @if (!errorStackSummary) {
+    <p>...</p>
+  }
+  <nz-divider style="margin-bottom: 0"></nz-divider>
+</header>
+<nz-card nzBordered="false">
+  <app-faults-table
+    [faultGroups]="faultGroups || []"
+    [extraColumns]="[{ thTemplate, tdTemplate, colspan: indices.length }]"
+    [loadingData]="loadingData"
+    [hideFilteringOptions]="hideFilteringOptions"
+  >
+  </app-faults-table>
+
+  <ng-template #thTemplate>
+    @for (index of indices; track index) {
+      <th
+        nzAlign="center"
+        [class.current-index]="index === errorStackDetail?.currentIndex && indices.length > 1"
+      >
+        @if (indices.length === 1) {
+          <ng-container i18n> Indicator </ng-container>
+        } @else {
+          {{ index }}
+        }
+      </th>
+    }
+  </ng-template>
+
+  <ng-template let-item #tdTemplate>
+    @for (index of indices; track index) {
+      <td
+        nzAlign="center"
+        [class.current-index]="index === errorStackDetail?.currentIndex && indices.length > 1"
+      >
+        <app-error-stack-index-value
+          [value]="valueAtIndexForFault(index, item.itemId)"
+        ></app-error-stack-index-value>
+      </td>
+    }
+  </ng-template>
+</nz-card>

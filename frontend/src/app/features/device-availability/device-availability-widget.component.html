@@ -1,0 +1,57 @@
+<nz-card class="custom-card" nzBordered="true" nzSize="small">
+  <div class="card-header">
+    <div class="card-title">
+      <ng-content></ng-content>
+    </div>
+  </div>
+
+  <app-datetime-range-select
+    (modelChange)="onDatetimeRangeChange($event)"
+    [defaultOption]="'day'"
+    [showPredefinedOptions]="true"
+    [timeZone]="(timeZone$ | async) || undefined"
+  >
+  </app-datetime-range-select>
+
+  @if ((dataRequest$ | async)?.error; as error) {
+    <div class="error-block">
+      <nz-alert
+        nzType="error"
+        i18n-nzMessage
+        nzMessage="Failed to load data"
+        [nzDescription]="error.message"
+        nzShowIcon
+      ></nz-alert>
+    </div>
+  } @else {
+    <nz-tabs nzType="card">
+      <!-- <nz-tab i18n nzTitle="Intervals"> -->
+      <nz-tab i18n-nzTitle nzTitle="Intervals">
+        <ng-template nz-tab>
+          <app-device-availability-x-range-chart
+            [data]="(dataRequest$ | async)?.data"
+            [loading]="(dataRequest$ | async)?.isLoading || false"
+            [context]="chartContext$ | async"
+          ></app-device-availability-x-range-chart>
+        </ng-template>
+      </nz-tab>
+
+      <nz-tab i18n-nzTitle nzTitle="Percentage">
+        <ng-template nz-tab>
+          <app-device-availability-percentage
+            [data]="(dataRequest$ | async)?.data"
+            [loading]="(dataRequest$ | async)?.isLoading || false"
+            [context]="chartContext$ | async"
+          ></app-device-availability-percentage>
+        </ng-template>
+      </nz-tab>
+
+      <nz-tab i18n-nzTitle nzTitle="Timeline">
+        <app-device-availability-timeline
+          [data]="(dataRequest$ | async)?.data"
+          [loading]="(dataRequest$ | async)?.isLoading || false"
+        ></app-device-availability-timeline>
+      </nz-tab>
+    </nz-tabs>
+  }
+</nz-card>

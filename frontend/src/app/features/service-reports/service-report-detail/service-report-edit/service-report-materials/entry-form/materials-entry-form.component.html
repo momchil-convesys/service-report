@@ -1,0 +1,59 @@
+<!-- <ng-container *ngIf="entryData; else schemaSelect" [ngTemplateOutlet]="editItem"></ng-container> -->
+
+<app-materials-schema-select></app-materials-schema-select>
+<hr />
+<!-- <ng-template #editItem> -->
+<div nz-row class="flex-row">
+  <h3>{{ entryData ? "Edit item" : "New item" }}</h3>
+
+  <div class="actions">
+    <button nz-button nzType="link" (click)="onSelectFromSchema()">Select from schema</button>
+  </div>
+</div>
+<app-materials-entry-form-fields
+  [entryForm]="entryForm"
+  [schema]="currentSchema"
+></app-materials-entry-form-fields>
+<hr />
+<div class="footer">
+  <div class="footer-actions">
+    <!-- <button type="button" class="btn btn-primary" (click)="onSubmit()">
+      {{ entryData ? "Save" : "Add item" }}
+    </button> -->
+    <button nz-button nzType="primary" [disabled]="entryForm.invalid" (click)="onSubmit()">
+      {{ entryData ? "Save" : "Add item" }}
+    </button>
+    @if (entryData || entryForm.dirty) {
+      <!-- <button type="button" class="btn btn-secondary" (click)="onReset()">Cancel</button> -->
+      <button nz-button nzType="default" ghost (click)="onReset()">Cancel</button>
+    }
+  </div>
+  @if (entryData) {
+    <div class="footer-danger">
+      <!-- <button type="button" class="btn btn-outline-danger" (click)="onDelete()">Delete item</button> -->
+      <button nz-button nzType="default" nzDanger (click)="onDelete()">Delete item</button>
+    </div>
+  }
+</div>
+<!-- </ng-template> -->
+
+<nz-drawer
+  [nzClosable]="false"
+  [nzMaskClosable]="true"
+  [nzBodyStyle]="{ padding: 0 }"
+  nzWrapClassName="side-menu-container"
+  [nzVisible]="visible"
+  nzWidth="100%"
+>
+  <ng-container *nzDrawerContent>
+    <app-materials-picker
+      (submitItems)="onAddEntries($event)"
+      (cancel)="onCancel()"
+      [schema]="currentSchema"
+    ></app-materials-picker>
+  </ng-container>
+</nz-drawer>
+
+<ng-template #tplTitle>
+  <span> {{ entryData }} <ng-container i18n>inverter control</ng-container></span>
+</ng-template>

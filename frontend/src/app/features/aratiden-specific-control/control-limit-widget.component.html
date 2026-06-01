@@ -1,0 +1,171 @@
+<nz-card [nzTitle]="undefined" nzBordered="true" nzSize="small">
+  <div class="current-state-section">
+    @let currentStateLoading = currentStateLoading$ | async;
+
+    <div class="section-header">
+      <h3>Power limit options</h3>
+      <app-live-data-indicator
+        i18n-title
+        title="Data is updated live. No need to refresh the page."
+      ></app-live-data-indicator>
+    </div>
+
+    @if (currentStateLoading) {
+      <nz-spin i18n-nzTip="@@loading" nzTip="Loading..."></nz-spin>
+    } @else if (currentStateError) {
+      <app-custom-alert [customError]="currentStateError" [nzBanner]="false"></app-custom-alert>
+    } @else if (currentStateData) {
+      <nz-table
+        #currentStateTable
+        [nzData]="[currentStateData]"
+        [nzShowPagination]="false"
+        [nzSize]="'small'"
+        nzBordered="true"
+      >
+        <tbody>
+          @if (plantLimitType !== "power") {
+            <tr>
+              <td nzWidth="50px">Limit type</td>
+              <td>
+                <strong>{{ currentStateData.limitType === "power" ? "POWER" : "ENERGY" }}</strong>
+              </td>
+            </tr>
+          }
+          <tr>
+            <td nzWidth="50px">Limit value</td>
+            <td>
+              <strong>
+                <app-value-display
+                  [value]="currentStateData.limitValue"
+                  [unit]="' ' + getUnitForType(currentStateData.limitType) || ''"
+                ></app-value-display>
+              </strong>
+            </td>
+          </tr>
+          <tr>
+            <td nzWidth="50px">Last updated</td>
+            <td>
+              {{ currentStateData.timestamp | date: "d MMMM y" }}
+              <span i18n>at</span>
+              {{ currentStateData.timestamp | date: "HH:mm" }}
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    }
+  </div>
+
+  <div class="update-form-section">
+    <h3>Modify power limit options</h3>
+
+    @if (successResult$ | async) {
+      <nz-result
+        nzStatus="success"
+        i18n-nzTitle
+        nzTitle="Request was sent successfully!"
+        i18n-nzSubTitle
+        nzSubTitle="The operation may take some time to complete."
+      >
+        <div nz-result-extra>
+          <button type="button" nz-button nzType="primary" (click)="onFinish()">OK</button>
+        </div>
+      </nz-result>
+    } @else {
+      @if (customError$ | async; as customError) {
+        <app-custom-alert [customError]="customError" [nzBanner]="false"></app-custom-alert>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+        <nz-form-item>
+          <nz-form-control>
+            <nz-radio-group formControlName="actionType">
+              <label nz-radio nzValue="reset">Reset to default</label>
+              <label nz-radio nzValue="update">Update</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+
+        @if (form.get("actionType")?.value === "update") {
+          @if (plantLimitType !== "power") {
+            <nz-form-item class="indented">
+              <nz-form-label nzRequired>New limit type</nz-form-label>
+              <div class="limit-type-container">
+                <strong>POWER</strong>
+              </div>
+            </nz-form-item>
+          }
+
+          <nz-form-item class="indented">
+            <nz-form-label nzRequired>New limit value</nz-form-label>
+            <nz-form-control
+              nzValidateStatus="{{
+                form.get('limitValue')?.invalid && form.get('limitValue')?.dirty
+                  ? 'error'
+                  : undefined
+              }}"
+              i18n-nzErrorTip
+              nzErrorTip="This field is required!"
+            >
+              <nz-input-number
+                nz-input
+                type="number"
+                min="0"
+                formControlName="limitValue"
+                nzStep="0.1"
+                name="limit-value"
+                autocomplete="off"
+              >
+                <span nzInputAddonAfter>{{
+                  getUnitForType(form.get("limitType")?.value || null)
+                }}</span>
+              </nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        }
+
+        <div class="passcode-container indented">
+          <input
+            class="autocomplete-hint"
+            type="text"
+            name="username"
+            autocomplete="username"
+            formControlName="usernameAutosaveHint"
+          />
+
+          <nz-form-item>
+            <nz-form-label i18n nzRequired>Master control password</nz-form-label>
+            <nz-form-control
+              nzValidateStatus="{{
+                form.controls.passcode.invalid && form.controls.passcode.dirty ? 'error' : undefined
+              }}"
+              i18n-nzErrorTip
+              nzErrorTip="This field is required!"
+            >
+              <input
+                type="password"
+                name="master-password"
+                nz-input
+                autocomplete="current-password"
+                [required]="true"
+                formControlName="passcode"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        @let isSubmitting = isSubmitting$ | async;
+
+        <button
+          class="indented"
+          nz-button
+          nzType="primary"
+          type="submit"
+          [disabled]="isSubmitting"
+          [nzLoading]="isSubmitting"
+        >
+          {{ form.get("actionType")?.value === "update" ? "Submit" : "Reset to default" }}
+        </button>
+      </form>
+    }
+  </div>
+</nz-card>

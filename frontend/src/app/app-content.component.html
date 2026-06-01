@@ -1,0 +1,78 @@
+<nz-layout class="layout">
+  <div class="main-header">
+    <div
+      class="logo"
+      routerLink="/service-reports/mock-plant-1"
+      nz-tooltip
+      [nzTooltipTitle]="versions.getVersion()"
+      [nzTooltipMouseEnterDelay]="5"
+      [nzTooltipPlacement]="'bottom'"
+    >
+      <div class="company-name">Convesys</div>
+      <div class="details">Service Reports</div>
+    </div>
+    <ul class="primary-navigation" [class.collapsed]="isCollapsed">
+      <li>
+        <a
+          class="active"
+          routerLink="/service-reports/mock-plant-1"
+          routerLinkActive="active"
+          (click)="onHideNavigationMenu()"
+          i18n
+          >Service reports</a
+        >
+      </li>
+
+      @if (isLocalized) {
+        <li
+          nz-tooltip
+          nzTooltipTitle="Български"
+          nzTooltipPlacement="bottom"
+          style="margin-left: auto"
+        >
+          <a [class.active]="localeId === 'bg'" (click)="onLanguageChange('bg')">БГ</a>
+        </li>
+        <li nz-tooltip nzTooltipTitle="English" nzTooltipPlacement="bottom">
+          <a [class.active]="localeId === 'en-GB'" (click)="onLanguageChange('en-GB')">EN</a>
+        </li>
+      }
+
+      <li class="current-user" [style.margin-left]="isLocalized ? '0' : 'auto'">
+        <span>
+          <span nz-icon nzType="user" nzTheme="outline"></span>&nbsp;
+          @if (currentUser$ | async; as currentUser) {
+            {{ currentUser.displayName }}
+          } @else {
+            {{ getUserNameFromKeycloak() }}
+          }
+        </span>
+        <a (click)="onLogout()" i18n="@@logout">Logout</a>
+      </li>
+    </ul>
+    <a class="toggle-menu" (click)="onToggleNavigationMenu()">
+      @if (isCollapsed) {
+        <span nz-icon nzType="menu-unfold" nzTheme="outline"></span>
+      }
+      @if (!isCollapsed) {
+        <span nz-icon nzType="close" nzTheme="outline"></span>
+      }
+    </a>
+  </div>
+
+  @if (appInit.appInitCompleted$ | async) {
+    <nz-content>
+      @if (appInit.error$ | async; as error) {
+        <nz-result i18n-nzTitle nzTitle="Failed to initialize application" nzStatus="error">
+          <div nz-result-extra>
+            <button nz-button nzType="primary" (click)="onRetry()" i18n="@@retry">Retry</button>
+          </div>
+          <div nz-result-subtitle>
+            <div>{{ error.message }}</div>
+          </div>
+        </nz-result>
+      } @else {
+        <router-outlet></router-outlet>
+      }
+    </nz-content>
+  }
+</nz-layout>

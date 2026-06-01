@@ -1,0 +1,28 @@
+<div nz-row class="report-basic-details">
+  <div>
+    User organisation :<b> {{ reportService.reportData["userClient"].name }}</b>
+  </div>
+
+  <div>
+    Delivery Address :<b> {{ reportService.reportData["userClient"].address }}</b>
+  </div>
+</div>
+<!-- <div class="report-basic-details">
+  <div class="customer">
+    <div class="key-value-data">
+      <div class="key">User organisation</div>
+      <div class="value">{{ reportService.reportData["userClient"].name }}</div>
+    </div>
+    <div class="key-value-data">
+      <div class="key">Delivery Address</div>
+      <div class="value">{{ reportService.reportData["userClient"].address }}</div>
+    </div>
+  </div> -->
+<!-- duplicated information
+  <div *ngIf="isReadMode()" class="report-number">
+    <div class="key-value-data inline">
+      <div class="key">Service Report Number</div>
+      <div class="value">{{ reportService.reportData["id"] }}</div>
+    </div>
+  </div> 
+</div>-->

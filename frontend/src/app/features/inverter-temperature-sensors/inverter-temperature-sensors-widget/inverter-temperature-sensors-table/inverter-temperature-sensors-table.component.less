@@ -1,0 +1,53 @@
+@import "theme";
+
+app-inverter-temperature-sensors-table {
+  display: block;
+  height: 100%;
+
+  .sorted {
+    background-color: @gold-1;
+  }
+
+  .actions {
+    margin-top: @margin-xss;
+
+    display: flex;
+    gap: @padding-xs;
+  }
+
+  .ant-table-column-sorter {
+    transform: scale(1.6);
+    color: @gray-4;
+  }
+
+  .ant-table.ant-table-small .ant-table-thead > tr > th.min-max-cell {
+    padding: 3px;
+
+    button {
+      width: 100%;
+      font-weight: 600;
+    }
+  }
+
+  .ant-table.ant-table-small .ant-table-thead > tr > th.longtime-min-max-cell {
+    padding: 0px;
+
+    .divider {
+      display: inline-block;
+      // color: @border-color-base;
+      color: @gray-5;
+    }
+  }
+
+  // TODO: temporary fix
+  // When using virtual scroll, tbody class is missing and styles are broken
+  .ant-table.ant-table-small td {
+    padding: @padding-xs;
+
+    border-bottom: 1px solid #edf0f3;
+    transition: background 0.3s;
+  }
+  .ant-table.ant-table-small tr.ant-table-row:hover > td {
+    background-color: @gray-2;
+  }
+}

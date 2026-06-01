@@ -1,0 +1,49 @@
+<p>
+  <small>Users time zone</small><br />
+  <b> {{ userTimeZone }} ({{ userTimeZoneOffset / 1000 / 60 / 60 }} hours) </b>
+  <br />
+  {{ nowInUserTimeZone | date: "fullDate" }}
+  <br />
+  <b>{{ nowInUserTimeZone | date: "fullTime" }}</b>
+  <br />
+  ISO: {{ nowInUserTimeZoneISO }}
+</p>
+
+<p>
+  <small>Simulated plant time zone</small><br />
+  <b> {{ plantTimeZone }} ({{ plantTimeZoneOffset / 1000 / 60 / 60 }} hours) </b>
+  <br />
+  {{ nowInPlantTimeZone | date: "fullDate" }}
+  <br />
+  <b>{{ nowInPlantTimeZone | date: "fullTime" }}</b>
+  <br />
+  ISO:{{ nowInPlantTimeZoneISO }}
+</p>
+
+<p>
+  Date picker time zone: {{ plantTimeZone }}
+  <app-datetime-range-select
+    (modelChange)="onChange($event)"
+    [timeZone]="plantTimeZone"
+    [showIntegrationPeriod]="true"
+    [defaultOption]="'day'"
+  ></app-datetime-range-select>
+</p>
+
+<hr />
+
+<h3>Selected datetime range:</h3>
+
+<ul>
+  @for (item of selectedDatetimeRange$ | async; track $index) {
+    <li>
+      {{ item.type }}
+      Date objects:
+      <br />
+      <b>{{ item.from.toISOString() }} – {{ item.to.toISOString() }}</b>
+      <br />
+      Integration period: <b>{{ item.integrationPeriod }}</b>
+      <br />
+    </li>
+  }
+</ul>

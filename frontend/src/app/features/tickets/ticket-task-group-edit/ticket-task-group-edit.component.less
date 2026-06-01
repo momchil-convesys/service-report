@@ -1,0 +1,54 @@
+@import "theme";
+
+app-ticket-task-group-edit {
+  .ant-radio-button-wrapper:hover {
+    background: @item-hover-bg;
+    color: @text-color;
+  }
+
+  .ant-radio-button-wrapper:first-child {
+    border-radius: 15px 0 0 15px;
+  }
+
+  .ant-radio-button-wrapper:last-child {
+    border-radius: 0 15px 15px 0;
+  }
+
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    &.status-not-started {
+      color: @gray-7;
+      background: @gray-2;
+      border-color: @gray-6 !important;
+      &::before {
+        background-color: @gray-6;
+      }
+    }
+
+    &.status-in-progress {
+      color: @gold-7;
+      background: @gold-1;
+      border-color: @gold-6 !important;
+      &::before {
+        background-color: @gold-6;
+      }
+    }
+
+    &.status-done {
+      color: @green-7;
+      background: @green-1;
+      border-color: @green-6 !important;
+      &::before {
+        background-color: @green-6;
+      }
+    }
+
+    &.status-approved {
+      color: white;
+      background: @green-6;
+      border-color: @green-6;
+      &::before {
+        background-color: @green-6;
+      }
+    }
+  }
+}

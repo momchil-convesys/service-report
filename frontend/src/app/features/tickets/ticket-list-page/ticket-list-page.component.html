@@ -1,0 +1,24 @@
+<h1>Tickets list</h1>
+
+<p>
+  <a nz-button nzType="default" routerLink="new" nzBlock="">Create new ticket</a>
+</p>
+
+<ul>
+  @for (ticket of tickets$ | async; track ticket.id) {
+    <li>
+      <a [routerLink]="'detail/' + ticket.id" routerLinkActive="is-active">
+        {{ ticket.id }}
+        <br />
+        <small>
+          @if (ticket.createdBy) {
+            {{ ticket.createdBy.timestamp | relativeDate: "mediumDate" }} at
+            {{ ticket.createdBy.timestamp | date: "HH:mm" }}
+          } @else {
+            Unknown creation time
+          }
+        </small>
+      </a>
+    </li>
+  }
+</ul>

@@ -1,0 +1,42 @@
+@if (successResultData$ | async; as updatedSystemSetup) {
+  <nz-result
+    nzStatus="success"
+    i18n-nzTitle
+    nzTitle="Request was sent successfully!"
+    i18n-nzSubTitle
+    nzSubTitle="The operation may take some time to complete."
+  >
+    <div nz-result-extra>
+      <button type="button" nz-button nzType="default" (click)="onFinish(updatedSystemSetup)" i18n>
+        OK
+      </button>
+    </div>
+  </nz-result>
+}
+
+@if (errorMessage$ | async; as errorMessage) {
+  <nz-alert
+    nzType="error"
+    [nzMessage]="errorMessage.title"
+    [nzDescription]="errorMessage.description"
+    nzShowIcon
+    nzBanner="true"
+  ></nz-alert>
+}
+
+<nz-spin
+  [nzSpinning]="loadingMessage$ | async"
+  i18n-nzTip
+  nzTip="Sending request..."
+  nzSize="large"
+>
+  @if (!(successResultData$ | async)) {
+    <app-system-control-toggle-confirm-form
+      [toggleAction]="data.action"
+      [thisSetup]="data.thisSetup"
+      [setupInControl]="data.setupInControl"
+      (cancel)="onCancel()"
+      (submitForm)="onSubmit($event)"
+    ></app-system-control-toggle-confirm-form>
+  }
+</nz-spin>

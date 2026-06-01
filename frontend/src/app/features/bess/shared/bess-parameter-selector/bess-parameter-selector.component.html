@@ -1,0 +1,10 @@
+<nz-select
+  [(ngModel)]="internalSelectedKey"
+  (ngModelChange)="onParameterChange($event)"
+  [nzPlaceHolder]="placeholder"
+  class="parameter-select"
+>
+  @for (param of availableParameters; track param.key) {
+    <nz-option [nzValue]="param.key" [nzLabel]="getParameterLabel(param)"></nz-option>
+  }
+</nz-select>

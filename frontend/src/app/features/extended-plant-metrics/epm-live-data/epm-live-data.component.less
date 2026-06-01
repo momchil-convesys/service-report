@@ -1,0 +1,52 @@
+@import "theme";
+
+app-epm-live-data {
+  .tab-panel-content {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: @margin-md;
+
+    padding-top: @padding-sm;
+  }
+
+  app-epm-parameter-box {
+    // flex: 1 1 180px;
+    // max-width: 250px;
+  }
+
+  .label {
+    font-size: @font-size-sm;
+    color: @text-color-secondary;
+  }
+
+  .timestamp-container {
+    flex: 1 1 200px;
+
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: @margin-sm;
+    row-gap: @margin-xs;
+    align-content: flex-start;
+
+    .label {
+      white-space: nowrap;
+
+      // margin-bottom: @margin-xs;
+    }
+
+    .value {
+      white-space: nowrap;
+
+      line-height: 1.3;
+    }
+  }
+
+  .parameters-block {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: @margin-sm;
+
+    flex: 6 6 1100px;
+  }
+}

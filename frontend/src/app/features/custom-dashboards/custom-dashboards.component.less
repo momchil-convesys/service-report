@@ -1,0 +1,20 @@
+@import "theme";
+
+app-custom-dashboards {
+  display: block;
+
+  height: 100%;
+
+  display: grid;
+  grid-template-columns: auto 1fr;
+
+  .content,
+  .side-nav {
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .side-nav {
+    border-right: 1px solid @border-color-base;
+  }
+}

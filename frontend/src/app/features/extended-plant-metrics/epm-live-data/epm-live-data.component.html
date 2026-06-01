@@ -1,0 +1,209 @@
+@if (data) {
+  <div class="content">
+    <!-- 
+    Current values
+  -->
+
+    @if (activeTab === "current-values") {
+      <div class="tab-panel-content">
+        <ng-container *ngTemplateOutlet="timestamp"></ng-container>
+
+        <div class="parameters-block">
+          <app-epm-parameter-box
+            [data]="getParameterBoxInputFor_ActivePower(data, metadata, 'activePower_Consumed')"
+          >
+            <ng-container i18n>Consumed</ng-container>
+            <br />
+            <ng-container i18n>active power</ng-container>
+          </app-epm-parameter-box>
+
+          <app-epm-parameter-box
+            [data]="getParameterBoxInputFor_ActivePower(data, metadata, 'activePower_Generated')"
+          >
+            <ng-container i18n>Generated</ng-container>
+            <br />
+            <ng-container i18n>active power</ng-container>
+          </app-epm-parameter-box>
+
+          <app-epm-parameter-box
+            [data]="getParameterBoxInputFor_ReactivePower(data, metadata, 'reactivePower_Consumed')"
+          >
+            <ng-container i18n>Consumed</ng-container>
+            <br />
+            <ng-container i18n>reactive power</ng-container>
+          </app-epm-parameter-box>
+
+          <app-epm-parameter-box
+            [data]="
+              getParameterBoxInputFor_ReactivePower(data, metadata, 'reactivePower_Generated')
+            "
+          >
+            <ng-container i18n>Generated</ng-container>
+            <br />
+            <ng-container i18n>reactive power</ng-container>
+          </app-epm-parameter-box>
+
+          <app-epm-parameter-box [data]="getParameterBoxInputFor_PowerFactor(data, metadata)">
+            <div style="white-space: break-spaces" [style.max-width]="getLocaleSpecificWidth()">
+              <ng-container i18n>Power factor</ng-container>
+            </div>
+          </app-epm-parameter-box>
+        </div>
+      </div>
+    }
+
+    <!-- 
+    Daily totals
+  -->
+    @else if (activeTab === "daily-totals") {
+      <div class="tab-panel-content">
+        <ng-container *ngTemplateOutlet="timestamp"></ng-container>
+
+        <div class="parameters-block">
+          <app-epm-parameter-box
+            [data]="
+              getParameterBoxInputFor_ActiveEnergy(data, metadata, 'activeEnergy_Consumed', 'daily')
+            "
+          >
+            <ng-container i18n>Daily consumed</ng-container>
+            <br />
+            <ng-container i18n>active energy</ng-container>
+          </app-epm-parameter-box>
+
+          <app-epm-parameter-box
+            [data]="
+              getParameterBoxInputFor_ActiveEnergy(
+                data,
+                metadata,
+                'activeEnergy_Generated',
+                'daily'
+              )
+            "
+          >
+            <ng-container i18n>Daily generated</ng-container>
+            <br />
+            <ng-container i18n>active energy</ng-container>
+          </app-epm-parameter-box>
+
+          <app-epm-parameter-box
+            [data]="
+              getParameterBoxInputFor_ReactiveEnergy(
+                data,
+                metadata,
+                'reactiveEnergy_Consumed',
+                'daily'
+              )
+            "
+          >
+            <ng-container i18n>Daily consumed</ng-container>
+            <br />
+            <ng-container i18n>reactive energy</ng-container>
+          </app-epm-parameter-box>
+
+          <app-epm-parameter-box
+            [data]="
+              getParameterBoxInputFor_ReactiveEnergy(
+                data,
+                metadata,
+                'reactiveEnergy_Generated',
+                'daily'
+              )
+            "
+          >
+            <ng-container i18n>Daily generated</ng-container>
+            <br />
+            <ng-container i18n>reactive energy</ng-container>
+          </app-epm-parameter-box>
+        </div>
+      </div>
+    }
+
+    <!-- 
+    All time totals
+  -->
+
+    @else if (activeTab === "all-time-totals") {
+      <div class="tab-panel-content">
+        <ng-container *ngTemplateOutlet="timestamp"></ng-container>
+
+        <div class="parameters-block">
+          <app-epm-parameter-box
+            [data]="
+              getParameterBoxInputFor_ActiveEnergy(
+                data,
+                metadata,
+                'activeEnergy_Consumed',
+                'allTime'
+              )
+            "
+          >
+            <ng-container i18n>Total consumed</ng-container>
+            <br />
+            <ng-container i18n>active energy</ng-container>
+          </app-epm-parameter-box>
+
+          <app-epm-parameter-box
+            [data]="
+              getParameterBoxInputFor_ActiveEnergy(
+                data,
+                metadata,
+                'activeEnergy_Generated',
+                'allTime'
+              )
+            "
+          >
+            <ng-container i18n>Total generated</ng-container>
+            <br />
+            <ng-container i18n>active energy</ng-container>
+          </app-epm-parameter-box>
+
+          <app-epm-parameter-box
+            [data]="
+              getParameterBoxInputFor_ReactiveEnergy(
+                data,
+                metadata,
+                'reactiveEnergy_Consumed',
+                'allTime'
+              )
+            "
+          >
+            <ng-container i18n>Total consumed</ng-container>
+            <br />
+            <ng-container i18n>reactive energy</ng-container>
+          </app-epm-parameter-box>
+
+          <app-epm-parameter-box
+            [data]="
+              getParameterBoxInputFor_ReactiveEnergy(
+                data,
+                metadata,
+                'reactiveEnergy_Generated',
+                'allTime'
+              )
+            "
+          >
+            <ng-container i18n>Total generated</ng-container>
+            <br />
+            <ng-container i18n>reactive energy</ng-container>
+          </app-epm-parameter-box>
+        </div>
+      </div>
+    }
+
+    <!-- </ng-container> -->
+    <ng-template #timestamp>
+      <div class="timestamp-container">
+        <div class="label">
+          <ng-container i18n>Time of measurement</ng-container><br />
+          (<ng-container i18n>in plant time zone</ng-container>)
+        </div>
+        <div class="value">
+          <div>{{ data.timestamp_Zoned | date: "d MMMM y" }}</div>
+          <div>
+            <b>{{ data.timestamp_Zoned | date: "HH:mm:ss" }}</b>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+}

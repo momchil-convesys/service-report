@@ -1,0 +1,35 @@
+@let schedulesRequest = schedulesRequest$ | async;
+
+@if (schedulesRequest?.error; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Request failed"
+    [nzDescription]="error.message || error.toString()"
+    nzShowIcon
+  ></nz-alert>
+}
+
+@let loadedSchedules = schedules$ | async;
+
+<nz-spin
+  [nzSpinning]="schedulesRequest?.isLoading && !loadedSchedules"
+  i18n-nzTip="@@loading"
+  nzTip="Loading..."
+>
+  <app-power-schedule-history-list
+    [data]="(schedules$ | async) || []"
+    [loading]="(schedulesRequest$ | async)?.isLoading || false"
+  ></app-power-schedule-history-list>
+  <p class="pagination-block">
+    <nz-pagination
+      [nzTotal]="totalCount"
+      [nzPageIndex]="pageIndex"
+      [nzPageSize]="pageSize"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzSize]="'small'"
+      nzSimple="false"
+      nzHideOnSinglePage="true"
+    ></nz-pagination>
+  </p>
+</nz-spin>

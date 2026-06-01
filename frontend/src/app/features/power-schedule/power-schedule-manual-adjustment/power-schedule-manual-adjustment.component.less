@@ -1,0 +1,134 @@
+@import "theme";
+
+app-power-schedule-manual-adjustment {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+
+  .header {
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+
+    column-gap: @margin-sm;
+    row-gap: @margin-xss;
+
+    flex-wrap: wrap;
+
+    margin-bottom: @margin-xs;
+
+    .nav-up {
+      margin-bottom: 0;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      flex: 1 1 auto;
+    }
+
+    .export-container {
+      margin-left: auto;
+    }
+  }
+
+  .view-container {
+    position: relative;
+    flex: 1 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .charts-container {
+    flex: 0 0 auto;
+
+    &.take-all-height {
+      flex: 1 1;
+      min-height: 0;
+      height: 100%;
+
+      overflow: hidden;
+
+      app-power-schedule-tracking-chart-pv,
+      app-power-schedule-tracking-chart-bess,
+      app-power-schedule-tracking-chart-grid {
+        & > div {
+          height: 100%;
+        }
+      }
+    }
+
+    &.hidden {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+  }
+
+  .table-container {
+    flex: 1 1 600px;
+
+    min-height: 0;
+
+    overflow: auto;
+
+    @media (max-height: 800px) {
+      overflow: visible;
+    }
+
+    &.hidden {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      overflow: auto;
+    }
+  }
+
+  nz-alert {
+    margin-bottom: @margin-xss;
+  }
+
+  .empty-container {
+    background-color: @background-color-base;
+    border-radius: @border-radius-base;
+    padding: @padding-lg 0;
+
+    min-height: 200px;
+
+    display: flex;
+    align-items: center;
+  }
+
+  app-power-schedule-tracking-chart-pv,
+  app-power-schedule-tracking-chart-bess {
+    height: 28%;
+  }
+
+  app-power-schedule-tracking-chart-grid {
+    height: 44%;
+  }
+
+  &.on-dashboard {
+    app-power-schedule-tracking-chart-pv,
+    app-power-schedule-tracking-chart-bess {
+      height: 26%;
+    }
+
+    app-power-schedule-tracking-chart-grid {
+      height: 48%;
+    }
+  }
+}

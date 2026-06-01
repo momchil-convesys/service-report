@@ -1,0 +1,35 @@
+@import "theme";
+
+app-device-overview-page {
+  display: flex;
+  flex-wrap: wrap;
+  padding: @panel-spacing;
+  gap: @panel-spacing;
+
+  height: 100%;
+  background-color: @background-color-base;
+
+  .left-pane {
+    flex: 1 1 500px;
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: @panel-spacing;
+  }
+
+  .right-pane {
+    flex: 1 1 500px;
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: @panel-spacing;
+  }
+
+  app-wt-power-chart-widget {
+    flex: 1 1;
+  }
+}

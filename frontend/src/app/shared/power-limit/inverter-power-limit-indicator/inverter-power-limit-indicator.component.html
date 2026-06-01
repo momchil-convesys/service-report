@@ -1,0 +1,52 @@
+@if (powerLimit) {
+  <span nz-popover [nzPopoverTitle]="titleTemplate" [nzPopoverContent]="contentTemplate">
+    @if (mode === "icon") {
+      <app-power-limit-icon></app-power-limit-icon>
+    }
+
+    @if (mode === "value") {
+      <span>{{ powerLimit.value }} kW</span>
+    }
+
+    @if (mode === "icon-value") {
+      <span>
+        <app-power-limit-icon></app-power-limit-icon>
+        {{ powerLimit.value }} kW
+      </span>
+    }
+
+    @if (mode === "tag") {
+      <span class="tag-mode">
+        <app-power-limit-icon></app-power-limit-icon>&nbsp;<ng-container i18n
+          >Power limit</ng-container
+        >
+        <b>{{ powerLimit.value }} kW</b>
+      </span>
+    }
+  </span>
+
+  <ng-template #titleTemplate>
+    <div style="padding: 4px 0; font-weight: bold; display: flex; gap: 8px">
+      <ng-container i18n>Power limit</ng-container>
+      <span style="color: #d9343a; margin-left: auto"> {{ powerLimit.value }} kW </span>
+    </div>
+  </ng-template>
+
+  <ng-template #contentTemplate>
+    <div style="line-height: 1.3">
+      <div style="margin-bottom: 4px">
+        <small i18n style="color: rgba(0, 0, 0, 0.45)">Active since</small>
+        <br />
+        <app-relative-timestamp
+          [timestamp]="powerLimit.timestamp"
+          [plain]="true"
+        ></app-relative-timestamp>
+      </div>
+      <div>
+        <small style="color: rgba(0, 0, 0, 0.45)" i18n>Set by</small>
+        <br />
+        {{ powerLimit.user.displayName }}
+      </div>
+    </div>
+  </ng-template>
+}

@@ -1,0 +1,27 @@
+<!-- Data loading error -->
+@if (dataError$ | async; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Failed to load data"
+    [nzDescription]="error.message"
+  ></nz-alert>
+}
+
+<!-- Web app error -->
+@if (appError$ | async; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Application error"
+    [nzDescription]="error.message"
+  ></nz-alert>
+}
+
+<!-- 
+  Negative margin is applied to the container to compensate for the internal chat margin.
+  Internal chart margin is required because if set to 0 the scrollbar is cropped.
+-->
+<div class="chart-container">
+  <div [id]="chartContainerId" style="width: 100%; height: 300px"></div>
+</div>

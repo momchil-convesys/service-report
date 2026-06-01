@@ -1,0 +1,41 @@
+<button
+  class="left-align"
+  nz-button
+  nzSize="large"
+  nzType="default"
+  nzDanger=""
+  type="button"
+  (click)="showModal()"
+>
+  <ng-container i18n>Delete trigger</ng-container>…
+</button>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  i18n-nzTitle
+  nzTitle="Confirm deleting trigger"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+  nzOkDanger="true"
+  i18n-nzOkText
+  nzOkText="Delete trigger"
+>
+  <ng-container *nzModalContent>
+    <h2>{{ trigger.title }}</h2>
+
+    @if (trigger.relatedEventsCount > 0) {
+      <p>
+        <label nz-checkbox [(ngModel)]="deleteRelatedEvents">
+          <ng-container i18n>Also delete alarm events initiated by this trigger.</ng-container>
+          ({{ trigger.relatedEventsCount }}
+          <ng-container [ngPlural]="trigger.relatedEventsCount">
+            <ng-template ngPluralCase="=1" i18n>event</ng-template>
+            <ng-template ngPluralCase="other" i18n>events</ng-template> </ng-container
+          >)
+        </label>
+      </p>
+    } @else {
+      <ng-container i18n> This trigger has not initiated any alarm events. </ng-container>
+    }
+  </ng-container>
+</nz-modal>

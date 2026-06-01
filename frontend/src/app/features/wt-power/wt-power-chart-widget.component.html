@@ -1,0 +1,23 @@
+<div class="combined-chart">
+  <nz-card [nzTitle]="combinedChart" nzBordered="true" [nzExtra]="extraTemplate" nzSize="small">
+    <app-wt-combined-chart
+      [data]="(chartDataRequest$ | async)?.data"
+      [loading]="(chartDataRequest$ | async)?.isLoading || false"
+    ></app-wt-combined-chart>
+  </nz-card>
+  <nz-card nzBordered="true">
+    <app-wt-power-chart
+      [data]="(chartDataRequest$ | async)?.data"
+      [loading]="(chartDataRequest$ | async)?.isLoading || false"
+    ></app-wt-power-chart>
+  </nz-card>
+</div>
+
+<ng-template #extraTemplate>
+  <nz-date-picker
+    [ngModel]="targetDate$ | async"
+    (ngModelChange)="onDateChange($event)"
+    [nzDisabledDate]="disabledDate"
+    nzAllowClear="false"
+  ></nz-date-picker>
+</ng-template>

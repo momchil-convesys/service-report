@@ -1,0 +1,37 @@
+<nz-range-picker
+  [nzSize]="size"
+  nzInline="false"
+  nzBorderless="false"
+  nzFormat="{{ showTime ? getFormatWithTime() : 'mediumDate' }}"
+  [nzShowTime]="showTime ? { nzFormat: 'HH:mm' } : false"
+  [ngModel]="selectedRange"
+  (ngModelChange)="onChange($event)"
+  nzAllowClear="false"
+></nz-range-picker>
+
+<!-- [nzSuffixIcon]="noIcon" -->
+
+<nz-radio-group
+  [nzSize]="size"
+  [ngModel]="selectedPredefinedRange"
+  (ngModelChange)="onChangePredefinedRange($event)"
+  nzButtonStyle="solid"
+>
+  @for (predefinedRange of predefinedRanges; track predefinedRange) {
+    <label nz-radio-button [nzValue]="predefinedRange">
+      {{ rangeLabels[predefinedRange] }}
+    </label>
+  }
+
+  @if (nullButtonTitle) {
+    <label nz-radio-button [nzValue]="null">
+      {{ nullButtonTitle }}
+    </label>
+  }
+</nz-radio-group>
+
+<ng-template #noIcon></ng-template>
+
+<div class="additional-content">
+  <ng-content></ng-content>
+</div>

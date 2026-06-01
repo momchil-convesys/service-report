@@ -1,0 +1,151 @@
+@if (metadata) {
+  <!--  -->
+  @let mostSignificantAlarm = getMostSignificantAlarm(data?.alarms || []);
+
+  <div
+    class="inverter-box"
+    [class]="mostSignificantAlarm?.severity"
+    style="cursor: pointer"
+    routerLink="{{ metadata.context.tsId }}/{{ metadata.inverterId }}"
+    routerLinkActive="active"
+    queryParamsHandling="merge"
+    nz-popover
+    [nzPopoverTitle]="titleTemplate"
+    [nzPopoverContent]="contentTemplate"
+    nzPopoverPlacement="left"
+    [nzPopoverMouseLeaveDelay]="0"
+    [nzPopoverMouseEnterDelay]="0"
+    [nzPopoverOverlayClassName]="stale ? 'inverter-box-popover stale' : 'inverter-box-popover'"
+  >
+    <div class="state-container">
+      <app-inverter-state-indicator
+        [state]="data?.extendedStateForTooltip || undefined"
+      ></app-inverter-state-indicator>
+    </div>
+
+    <div class="title">
+      <span><span i18n>Inv.</span> {{ metadata.displayIndex }}</span>
+    </div>
+
+    <div class="bars-container">
+      <!--  -->
+      @if (loading) {
+        <nz-skeleton [nzActive]="true" [nzParagraph]="false"></nz-skeleton>
+      }
+
+      <!--  -->
+      @else if (data && !loading) {
+        <div class="power-bar">
+          <app-inverter-power-bar
+            [actualValue]="data.activePower"
+            [maximumValue]="data.installedCapacity"
+            [isPerformanceRatio]="false"
+          ></app-inverter-power-bar>
+        </div>
+
+        <div class="performance-ratio-bar">
+          <app-inverter-power-bar
+            [actualValue]="data.performanceRatio"
+            [maximumValue]="100"
+            [isPerformanceRatio]="true"
+          ></app-inverter-power-bar>
+        </div>
+      }
+    </div>
+
+    <div class="alarms">
+      @if (mostSignificantAlarm) {
+        <app-inverter-alarm-icon
+          [severity]="mostSignificantAlarm.severity"
+        ></app-inverter-alarm-icon>
+      }
+    </div>
+  </div>
+}
+
+<ng-template #titleTemplate>
+  @if (metadata) {
+    <div class="title-container">
+      <span class="secondary-text"
+        ><b>{{ metadata.context.tsDisplayName }}</b
+        >&nbsp;&nbsp;|&nbsp;&nbsp;</span
+      >
+      <b><span i18n>Inverter</span> {{ metadata.displayIndex }}</b>
+
+      @if (data) {
+        <small class="timestamp">{{ data.timestampZoned | date: "HH:mm:ss" }}</small>
+      }
+    </div>
+    <!--  -->
+    @if (stale) {
+      <div class="stale-data-warning" i18n>Data is stale!</div>
+    }
+  }
+</ng-template>
+
+<ng-template #contentTemplate>
+  <!--  -->
+  @if (data) {
+    <table>
+      <tr class="parameter-tooltip-row">
+        <td class="color"><span class="color-indicator active-power"></span></td>
+        <td class="title" i18n>Active power</td>
+        <td class="value">
+          <app-value-display [value]="data.activePower" [format]="'1.3-3'"></app-value-display>
+        </td>
+        <td class="unit">kW</td>
+      </tr>
+
+      <tr class="parameter-tooltip-row">
+        <td class="color"><span class="color-indicator installed-capacity"></span></td>
+        <td class="title" i18n>Installed capacity</td>
+        <td class="value">
+          <app-value-display
+            [value]="data.installedCapacity"
+            [format]="'1.3-3'"
+          ></app-value-display>
+        </td>
+        <td class="unit">kWp</td>
+      </tr>
+
+      <tr class="parameter-tooltip-row">
+        <td class="color"><span class="color-indicator performance-ratio"></span></td>
+        <td class="title" i18n>Performance ratio</td>
+        <td class="value">
+          <app-value-display [value]="data.performanceRatio" [format]="'1.3-3'"></app-value-display>
+        </td>
+        <td class="unit">%</td>
+      </tr>
+    </table>
+
+    <div class="state-container">
+      <div class="section-title" i18n>Inverter state</div>
+      <div class="state-row">
+        <app-device-state [state]="data.extendedState" [variant]="'short'"></app-device-state>
+        @if (data.extendedStateForTooltip?.intermediateState; as intermediateState) {
+          <div class="state-description secondary-text-size">
+            {{ intermediateState.label
+            }}{{ intermediateState.description ? " | " + intermediateState.description : "" }}
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (data.alarms && data.alarms.length > 0) {
+      <div class="alarms">
+        <div class="section-title" i18n>Active alarms</div>
+        @for (alarm of data.alarms; track alarm.id) {
+          <div class="alarm">
+            <app-inverter-alarm-icon
+              [severity]="alarm.severity"
+              [inverse]="true"
+            ></app-inverter-alarm-icon>
+            <div class="alarm-message">{{ alarm.title }}</div>
+          </div>
+        }
+      </div>
+    }
+  } @else if (loading) {
+    <span i18n>Loading data...</span>
+  }
+</ng-template>

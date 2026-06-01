@@ -1,0 +1,77 @@
+@import "theme";
+
+app-alarms-config-detail {
+  display: block;
+  height: 100%;
+  overflow-y: auto;
+  border-left: 1px solid @border-color-base;
+
+  background-color: white;
+
+  position: relative;
+
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  .trigger-header {
+    flex: 0 0 auto;
+
+    border-bottom: 1px solid @border-color-base;
+
+    padding: @padding-md @padding-lg;
+
+    display: flex;
+    align-items: flex-start;
+
+    h1 {
+      margin: 0;
+    }
+  }
+
+  .trigger-content {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .error-block {
+    padding: @padding-lg;
+  }
+
+  .spinner-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    z-index: 1;
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+
+  .selected-fault-tags {
+    margin-top: @margin-xs;
+    margin-bottom: 0;
+
+    .tag-wrapper {
+      margin-bottom: @margin-xss;
+    }
+  }
+
+  @media (max-width: @breakpoint-md) {
+    .trigger-header {
+      padding: @padding-sm;
+    }
+
+    .ant-divider-horizontal {
+      margin: @margin-sm 0;
+    }
+
+    h1 {
+      font-size: 20px;
+      line-height: 1.3;
+      align-self: center;
+    }
+  }
+}

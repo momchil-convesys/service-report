@@ -1,0 +1,30 @@
+@import "theme";
+
+app-device-metrics {
+  display: block;
+  padding: @padding-md @padding-lg;
+  background-color: white;
+
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    margin-bottom: @margin-sm;
+
+    h2 {
+      margin: 0;
+    }
+
+    .right-align {
+      margin-left: auto;
+    }
+  }
+
+  nz-alert {
+    margin-bottom: @margin-sm;
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    padding: @padding-xs @padding-sm;
+  }
+}

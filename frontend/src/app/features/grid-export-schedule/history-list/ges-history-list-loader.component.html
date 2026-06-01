@@ -1,0 +1,21 @@
+<nz-spin
+  [nzSpinning]="(schedulesRequest$ | async)?.isLoading"
+  i18n-nzTip="@@loading"
+  nzTip="Loading..."
+>
+  <app-ges-history-list
+    [data]="(schedules$ | async) || []"
+    [loading]="(schedulesRequest$ | async)?.isLoading || false"
+  ></app-ges-history-list>
+  <p class="pagination-block">
+    <nz-pagination
+      [nzTotal]="totalCount"
+      [nzPageIndex]="pageIndex"
+      [nzPageSize]="pageSize"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzSize]="'small'"
+      nzSimple="false"
+      nzHideOnSinglePage="true"
+    ></nz-pagination>
+  </p>
+</nz-spin>

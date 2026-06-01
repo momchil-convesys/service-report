@@ -1,0 +1,31 @@
+<br />
+<nz-timeline nzMode="custom" [nzReverse]="true">
+  @for (record of data?.records; track record.timestamp) {
+    <nz-timeline-item [nzLabel]="labelTemplate" [nzPosition]="'left'">
+      Settings updated
+
+      <!-- <div class="secondary-text">by <app-user-link [userId]="record.user.id"></app-user-link></div> -->
+      <div class="secondary-text">by {{ record.user.displayName }}</div>
+
+      <div class="new-settings-view">
+        @if (record.settings.minPriceToEnableExport !== null) {
+          <span>Minimum export price: </span>
+          <b>{{ record.settings.minPriceToEnableExport }} BGN&thinsp;/&thinsp;MWh</b>
+          <br />
+        }
+
+        @if (record.settings.autoEnableNewSchedules !== null) {
+          <span>Autoenable schedules: </span>
+          <b>{{ record.settings.autoEnableNewSchedules ? "ON" : "OFF" }}</b>
+        }
+      </div>
+
+      <ng-template #labelTemplate>
+        <app-relative-timestamp
+          [timestamp]="record.timestamp"
+          [plain]="false"
+        ></app-relative-timestamp>
+      </ng-template>
+    </nz-timeline-item>
+  }
+</nz-timeline>

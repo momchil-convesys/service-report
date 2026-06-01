@@ -1,0 +1,53 @@
+<nz-tabs [nzAnimated]="false" [nzTabBarExtraContent]="extraTemplate">
+  <nz-tab [nzTitle]="faultsTemplate?.slave ? 'Master' : 'Faults'">
+    <app-faults-table
+      [faultGroups]="faultsTemplate?.master || []"
+      [extraColumns]="[{ thTemplate, tdTemplate }]"
+      [hideFilteringOptions]="faultsTemplate?.hideFilteringOptions"
+      (faultRowClick)="onFaultRowClick($event)"
+    >
+    </app-faults-table>
+  </nz-tab>
+  @if (faultsTemplate?.slave) {
+    <nz-tab i18n-nzTitle nzTitle="Slave">
+      <app-faults-table
+        [faultGroups]="faultsTemplate?.slave || []"
+        [extraColumns]="[{ thTemplate, tdTemplate }]"
+        (faultRowClick)="onFaultRowClick($event)"
+      >
+      </app-faults-table>
+    </nz-tab>
+  }
+
+  <ng-template #thTemplate>
+    <th nzAlign="center">Select</th>
+  </ng-template>
+
+  <ng-template let-item #tdTemplate>
+    <td nzAlign="center" style="cursor: pointer">
+      @if (item.itemId) {
+        <label
+          nz-checkbox
+          [nzChecked]="(selectedFaultIds$ | async)?.has(item.itemId || '')!!"
+          (nzCheckedChange)="onToggleFaultSelection(item.itemId || '', $event)"
+        >
+        </label>
+      }
+    </td>
+  </ng-template>
+</nz-tabs>
+
+<ng-template #extraTemplate>
+  <div class="selected-faults">
+    <button
+      nz-button
+      type="button"
+      nzSize="default"
+      nzType="default"
+      (click)="clearSelectedFaults()"
+      [disabled]="(selectedFaultIds$ | async)?.size === 0"
+    >
+      Clear selected faults ({{ (selectedFaultIds$ | async)?.size || 0 }})
+    </button>
+  </div>
+</ng-template>

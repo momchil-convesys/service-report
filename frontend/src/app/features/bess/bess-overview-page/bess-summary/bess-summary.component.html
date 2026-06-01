@@ -1,0 +1,16 @@
+<h2>Bess Summary</h2>
+
+<section>
+  <app-bess-state-indicator [data]="bessActivePower"></app-bess-state-indicator>
+</section>
+
+<section>
+  TODO: BESS Soc indicator (adapt to new data model)
+  <!-- <app-bess-soc-indicator [data]="{ soc: bessSoc, soh: bessSoh }"></app-bess-soc-indicator> -->
+</section>
+
+<section>
+  <app-bess-active-alarms-summary [summary]="activeAlarmsSummary"></app-bess-active-alarms-summary>
+</section>
+
+<p>TODO: active schedule</p>

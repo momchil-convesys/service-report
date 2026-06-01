@@ -1,0 +1,57 @@
+@import "theme";
+
+app-epm-parameter-box {
+  & > .title {
+    line-height: 1.2;
+    margin-bottom: @margin-xss;
+  }
+
+  & > .content {
+    background-color: @gray-2;
+    border-radius: @border-radius-sm;
+
+    .label {
+      padding: @padding-xs;
+      line-height: 1;
+      font-size: @font-size-sm;
+      color: @text-color-secondary;
+    }
+
+    .value {
+      padding: @padding-xs @padding-sm;
+      text-align: right;
+    }
+
+    .unit {
+      color: @text-color-secondary;
+    }
+  }
+
+  .plant-total {
+    min-height: 80px;
+    flex-direction: column;
+
+    .value {
+      font-size: 24px;
+
+      .unit {
+        font-size: @font-size-base;
+      }
+    }
+  }
+
+  .pm-specific {
+    border-top: 2px solid white;
+  }
+
+  .plant-total,
+  .pm-specific {
+    display: flex;
+    flex-wrap: wrap;
+
+    .value {
+      margin-top: auto;
+      margin-left: auto;
+    }
+  }
+}

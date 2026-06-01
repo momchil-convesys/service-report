@@ -1,0 +1,61 @@
+@if (useRangePicker) {
+  <nz-range-picker
+    nzInline="false"
+    nzBorderless="false"
+    nzFormat="{{ 'mediumDate' }}"
+    [nzShowTime]="false"
+    [ngModel]="dateRangePickerModel"
+    (ngModelChange)="onDateRangeChange($event)"
+    nzAllowClear="false"
+    [nzSize]="size"
+    #rangePickerRef
+    [disabled]="disabled"
+  ></nz-range-picker>
+} @else {
+  <app-datetime-with-navigation
+    [date]="singleDatePickerModel"
+    [mode]="singleDatePickerMode"
+    [size]="size"
+    [timeZone]="timeZone"
+    (dateChange)="onSingleDatePickerChange($event)"
+    [disabled]="disabled"
+  ></app-datetime-with-navigation>
+}
+
+@if (showPredefinedOptions) {
+  <nz-radio-group
+    [nzSize]="size"
+    [ngModel]="selectedRangeTypeOption"
+    (ngModelChange)="onRangeTypeOptionChange($event)"
+    nzButtonStyle="solid"
+    [disabled]="disabled"
+  >
+    @for (option of rangeTypeOptions; track option.value) {
+      <label nz-radio-button [nzValue]="option.value">
+        {{ option.label }}
+      </label>
+    }
+  </nz-radio-group>
+}
+
+@if (showIntegrationPeriod && selectedIntegrationPeriodOption) {
+  <div class="integration-period-block">
+    <div i18n class="label">Granularity:</div>
+    <nz-radio-group
+      [nzSize]="size"
+      [ngModel]="selectedIntegrationPeriodOption"
+      (ngModelChange)="onIntegrationPeriodOptionChange($event)"
+      nzButtonStyle="solid"
+      [disabled]="disabled"
+    >
+      @for (option of integrationPeriodOptions; track option.value) {
+        <label nz-radio-button [nzValue]="option.value">
+          {{ option.label }}
+        </label>
+      }
+    </nz-radio-group>
+  </div>
+}
+
+<!-- Used to add chart options button -->
+<ng-content></ng-content>

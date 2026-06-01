@@ -1,0 +1,299 @@
+@import "theme";
+
+app-wind-widgets-page {
+  display: block;
+  padding: @padding-md @padding-lg;
+
+  .wind-widgets-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .input-card,
+  .compass-section,
+  .results-section {
+    margin-bottom: @margin-lg;
+  }
+
+  .input-section {
+    display: flex;
+    flex-direction: column;
+    gap: @margin-sm;
+
+    label {
+      font-weight: 500;
+      color: @text-color;
+      margin-bottom: @margin-xs;
+    }
+
+    .degree-input {
+      width: 200px;
+    }
+  }
+
+  .result-content {
+    display: flex;
+    flex-direction: column;
+    gap: @margin-sm;
+  }
+
+  .compass-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: @padding-lg;
+  }
+
+  .compass-rose {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border: 3px solid @border-color-base;
+    border-radius: 50%;
+    background: radial-gradient(circle, @background-color-light 0%, @background-color-base 70%);
+  }
+
+  .compass-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background-color: @primary-color;
+    border-radius: 50%;
+    z-index: 10;
+  }
+
+  .compass-arrow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 140px;
+    background: @primary-color;
+    transform-origin: 50% 50%;
+    transition: transform 0.3s ease;
+    margin-top: -70px;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: -4px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 10px solid @primary-color;
+    }
+  }
+
+  .compass-directions {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .compass-direction {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: 50% 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: @background-color-base;
+    border: 1px solid @border-color-split;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    transform: rotate(var(--angle)) translateY(-180px) rotate(calc(-1 * var(--angle)));
+
+    &.active {
+      background-color: @primary-color;
+      color: white;
+      border-color: @primary-color;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      transform: rotate(var(--angle)) translateY(-180px) rotate(calc(-1 * var(--angle))) scale(1.1);
+
+      .direction-label,
+      .direction-name {
+        color: white;
+      }
+
+      .direction-label {
+        font-weight: 600;
+      }
+    }
+
+    .direction-label {
+      font-size: @font-size-sm;
+      font-weight: 600;
+      color: @primary-color;
+      margin-bottom: 2px;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .direction-name {
+      font-size: @font-size-sm;
+      color: @text-color-secondary;
+      text-align: center;
+      line-height: 1.2;
+      max-width: 50px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .compass-16 .compass-direction {
+    width: 50px;
+    height: 50px;
+    margin: -25px 0 0 -25px;
+
+    .direction-name {
+      font-size: 10px;
+      max-width: 40px;
+    }
+  }
+
+  .compass-8 .compass-direction {
+    width: 70px;
+    height: 70px;
+    margin: -35px 0 0 -35px;
+    transform: rotate(var(--angle)) translateY(-170px) rotate(calc(-1 * var(--angle)));
+
+    &.active {
+      transform: rotate(var(--angle)) translateY(-170px) rotate(calc(-1 * var(--angle))) scale(1.1);
+    }
+
+    .direction-name {
+      max-width: 60px;
+    }
+  }
+
+  .result-card {
+    height: 100%;
+
+    .result-content {
+      gap: @margin-md;
+    }
+  }
+
+  .result-item {
+    display: flex;
+    align-items: center;
+    gap: @margin-sm;
+
+    strong {
+      min-width: 100px;
+      color: @text-color;
+    }
+  }
+
+  .reference-table .table-header,
+  .reference-table .table-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    gap: @margin-sm;
+    padding: @padding-sm @padding-md;
+    align-items: center;
+  }
+
+  .reference-table .table-header {
+    background-color: @background-color-light;
+    border-radius: @border-radius-base;
+    font-weight: 600;
+    color: @text-color;
+    margin-bottom: @margin-sm;
+
+    > div {
+      text-align: center;
+    }
+  }
+
+  .reference-table .table-row {
+    border-bottom: 1px solid @border-color-split;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: @background-color-light;
+    }
+  }
+
+  .cell-direction {
+    font-weight: 500;
+    color: @text-color;
+  }
+
+  .cell-code {
+    font-weight: 600;
+    color: @primary-color;
+  }
+
+  .cell-degree,
+  .cell-range {
+    color: @text-color-secondary;
+    font-size: @font-size-sm;
+  }
+
+  @media (max-width: @breakpoint-md) {
+    .compass-section .ant-col,
+    .results-section .ant-col,
+    .reference-section .ant-col {
+      margin-bottom: @margin-lg;
+    }
+
+    .compass-rose {
+      width: 250px;
+      height: 250px;
+    }
+
+    .compass-arrow {
+      height: 120px;
+    }
+
+    .reference-table .table-header,
+    .reference-table .table-row {
+      grid-template-columns: 1fr;
+      gap: @margin-xs;
+
+      > div {
+        text-align: left;
+      }
+    }
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    .compass-rose {
+      width: 200px;
+      height: 200px;
+    }
+
+    .compass-arrow {
+      height: 100px;
+    }
+
+    .compass-direction {
+      width: 40px;
+      height: 40px;
+      margin: -20px 0 0 -20px;
+
+      .direction-label {
+        font-size: 10px;
+      }
+
+      .direction-name {
+        font-size: 8px;
+        max-width: 30px;
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+<div class="header">
+  <h2 i18n>Temperature sensors data</h2>
+  <div class="right-align">
+    <ng-container i18n>View as&nbsp;</ng-container>
+    <nz-radio-group
+      (ngModelChange)="onActiveViewOptionChange($event)"
+      [ngModel]="activeView$ | async"
+      nzButtonStyle="solid"
+    >
+      <label nz-radio-button nzValue="chart-view" i18n>Chart</label>
+      <label nz-radio-button nzValue="table-view" i18n>Table</label>
+    </nz-radio-group>
+  </div>
+</div>
+
+<div class="flex-row">
+  <app-datetime-range-select
+    (modelChange)="onDatetimeRangeChange($event)"
+    [defaultOption]="'day'"
+    [showPredefinedOptions]="false"
+    [timeZone]="(timeZone$ | async) || undefined"
+    [initialDate]="(datePickerDateModel$ | async) || undefined"
+  >
+  </app-datetime-range-select>
+
+  <button nz-button nzSize="default" nzType="default" (click)="onReloadDataClick()">
+    <span nz-icon nzType="reload" nzTheme="outline"></span>
+    <span i18n>Reload data</span>
+  </button>
+
+  @if ((activeView$ | async) === "chart-view") {
+    <div class="right-align">
+      <app-highcharts-export-option
+        [chartComponent]="chartComponent"
+        [disabled]="!!(dataIsLoading$ | async)"
+        [filename]="(dataRequest$ | async)?.data?.exportFileName"
+      ></app-highcharts-export-option>
+    </div>
+  }
+</div>
+
+@if ((activeView$ | async) === "chart-view") {
+  <div class="chart-container">
+    <app-inverter-temperature-sensors-chart
+      [data]="(dataRequest$ | async)?.data"
+      [loading]="!!(dataIsLoading$ | async)"
+      [context]="chartContext$ | async"
+      #chartComponent
+    ></app-inverter-temperature-sensors-chart>
+  </div>
+}
+
+@if ((activeView$ | async) === "table-view") {
+  <div class="table-container">
+    <app-inverter-temperature-sensors-table
+      [data]="(dataRequest$ | async)?.data"
+      [loading]="!!(dataIsLoading$ | async)"
+      (goToExtreme)="onGoToRecord($event)"
+    ></app-inverter-temperature-sensors-table>
+  </div>
+}

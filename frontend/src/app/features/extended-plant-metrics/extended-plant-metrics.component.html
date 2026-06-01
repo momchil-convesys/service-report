@@ -1,0 +1,70 @@
+@if (metadataRequest$ | async; as metadataRequest) {
+  <!--  -->
+  @if (metadataRequest.isLoading) {
+    <nz-spin i18n-nzTip="@@loading" nzTip="Loading..." nzSize="large"> </nz-spin>
+  }
+
+  <!--  -->
+  @if (metadataRequest.data) {
+    <nz-tabs
+      nzTabPosition="top"
+      nzSize="small"
+      [nzAnimated]="false"
+      nzLinkRouter
+      nzLinkExact="false"
+      nzType="card"
+    >
+      <!--  -->
+      @if (metadataRequest.data.powerMetersLevel) {
+        <nz-tab>
+          <a *nzTabLink nz-tab-link [routerLink]="routeSegment[LevelOfMeasurement.PowerMeters]" i18n
+            >Power meters</a
+          >
+        </nz-tab>
+      }
+
+      <!--  -->
+      @if (metadataRequest.data.highVoltageLevel) {
+        <nz-tab>
+          <a *nzTabLink nz-tab-link [routerLink]="routeSegment[LevelOfMeasurement.HighVoltage]" i18n
+            >High voltage</a
+          >
+        </nz-tab>
+      }
+
+      <!--  -->
+      @if (metadataRequest.data.mediumVoltageLevel) {
+        <nz-tab>
+          <a
+            *nzTabLink
+            nz-tab-link
+            [routerLink]="routeSegment[LevelOfMeasurement.MediumVoltage]"
+            i18n
+            >Medium voltage</a
+          >
+        </nz-tab>
+      }
+
+      <!--  -->
+      @if (metadataRequest.data.transformerStationsLevel) {
+        <nz-tab>
+          <a
+            *nzTabLink
+            nz-tab-link
+            [routerLink]="routeSegment[LevelOfMeasurement.TransformerStations]"
+            i18n
+            >Transformer stations</a
+          >
+        </nz-tab>
+      }
+
+      <nz-tab>
+        <a *nzTabLink nz-tab-link [routerLink]="'weather'" i18n>Weather</a>
+      </nz-tab>
+    </nz-tabs>
+
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  }
+}

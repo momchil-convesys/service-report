@@ -1,0 +1,92 @@
+@if ((scheduleRequest$ | async)?.error; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Request failed"
+    [nzDescription]="error.message || error.toString()"
+    nzShowIcon
+  ></nz-alert>
+}
+
+<nz-spin
+  i18n-nzTip
+  nzTip="Please wait..."
+  [nzSpinning]="(scheduleRequest$ | async)?.isLoading"
+  nzSize="large"
+  class="spinner-container"
+>
+  @if (schedule) {
+    <div class="schedule-container">
+      <div class="left-pane">
+        <div class="header">
+          <div class="title">
+            <h2>{{ schedule.file.name }}</h2>
+            <p class="secondary-text">
+              <ng-container i18n>Uploaded</ng-container>
+              {{ schedule.file.uploadedTimestamp | date: "d MMMM y" }}
+              <span i18n>at</span>
+              {{ schedule.file.uploadedTimestamp | date: "HH:mm" }}
+              <br />
+              <ng-container i18n>by</ng-container>&nbsp;{{
+                schedule.file.uploadedByUserDisplayName
+              }}
+            </p>
+          </div>
+          <div class="actions">
+            <a nz-button nzType="default" (click)="onDownloadFile(schedule.file.name)">
+              <i nz-icon nzType="download" nzTheme="outline"></i>
+              <ng-container i18n>Download file</ng-container>
+            </a>
+          </div>
+        </div>
+
+        <nz-divider></nz-divider>
+
+        <nz-collapse [nzGhost]="true" [nzBordered]="false" [nzExpandIconPosition]="'end'">
+          <nz-collapse-panel
+            [nzHeader]="title"
+            [nzActive]="false"
+            i18n-nzExtra="@@scheduleStatusActivity"
+            nzExtra="Activity"
+            [nzExpandedIcon]="expandedIcon"
+            #panel
+          >
+            <app-monbat-activity [schedule]="schedule"></app-monbat-activity>
+          </nz-collapse-panel>
+          <ng-template #title>
+            <h3 i18n>Schedule status</h3>
+          </ng-template>
+          <ng-template #expandedIcon let-active>
+            {{ active }}
+            <span
+              nz-icon
+              nzType="caret-up"
+              class="ant-collapse-arrow"
+              [nzRotate]="panel.active() ? 0 : -180"
+            ></span>
+          </ng-template>
+        </nz-collapse>
+
+        <p><app-monbat-status [schedule]="schedule"></app-monbat-status></p>
+
+        @if (hasPermissionToToggleScheduleStatus) {
+          <nz-divider></nz-divider>
+
+          <app-monbat-toggle-button
+            [type]="schedule.status === 'enabled' ? 'disable' : 'enable'"
+            [loading]="false"
+            [disabled]="!hasPermissionToToggleScheduleStatus"
+            (btnClick)="
+              schedule.status === 'enabled'
+                ? onDisableSchedule(schedule)
+                : onEnableSchedule(schedule)
+            "
+          ></app-monbat-toggle-button>
+        }
+      </div>
+      <div class="right-pane">
+        <app-monbat-preview-table [data]="schedule"></app-monbat-preview-table>
+      </div>
+    </div>
+  }
+</nz-spin>

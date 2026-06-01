@@ -1,0 +1,71 @@
+@if (state && state.baseState; as baseState) {
+  @switch (baseState) {
+    @case (DeviceState.On) {
+      <i
+        nz-icon
+        nzType="check"
+        nzTheme="outline"
+        [nzTwotoneColor]="colors[baseState]"
+        [style.color]="colors[baseState]"
+        class="standalone-icon on"
+      ></i>
+    }
+
+    @case (DeviceState.Off) {
+      <i
+        nz-icon
+        nzType="poweroff"
+        nzTheme="outline"
+        [nzTwotoneColor]="colors[baseState]"
+        [style.color]="colors[baseState]"
+        class="standalone-icon off"
+      ></i>
+    }
+
+    @case (DeviceState.Error) {
+      <i
+        nz-icon
+        nzType="minus-circle"
+        nzTheme="fill"
+        [nzTwotoneColor]="colors[baseState]"
+        [style.color]="colors[baseState]"
+        class="standalone-icon error"
+      ></i>
+    }
+
+    @case (DeviceState.Warning) {
+      <i
+        nz-icon
+        nzType="warning"
+        nzTheme="fill"
+        [nzTwotoneColor]="colors[baseState]"
+        [style.color]="colors[baseState]"
+        class="standalone-icon warning"
+      ></i>
+    }
+
+    @case (DeviceState.NoCommunication) {
+      <nz-icon
+        style="transform: rotate(77deg)"
+        nzType="stop"
+        nzTheme="fill"
+        [nzTwotoneColor]="colors[baseState]"
+        [style.color]="colors[baseState]"
+      />
+    }
+
+    @case (DeviceState.ServiceMode) {
+      <span class="text">
+        {{ labels[baseState] }}
+      </span>
+    }
+
+    @case (DeviceState.Invalid) {
+      <span class="text">
+        {{ labels[baseState] }}
+      </span>
+    }
+  }
+} @else {
+  &mdash;
+}

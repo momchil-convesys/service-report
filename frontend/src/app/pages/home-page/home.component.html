@@ -1,0 +1,42 @@
+@let plantsRequest = plants$ | async;
+@if (plantsRequest?.isLoading) {
+  <nz-spin i18n-nzTip="@@loading" nzTip="Loading..." nzSize="large"> </nz-spin>
+} @else {
+  @if (plantsRequest?.error) {
+    <nz-result
+      i18n-nzTitle
+      nzTitle="Failed to load plants."
+      nzStatus="error"
+      [nzSubTitle]="plantsRequest?.error | json"
+    >
+      <div nz-result-extra>
+        <button i18n nz-button nzType="primary" (click)="onRetry()">Retry</button>
+      </div>
+    </nz-result>
+  } @else {
+    @let sidebarVisible = selectedItem ? (sidebarService.sidebarVisible$ | async) : true;
+
+    <div
+      class="app-side-menu-overlay"
+      [class.visible]="sidebarVisible"
+      (click)="sidebarService.hideSideBar()"
+    ></div>
+
+    <div
+      class="app-side-menu"
+      [class.collapsed]="!sidebarVisible"
+      [class.animated]="outlet.isActivated"
+      id="js-app-side-menu"
+    >
+      <app-devices-tree
+        (itemSelect)="onItemSelect($event, plantsRequest?.data || [])"
+        [selectedItem]="selectedItem"
+        [plants]="plantsRequest?.data || []"
+      ></app-devices-tree>
+    </div>
+
+    <div class="main-content">
+      <router-outlet #outlet="outlet"></router-outlet>
+    </div>
+  }
+}

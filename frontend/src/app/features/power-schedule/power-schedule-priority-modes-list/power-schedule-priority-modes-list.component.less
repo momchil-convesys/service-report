@@ -1,0 +1,49 @@
+@import "theme";
+
+.priority-modes-list {
+  max-width: 1200px;
+
+  // padding: @padding-lg;
+
+  .conventions-section {
+    margin-bottom: @margin-lg;
+    padding: @padding-md;
+    background-color: @gray-1;
+    border-radius: @border-radius-base;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  .flags-table-section {
+    margin-bottom: @margin-lg;
+  }
+
+  .modes-details-section {
+    .mode-card {
+      margin-bottom: @margin-md;
+      padding: @padding-md;
+      border: 1px solid @border-color-split;
+      border-radius: @border-radius-base;
+    }
+
+    .mode-description {
+      margin-bottom: @margin-md;
+    }
+
+    .mode-flags {
+      margin-top: 16px;
+
+      ul {
+        list-style: none;
+      }
+    }
+  }
+  
+  .mode-restrictions {
+    color: @red-7;
+  }
+}

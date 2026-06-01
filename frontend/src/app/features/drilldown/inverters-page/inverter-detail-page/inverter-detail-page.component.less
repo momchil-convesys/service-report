@@ -1,0 +1,126 @@
+@import "theme";
+
+app-inverter-detail-page {
+  display: block;
+  height: 100%;
+  overflow-y: scroll;
+
+  padding: @padding-md @padding-lg;
+
+  @media (max-width: @breakpoint-sm) {
+    padding: @padding-xs @padding-sm;
+  }
+
+  .flex-header {
+    align-items: flex-start;
+    margin-bottom: @margin-sm;
+
+    app-device-state {
+      margin-top: @margin-xs;
+      margin-left: @margin-xss;
+    }
+  }
+
+  .inverter-data-container {
+    margin-bottom: @margin-md;
+
+    .power-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      margin: 2px 0;
+
+      i[nz-icon] {
+        margin-left: @margin-xss;
+        color: @text-color-secondary;
+        cursor: help;
+      }
+
+      app-value-display {
+        font-weight: bold;
+      }
+
+      .installed-power {
+        text-align: right;
+      }
+    }
+  }
+
+  app-inverter-parameters-table,
+  .alarms-section {
+    display: block;
+    margin: 0 -8px; // align text
+
+    .ant-table-pagination.ant-pagination {
+      margin: 12px 0; // used as bottom margin
+    }
+
+    .ant-table.ant-table-small .ant-table-tbody > tr > td,
+    .ant-table.ant-table-small .ant-table-thead > tr > th {
+      padding-top: @padding-xss;
+      padding-bottom: @padding-xss;
+    }
+  }
+
+  .close-page-button {
+    margin-right: -8px;
+  }
+
+  .stale-data-warning {
+    margin: 0 -8px; // align text
+    margin-bottom: @margin-md;
+
+    background-color: @gold-1;
+    color: @red-7;
+    font-weight: bold;
+    line-height: 22px;
+    padding: @padding-xss @padding-xs;
+
+    span {
+      font-size: @font-size-sm;
+    }
+
+    nz-icon {
+      vertical-align: middle;
+    }
+  }
+
+  .alarms-section {
+    margin-top: @margin-sm;
+    margin-bottom: @margin-md;
+
+    .alarm-content {
+      display: flex;
+      align-items: center;
+      gap: @padding-xs;
+    }
+
+    .alarm-severity {
+      text-transform: capitalize;
+      text-align: center;
+    }
+
+    .alarm-timestamp {
+      text-align: right;
+    }
+
+    .alarm {
+      display: flex;
+      align-items: center;
+      gap: @margin-xss;
+      margin-bottom: @margin-xss;
+
+      .alarm-message {
+        flex: 1 1;
+      }
+    }
+
+    .no-alarms {
+      background-color: @gray-2;
+      padding: @padding-xss @padding-md;
+      text-align: center;
+      font-style: italic;
+      border-radius: @border-radius-sm;
+      color: @text-color-secondary;
+    }
+  }
+}

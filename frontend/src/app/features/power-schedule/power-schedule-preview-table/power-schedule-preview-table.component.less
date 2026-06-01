@@ -1,0 +1,44 @@
+@import "theme";
+
+app-power-schedule-preview-table {
+  display: block;
+
+  .ant-table-thead > tr > th {
+    vertical-align: top;
+    line-height: 1.3;
+  }
+
+  .ant-table.ant-table-small .ant-table-tbody > tr > td {
+    padding: 4px 8px;
+  }
+
+  tr.present > td {
+    background-color: @error-stack-current-index-background !important;
+  }
+
+  tr.past > td {
+    color: @text-color-secondary;
+    background-color: @background-color-light;
+  }
+
+  .parsed-timestamp {
+    color: @text-color-secondary;
+    font-size: @font-size-sm;
+  }
+
+  .ant-table-tbody > tr.ant-table-row:hover > td,
+  .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+    &.group-row-cell {
+      cursor: pointer;
+      background-color: @gray-3 !important;
+    }
+  }
+
+  .charge {
+    color: @blue-6;
+  }
+
+  .discharge {
+    color: @green-6;
+  }
+}

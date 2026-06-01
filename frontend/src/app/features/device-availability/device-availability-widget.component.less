@@ -1,0 +1,28 @@
+@import "theme";
+
+app-device-availability-widget {
+  display: block;
+  width: 100%;
+
+  app-datetime-range-select {
+    margin-bottom: 0.5em;
+  }
+
+  .datetime-range-hint {
+    display: flex;
+
+    .timestamp-from {
+      font-size: @font-size-sm;
+    }
+
+    .timestamp-to {
+      font-size: @font-size-sm;
+      margin-left: auto;
+    }
+  }
+
+  .ant-tabs-top > .ant-tabs-nav,
+  .ant-tabs-top > div > .ant-tabs-nav {
+    margin-bottom: @margin-xs;
+  }
+}

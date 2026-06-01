@@ -1,0 +1,9 @@
+<span class="value">
+  <app-value-display [value]="temperature" unit=" °C" format="1.1-1"></app-value-display>
+</span>
+
+<div class="bar-container" [class.full-height]="fullHeight">
+  <div class="bar" [style.width]="((temperature || 0) * 100) / 65 + 'px'">
+    <div class="fill"></div>
+  </div>
+</div>

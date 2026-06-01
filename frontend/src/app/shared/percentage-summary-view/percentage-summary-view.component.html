@@ -1,0 +1,83 @@
+@if (data) {
+  <div class="percentage-summary-view">
+    <!-- Title -->
+    <div class="title">
+      <span class="subtle-title-base secondary-text-color">{{ data.total.text }}</span>
+      <div class="title-with-icon">
+        @if (data.total.icon) {
+          <div class="icon-container secondary-text-color">
+            <app-icons [icon]="data.total.icon"></app-icons>
+            @if (data.total.arrowIcon) {
+              <app-icons [icon]="data.total.arrowIcon"></app-icons>
+            }
+          </div>
+        }
+        <span class="total-value">
+          <app-value-display
+            [value]="data.total.value"
+            [unit]="' ' + data.total.unit"
+            [format]="'1.1-1'"
+          ></app-value-display>
+        </span>
+      </div>
+    </div>
+
+    <!-- <div class="values">
+      @for (part of calculatedParts; track part.text) {
+        <div class="value-item">
+          <span class="percentage" [style.color]="part.color">
+            <app-value-display
+              [value]="part.percentage"
+              [unit]="'%'"
+              [format]="'1.1-1'"
+            ></app-value-display>
+          </span>
+        </div>
+      }
+    </div> -->
+
+    <div class="values">
+      @for (part of calculatedParts; track part.text; let i = $index) {
+        <div
+          class="value-item"
+          nz-tooltip
+          [nzTooltipTitle]="tooltip"
+          [nzTooltipPlacement]="getTooltipPlacement(i, calculatedParts.length)"
+        >
+          <div class="percentage" [style.color]="part.color">
+            <app-value-display
+              [value]="part.percentage"
+              [unit]="'%'"
+              [format]="'1.1-1'"
+            ></app-value-display>
+          </div>
+
+          <span class="text" [style.color]="part.color">
+            {{ part.text }}
+          </span>
+        </div>
+
+        <ng-template #tooltip>
+          <b>
+            <app-value-display
+              [value]="part.value"
+              [unit]="' ' + part.unit"
+              [format]="'1.1-1'"
+            ></app-value-display>
+          </b>
+        </ng-template>
+      }
+    </div>
+
+    <!-- Bar Parts -->
+    <div class="bar">
+      @for (part of calculatedParts; track part.text) {
+        <div
+          class="bar-part"
+          [style.width.%]="part.percentage"
+          [style.background-color]="part.color"
+        ></div>
+      }
+    </div>
+  </div>
+}

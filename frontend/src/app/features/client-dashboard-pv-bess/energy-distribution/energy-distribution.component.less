@@ -1,0 +1,71 @@
+@import "theme";
+
+app-energy-distribution {
+  display: block;
+
+  .ant-spin-nested-loading {
+    width: 100%;
+  }
+
+  .flex-row {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: @margin-xs;
+    margin-bottom: -@margin-xs;
+    align-items: baseline;
+  }
+
+  .flex-row + .flex-row {
+    margin-top: @margin-xs;
+  }
+
+  .fake-row {
+    flex: 1 1 100%;
+    display: none;
+  }
+
+  .hv-header {
+    justify-content: space-between;
+    margin-bottom: @margin-xs;
+  }
+
+  @media (min-width: @breakpoint-xxl) {
+    .fake-row {
+      display: block;
+    }
+  }
+
+  app-energy-summary-box,
+  .description-section {
+    flex: 1 1 200px;
+
+    margin-bottom: @margin-xs;
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    .description-section {
+      order: 1;
+    }
+  }
+
+  app-energy-summary-box {
+    padding: @padding-xs @padding-sm;
+    background-color: @background-color-base;
+    border-radius: @border-radius-base;
+    border: 1px solid @background-color-base;
+
+    text-align: left; // override center alignment from spinner
+
+    &.loss-box {
+      background-color: @component-background;
+    }
+  }
+
+  .separator {
+    height: 1px;
+    width: 24px;
+    background-color: @text-color-secondary;
+    opacity: 0.5;
+    margin: @margin-xs auto;
+  }
+}

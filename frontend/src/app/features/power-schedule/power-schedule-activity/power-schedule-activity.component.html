@@ -1,0 +1,42 @@
+<nz-timeline nzMode="custom">
+  <nz-timeline-item [nzLabel]="labelTemplate1" [nzPosition]="'left'" [nzColor]="'gray'">
+    <span i18n>File uploaded</span>
+    <div class="user-details">
+      <ng-container i18n>by</ng-container>&nbsp;{{ schedule.file.uploadedByUserDisplayName }}
+    </div>
+
+    <ng-template #labelTemplate1>
+      <app-relative-timestamp
+        [timestamp]="schedule.file.uploadedTimestamp"
+        [plain]="false"
+      ></app-relative-timestamp>
+    </ng-template>
+  </nz-timeline-item>
+
+  @for (item of schedule.statusHistory; track item) {
+    @if (item.statusChangedTo !== "draft") {
+      <nz-timeline-item
+        [nzLabel]="labelTemplate2"
+        [nzPosition]="'left'"
+        [nzColor]="getColorForStatus(item.statusChangedTo)"
+      >
+        <ng-container i18n>Status changed to</ng-container>&nbsp;<span
+          class="status-tag"
+          [style.color]="getColorForStatus(item.statusChangedTo)"
+        >
+          {{ powerScheduleStatusLabels[item.statusChangedTo] }}
+        </span>
+        <div class="user-details">
+          <ng-container i18n>by</ng-container>&nbsp;{{ item.byUserDisplayName }}
+        </div>
+
+        <ng-template #labelTemplate2>
+          <app-relative-timestamp
+            [timestamp]="item.timestamp"
+            [plain]="false"
+          ></app-relative-timestamp>
+        </ng-template>
+      </nz-timeline-item>
+    }
+  }
+</nz-timeline>

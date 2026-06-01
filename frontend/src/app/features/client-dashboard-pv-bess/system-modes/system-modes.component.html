@@ -1,0 +1,45 @@
+<nz-card nzTitle="System Modes" i18n-nzTitle [nzExtra]="extra">
+  <ng-template #extra>
+    <div class="header-actions">
+      <button nz-button nzType="default" nzSize="small" (click)="toggleDescriptions()">
+        <span nz-icon [nzType]="showDescriptions ? 'eye-invisible' : 'eye'"></span>
+        <span class="button-text">{{ showDescriptions ? "Hide" : "Show" }} descriptions</span>
+      </button>
+      <button nz-button nzType="default" nzSize="small" (click)="onClearMode()" i18n>
+        Clear selection
+      </button>
+    </div>
+  </ng-template>
+
+  <nz-radio-group [ngModel]="selectedModeId" (ngModelChange)="onRadioChange($event)">
+    <ul class="system-modes-list" [class.compact]="!showDescriptions">
+      @for (mode of systemModes; track mode.id; let i = $index) {
+        <li class="mode-item" [class.selected]="selectedModeId === mode.id">
+          <label class="mode-label">
+            <span class="mode-radio">
+              <label nz-radio [nzValue]="mode.id"></label>
+            </span>
+            <span class="mode-content">
+              <span class="mode-name">{{ mode.title }}</span>
+              @if (showDescriptions) {
+                <span class="mode-description">{{ mode.description }}</span>
+                @if (mode.rules && mode.rules.length > 0) {
+                  <ul class="mode-rules">
+                    @for (rule of mode.rules; track $index) {
+                      <li class="mode-rule">{{ rule }}</li>
+                    }
+                  </ul>
+                }
+              }
+            </span>
+          </label>
+        </li>
+        @if (showDescriptions && i < systemModes.length - 1) {
+          <li class="divider-item">
+            <nz-divider></nz-divider>
+          </li>
+        }
+      }
+    </ul>
+  </nz-radio-group>
+</nz-card>

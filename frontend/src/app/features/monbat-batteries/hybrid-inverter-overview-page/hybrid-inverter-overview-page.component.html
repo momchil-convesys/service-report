@@ -1,0 +1,104 @@
+<!-- <nz-alert nzType="warning" i18n-nzMessage nzMessage="Under development!" nzShowIcon></nz-alert> -->
+
+<div class="flex-row">
+  <app-device-current-errors-widget></app-device-current-errors-widget>
+
+  <app-monbat-flow-chart-widget
+    [data]="(currentDataRequest$ | async)?.data || null"
+    [loading]="(currentDataRequest$ | async)?.isLoading"
+    [error]="(currentDataRequest$ | async)?.error"
+    [hasPv]="(hasPV$ | async) || false"
+  ></app-monbat-flow-chart-widget>
+</div>
+
+<nz-card class="custom-card" nzBordered="true" nzSize="small">
+  <div class="card-header">
+    @if (newDayTrigger$ | async) {
+      <div class="card-title">
+        <app-datetime-range-select
+          (modelChange)="onDatetimeRangeChange($event)"
+          [customRangeTypeOptions]="['day']"
+          [size]="'large'"
+          [timeZone]="(timeZone$ | async) || undefined"
+          [defaultOption]="'day'"
+        ></app-datetime-range-select>
+      </div>
+    }
+  </div>
+  <!-- inside your nz-card body -->
+  <div class="chart-host">
+    <app-energy-trend-chart
+      [data]="(energyTrendRequest$ | async)?.data"
+      [loading]="!!(energyTrendIsLoading$ | async)"
+      [context]="chartContext$ | async"
+      #chartComponent
+    >
+    </app-energy-trend-chart>
+
+    <!-- Overlayed where the default Highcharts context button sits -->
+    <app-highcharts-export-option
+      class="chart-export-btn"
+      [chartComponent]="chartComponent"
+      [disabled]="!!(energyTrendIsLoading$ | async)"
+      [filename]="(energyTrendRequest$ | async)?.data?.exportFileName"
+      [size]="'large'"
+      [limitedOptions]="true"
+    >
+    </app-highcharts-export-option>
+  </div>
+
+  <!-- <app-energy-trend-chart
+    [data]="(energyTrendRequest$ | async)?.data"
+    [loading]="!!(energyTrendIsLoading$ | async)"
+    [context]="chartContext$ | async"
+    #chartComponent
+  ></app-energy-trend-chart>
+  <div class="card-extra">
+    <app-highcharts-export-option
+      [chartComponent]="chartComponent"
+      [disabled]="!!(energyTrendIsLoading$ | async)"
+      [filename]="(energyTrendRequest$ | async)?.data?.exportFileName"
+      [size]="'large'"
+      [limitedOptions]="true"
+    ></app-highcharts-export-option>
+  </div> -->
+
+  <!-- @if ((historicalDataRequest$ | async)?.error; as error) {
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load data"
+      [nzDescription]="error.message"
+      nzShowIcon
+    ></nz-alert>
+  } -->
+
+  <!-- <div class="side-by-side-charts">
+    <app-hybrid-inverter-chart-accumulated-grid-usage
+      [data]="(historicalDataRequest$ | async)?.data"
+      [loading]="!!(historicalDataIsLoading$ | async)"
+      [context]="chartContext$ | async"
+    ></app-hybrid-inverter-chart-accumulated-grid-usage>
+
+    <app-hybrid-inverter-chart
+      [data]="(historicalDataRequest$ | async)?.data"
+      [loading]="!!(historicalDataIsLoading$ | async)"
+      [context]="chartContext$ | async"
+      #chartComponent
+    ></app-hybrid-inverter-chart>
+  </div> -->
+  <!--
+  <div class="side-by-side-charts">
+    <app-hybrid-inverter-chart-accumulated-consumption
+      [data]="(historicalDataRequest$ | async)?.data"
+      [loading]="!!(historicalDataIsLoading$ | async)"
+      [context]="chartContext$ | async"
+    ></app-hybrid-inverter-chart-accumulated-consumption>
+
+    <app-hybrid-inverter-chart-consumption
+      [data]="(historicalDataRequest$ | async)?.data"
+      [loading]="!!(historicalDataIsLoading$ | async)"
+      [context]="chartContext$ | async"
+    ></app-hybrid-inverter-chart-consumption>
+  </div> -->
+</nz-card>

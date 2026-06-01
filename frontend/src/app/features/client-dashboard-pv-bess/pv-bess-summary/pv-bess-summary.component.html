@@ -1,0 +1,166 @@
+<!-- PV Section -->
+<section class="pv-section">
+  <h2>PV</h2>
+
+  @if (pvDataLoading || scheduleLoading) {
+    <nz-skeleton [nzActive]="true" [nzParagraph]="{ rows: 3 }"></nz-skeleton>
+  } @else {
+    @if (pvActivePower !== null) {
+      <div class="indicator-item">
+        <div class="pv-indicator">
+          <span class="label" i18n>Current active power</span>
+          <app-value-display [value]="pvActivePower" unit=" kW" format="1.0-0"></app-value-display>
+        </div>
+      </div>
+    }
+
+    @if (pvScheduledLimitData !== null) {
+      <div class="indicator-item">
+        <div class="pv-indicator">
+          <span class="label" i18n>Requested power limit</span>
+          <app-value-display
+            [value]="pvScheduledLimitData.requestedPowerLimit"
+            unit=" kW"
+            format="1.0-0"
+          ></app-value-display>
+        </div>
+      </div>
+    }
+
+    @if (activeSchedule?.currentRecord) {
+      @let interval = getScheduleInterval();
+      @let target = getScheduleTarget();
+      @let unit = getScheduleUnit();
+      <div class="indicator-item schedule-box">
+        <div class="schedule-box-header">
+          <span class="label" i18n>Active Schedule</span>
+        </div>
+        <div class="schedule-box-content">
+          @if (target !== null) {
+            <div class="schedule-row">
+              <span class="schedule-label" i18n>Power Limit</span>
+              <app-value-display [value]="target" [unit]="unit" format="1.0-2"></app-value-display>
+            </div>
+          }
+          @if (interval) {
+            <div class="schedule-row">
+              <span class="schedule-label" i18n>Interval</span>
+              <span class="schedule-value"
+                >{{ interval.start | date: "HH:mm" }}–{{ interval.end | date: "HH:mm" }}</span
+              >
+            </div>
+          }
+          @if (plantId) {
+            <div class="schedule-row schedule-link-row">
+              <a [routerLink]="getScheduleLink(plantId)" class="schedule-link" i18n
+                >View Schedule</a
+              >
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</section>
+
+<!-- BESS Section -->
+@if (hasBess) {
+  <section class="bess-section">
+    <h2>BESS</h2>
+
+    @if (!bessDataLoaded) {
+      <nz-skeleton [nzActive]="true" [nzParagraph]="{ rows: 3 }"></nz-skeleton>
+    } @else {
+      <div class="indicator-item">
+        <!-- @let state = getBessState(bessActivePower); -->
+        <div class="capacity-power" aria-live="polite">
+          <div class="stat-row">
+            <div class="label">Charging capacity</div>
+            <app-value-display
+              [value]="chargeableCapacity?.value"
+              unit=" kWh"
+              format="1.0-0"
+            ></app-value-display>
+          </div>
+          <div class="stat-row">
+            <div class="label">Max charge power</div>
+            <app-value-display
+              [value]="maximumChargePower?.value"
+              unit=" kW"
+              format="1.0-0"
+            ></app-value-display>
+          </div>
+          <div class="stat-row">
+            <div class="label">Discharging capacity</div>
+            <app-value-display
+              [value]="dischargeableCapacity?.value"
+              unit=" kWh"
+              format="1.0-0"
+            ></app-value-display>
+          </div>
+          <div class="stat-row">
+            <div class="label">Max discharge power</div>
+            <app-value-display
+              [value]="maximumDischargePower?.value"
+              unit=" kW"
+              format="1.0-0"
+            ></app-value-display>
+          </div>
+        </div>
+      </div>
+
+      <div class="indicator-item">
+        <app-bess-state-indicator [data]="bessActivePower"></app-bess-state-indicator>
+      </div>
+
+      <div class="indicator-item">
+        TODO: BESS Soc indicator (adapt to new data model)
+        <!-- <app-bess-soc-indicator [data]="{ soc: bessSoc, soh: bessSoh }"></app-bess-soc-indicator> -->
+      </div>
+
+      <div class="indicator-item">
+        <app-bess-active-alarms-summary
+          [summary]="activeAlarmsSummary"
+        ></app-bess-active-alarms-summary>
+      </div>
+
+      @if (activeSchedule?.currentRecord) {
+        @let interval = getScheduleInterval();
+        @let target = getScheduleTarget();
+        @let unit = getScheduleUnit();
+        <div class="indicator-item schedule-box">
+          <div class="schedule-box-header">
+            <span class="label" i18n>Active Schedule</span>
+          </div>
+          <div class="schedule-box-content">
+            @if (target !== null) {
+              <div class="schedule-row">
+                <span class="schedule-label" i18n>Charge/Discharge Target</span>
+                <app-value-display
+                  [value]="target"
+                  [unit]="unit"
+                  format="1.0-2"
+                ></app-value-display>
+              </div>
+            }
+            @if (interval) {
+              <div class="schedule-row">
+                <span class="schedule-label" i18n>Interval</span>
+                <span class="schedule-value"
+                  >{{ interval.start | date: "HH:mm" }}–{{ interval.end | date: "HH:mm" }}</span
+                >
+              </div>
+            }
+            @if (plantId) {
+              <div class="schedule-row schedule-link-row">
+                <a [routerLink]="getScheduleLink(plantId)" class="schedule-link" i18n
+                  >View Schedule</a
+                >
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+  </section>
+}

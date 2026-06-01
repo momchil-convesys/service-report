@@ -1,0 +1,14 @@
+@if (!deviceLink) {
+  <span>{{ (currentDevice$ | async)?.name }}</span>
+}
+
+@if (deviceLink) {
+  <a [routerLink]="'/home/' + (plant$ | async)?.id + '/devices/' + (currentDevice$ | async)?.id">{{
+    (currentDevice$ | async)?.name
+  }}</a>
+}
+
+@if (devicePath) {
+  <nz-divider nzType="vertical"></nz-divider>
+  <span class="secondary-text-color">{{ (plant$ | async)?.name }}</span>
+}

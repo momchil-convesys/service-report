@@ -1,0 +1,35 @@
+@import "theme";
+
+.custom-card {
+  .card-header {
+    display: flex;
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    padding: @padding-xs 0;
+    gap: @margin-xss;
+
+    .card-title {
+      font-weight: 500; // behave as ng card
+    }
+
+    .card-extra {
+      margin-left: auto;
+
+      display: flex;
+      gap: @margin-xs;
+    }
+  }
+}
+
+.custom-card {
+  .ant-card-body {
+    padding: @padding-xs;
+    padding-top: 0;
+  }
+}
+
+.ant-card-small > .ant-card-head {
+  padding: 0 @padding-xs;
+}

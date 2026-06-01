@@ -1,0 +1,57 @@
+@import "theme";
+
+@vendor-power-price-color: #ad3865; // ibex.bg
+
+app-ges-preview-table {
+  display: block;
+
+  .ant-table {
+    border: 1px solid @border-color-split;
+    border-bottom: 0;
+  }
+
+  .ant-table.ant-table-small .ant-table-tbody > tr > td {
+    padding: 4px 8px;
+  }
+
+  tr.ant-table-expanded-row > td {
+    background-color: inherit;
+  }
+
+  tr.expanded > td {
+    border-bottom: 0;
+  }
+
+  tr.present > td {
+    background-color: @error-stack-current-index-background !important;
+  }
+
+  tr.past > td {
+    color: @text-color-secondary;
+    background-color: @background-color-light;
+  }
+
+  .parsed-timestamp {
+    color: @text-color-secondary;
+    font-size: @font-size-sm;
+  }
+
+  .ant-table th.vendor-color {
+    background-color: @vendor-power-price-color;
+    color: white;
+  }
+
+  .export-enabled {
+    // color: @green-7;
+  }
+
+  .export-disabled td.can-highlight {
+    color: @red-7 !important;
+  }
+
+  .footer {
+    text-align: right;
+
+    margin: @margin-md 0;
+  }
+}

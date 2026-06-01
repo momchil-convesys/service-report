@@ -1,0 +1,118 @@
+@if (plant$ | async; as plant) {
+  <div
+    class="list-block"
+    [class.conditionally-collapsed]="serviceReportsGlobalService.editMode$ | async"
+  >
+    <div class="header">
+      <div class="flex-row left-align">
+        <app-sidebar-toggle-button style="margin-right: 12px"></app-sidebar-toggle-button>
+
+        <h1>{{ translate() }}</h1>
+        @if ((reports$ | async)?.data) {
+          <div class="actions">
+            <nz-radio-group
+              nzButtonStyle="solid"
+              [ngModel]="reportStatusList"
+              (ngModelChange)="onRadioChange($event)"
+              nzSize="default"
+            >
+              <label i18n nz-radio-button nzValue="Done"> Service Reports </label>
+              <label i18n nz-radio-button nzValue="Draft"> Drafts </label>
+            </nz-radio-group>
+          </div>
+        }
+      </div>
+      @if ((reports$ | async)?.data) {
+        <div class="actions">
+          <a type="button" nz-button nzType="primary" routerLink="new" queryParamsHandling="merge">
+            <i nz-icon nzType="file-add"></i>
+            <ng-container i18n>New</ng-container>
+          </a>
+        </div>
+      }
+    </div>
+
+    <div class="service-reports-list">
+      @if ((reports$ | async)?.isLoading) {
+        <nz-spin i18n-nzTip="@@loading" nzTip="Loading..." nzSize="large"> </nz-spin>
+      } @else {
+        @if ((reports$ | async)?.error) {
+          <div class="error-block">
+            <nz-alert
+              nzType="error"
+              i18n-nzMessage
+              nzMessage="Failed to load service reports"
+              nzShowIcon
+            ></nz-alert>
+          </div>
+        } @else {
+          @if ((reports$ | async)?.data; as dataRequest) {
+            <div>
+              <nz-pagination
+                [nzTotal]="totalCount"
+                [nzPageIndex]="pageIndex"
+                [nzPageSize]="pageSize"
+                (nzPageIndexChange)="onPageIndexChange($event)"
+                [nzSize]="'default'"
+                [nzShowTotal]="totalTemplate"
+              ></nz-pagination>
+
+              <ng-template #totalTemplate let-total>
+                <ng-container i18n>Total items</ng-container>
+                {{ total }}
+              </ng-template>
+
+              <div class="list">
+                @for (item of dataRequest; track item.id) {
+                  <div
+                    class="item"
+                    routerLinkActive="selected"
+                    [routerLink]="'detail/' + item.id + '/' + item.statusReport"
+                    queryParamsHandling="merge"
+                  >
+                    <div class="header" nz-typography nzType="secondary">
+                      <h5 i18n>Id:</h5>
+                      {{ item.id }}
+                      <h5 i18n>Plant:</h5>
+                      {{ item.plantName }}
+                      <h5 i18n>Device Name:</h5>
+                      {{ item.deviceName }}
+
+                      <div class="extra">
+                        <a i18n nz-button nzType="link">View</a>
+                      </div>
+                    </div>
+
+                    <!-- <p>
+            {{ item || "No engineer provided " }}
+          </p> -->
+
+                    <p class="footer">
+                      <!-- <span> {{ item }} </span> -->
+                      <span>
+                        <ng-container i18n>Start/End Date:</ng-container>
+                        {{ item.startDate | date }} / {{ item.endDate | date }}
+                      </span>
+                      <nz-divider nzType="vertical"></nz-divider>
+                      <span>
+                        <ng-container i18n>Service Engineer:</ng-container>
+                        {{ item.serviceEngineer || "No engineer provided " }}
+                        <ng-container i18n>Status Report:</ng-container>
+                        {{ item.statusReport }}
+                      </span>
+
+                      <!-- <span> {{ item | json }} </span> -->
+                    </p>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        }
+      }
+    </div>
+  </div>
+  <div class="detail-block" [class.collapsed]="!outlet.isActivated">
+    <router-outlet #outlet="outlet"></router-outlet>
+  </div>
+}

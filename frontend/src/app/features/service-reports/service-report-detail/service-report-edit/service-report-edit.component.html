@@ -1,0 +1,91 @@
+<!-- <p>app-service-report-edit works!!!!</p> -->
+<app-service-report-basic-details></app-service-report-basic-details>
+
+<div class="page-content">
+  <nz-tabs>
+    <nz-tab [nzTitle]="tabGeneric">
+      <!-- {{ selectedServiseReport | json }} -->
+      <app-service-report-generic
+        [genericData]="reportDataCopy.genericObj"
+        (dataChange)="onGenericDataUpdated($event)"
+      >
+      </app-service-report-generic>
+
+      <ng-template #tabGeneric>
+        <ng-container
+          [ngTemplateOutlet]="tabDirtyFlag"
+          [ngTemplateOutletContext]="{
+            condition: reportService.formGroup.dirty,
+            title: titleGeneric,
+          }"
+        >
+        </ng-container>
+      </ng-template>
+    </nz-tab>
+    <nz-tab [nzTitle]="tabTravel">
+      <app-service-report-travelling
+        [entries]="reportDataCopy.travelling || []"
+        (dataChange)="onTravellingDataUpdated($event)"
+      ></app-service-report-travelling>
+      <ng-template #tabTravel>
+        <ng-container
+          [ngTemplateOutlet]="tabDirtyFlag"
+          [ngTemplateOutletContext]="{ condition: travellingDataDirty, title: titleTravel }"
+        >
+        </ng-container>
+      </ng-template>
+    </nz-tab>
+    <nz-tab [nzTitle]="tabWork">
+      <app-service-report-work
+        [entries]="reportDataCopy.works || []"
+        (dataChange)="onWorksDataUpdated($event)"
+      ></app-service-report-work>
+      <ng-template #tabWork>
+        <ng-container
+          [ngTemplateOutlet]="tabDirtyFlag"
+          [ngTemplateOutletContext]="{ condition: worksDataDirty, title: titleWork }"
+        >
+        </ng-container>
+      </ng-template>
+    </nz-tab>
+
+    <nz-tab [nzTitle]="tabMaterials">
+      <app-service-report-materials
+        [entries]="reportDataCopy.materials || []"
+        (dataChange)="onMaterialsDataUpdated($event)"
+      ></app-service-report-materials>
+      <ng-template #tabMaterials>
+        <ng-container
+          [ngTemplateOutlet]="tabDirtyFlag"
+          [ngTemplateOutletContext]="{ condition: materialsDataDirty, title: titleMaterials }"
+        >
+        </ng-container>
+      </ng-template>
+    </nz-tab>
+  </nz-tabs>
+</div>
+<!-- <a role="button" class="close-page-button" (click)="onClose()"> &times; </a> -->
+
+<!--<div class="trigger-content">
+  <ng-container *ngIf="editMode">
+     <app-alarm-config-form
+        *ngIf="!(selectedTriggerRequest$ | async)?.isLoading"
+        [selectedTrigger]="(selectedTriggerRequest$ | async)?.data"
+        (create)="onCreate($event)"
+        (update)="onUpdate($event)"
+        (delete)="onDelete($event)"
+        (cancel)="onCancel()"
+      ></app-alarm-config-form> 
+  </ng-container>
+
+ <ng-container *ngIf="!editMode && (selectedTriggerRequest$ | async)?.data as selectedTrigger">
+      <app-alarm-trigger-view (edit)="onEdit()" [selectedTrigger]="selectedTrigger">
+      </app-alarm-trigger-view>
+    </ng-container> 
+</div>-->
+
+<ng-template #tabDirtyFlag let-condition="condition" let-title="title">
+  <span container="body" placement="top"> {{ title }}{{ condition ? " *" : "" }} </span>
+</ng-template>
+
+<!-- [tooltip]="condition ? 'You have unsaved changes on this page.' : ''" -->

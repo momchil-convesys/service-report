@@ -1,0 +1,138 @@
+@import "theme";
+
+app-ticket-tasks {
+  display: flex;
+
+  nz-tree-view {
+    flex: 1;
+  }
+
+  .detail-block {
+    flex: 0 0 500px;
+    margin-left: 2em;
+  }
+
+  .node-content {
+    padding: 1em 1.5em 1em 0;
+    cursor: pointer;
+
+    h4 {
+      margin: 0;
+    }
+
+    .description {
+      display: block;
+      white-space: pre-wrap;
+      line-height: 1.3;
+      margin: 0.5em 0;
+    }
+  }
+
+  .task-node-type-group,
+  .task-node-type-item {
+    .node-toggle,
+    .node-content {
+      border-top: 1px solid @border-color-split;
+      border-bottom: 1px solid @border-color-split;
+    }
+
+    &.selected .node-content,
+    &.selected .node-toggle {
+      background-color: @item-active-bg;
+    }
+
+    .node-toggle {
+      cursor: default;
+    }
+
+    &.disabled {
+      opacity: 0.5;
+      // color: rgba(0, 0, 0, 0.25) !important;
+    }
+  }
+
+  .ant-tree .ant-tree-node-content-wrapper {
+    padding: 0;
+    background: white !important; // Disable default hover color
+
+    cursor: auto;
+    -webkit-user-select: auto;
+    user-select: auto;
+  }
+
+  .ant-tree .ant-tree-treenode {
+    padding: 0;
+    margin-top: -1px;
+  }
+
+  .ant-tree-switcher {
+    width: 40px;
+    padding-top: 1em;
+    line-height: 1.4;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+
+    .prefix {
+      margin-right: 0.5em;
+      line-height: 1;
+      width: 20px;
+      text-align: center;
+    }
+
+    .title {
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .aside {
+      margin-left: auto;
+      padding-left: 1em;
+
+      display: flex;
+
+      .status-container {
+        margin-left: 1em;
+
+        min-width: 100px;
+      }
+
+      .assignee-container {
+        font-size: 80%;
+      }
+    }
+  }
+
+  // Applies to edit block for both tasks and groups
+  app-ticket-task-group-edit,
+  app-ticket-task-edit {
+    display: block;
+
+    position: sticky;
+    top: 0;
+
+    border: 1px solid @border-color-base;
+    padding: 2em;
+
+    .disabled-block {
+      background: @background-color-light;
+      color: @text-color-secondary;
+
+      text-align: center;
+      padding: 2rem;
+      margin-top: 1.5rem;
+
+      .text {
+        font-size: 16px;
+      }
+
+      .icon {
+        font-size: 600%;
+        opacity: 0.2;
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}

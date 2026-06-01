@@ -1,0 +1,273 @@
+@import "theme";
+
+// TODO: batt in/out colors are not implemented properly
+
+@pv-color: @gold-6;
+@batt-color-in: @cyan-6;
+@batt-color-out: @green-fresh-6;
+@grid-color-in: @red-6;
+@grid-color-out: @blue-8;
+@cons-color: @gray-7;
+
+@inactive-color: @gray-4;
+
+// :host
+app-flow-chart {
+  display: block;
+
+  .chart-layout {
+    .top-row,
+    .center-row,
+    .bottom-row {
+      display: flex;
+      justify-content: center;
+    }
+
+    .left-col,
+    .right-col {
+      min-width: 90px;
+      flex: 0 1 auto;
+    }
+
+    .center-row {
+      align-items: flex-start;
+    }
+
+    app-chart-block-pv {
+      align-self: center;
+      justify-self: center;
+      max-height: 65px;
+    }
+
+    .flow-paths-container {
+      position: relative;
+      align-self: center;
+
+      .chart-title {
+        position: absolute;
+        bottom: 80%;
+
+        width: 100%;
+        text-align: center;
+
+        color: @cons-color;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+
+  //------------------------------------------------------------------------------
+  // SVG common styles
+
+  #flow-paths path {
+    stroke: transparent;
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+
+    shape-rendering: optimizeSpeed;
+
+    path {
+      // or rect, circle, etc
+      shape-rendering: geometricPrecision;
+    }
+  }
+
+  //------------------------------------------------------------------------------
+  // Flow paths
+
+  .default-path-appearance(@path-identifier;) {
+    #fp_@{path-identifier}-appearance,
+    #fe_@{path-identifier} {
+      fill: @inactive-color;
+    }
+
+    #flow-elements > [id*=~"@{path-identifier}"] {
+      display: none;
+    }
+  }
+
+  .activate-path(@path-identifier; @color;) {
+    .@{path-identifier}-active {
+      #fp_@{path-identifier}-appearance,
+      #fe_@{path-identifier} {
+        fill: @color;
+        z-index: 195;
+      }
+
+      #flow-elements > [id*=~"@{path-identifier}"] {
+        display: block;
+      }
+    }
+  }
+
+  .default-path-appearance(pv-to-cons);
+  .default-path-appearance(pv-to-grid);
+  .default-path-appearance(pv-to-batt);
+
+  .default-path-appearance(grid-to-batt);
+  .default-path-appearance(grid-to-cons);
+
+  .default-path-appearance(batt-to-grid);
+  .default-path-appearance(batt-to-cons);
+
+  .activate-path(pv-to-cons, @pv-color);
+  .activate-path(pv-to-grid, @pv-color);
+  .activate-path(pv-to-batt, @pv-color);
+
+  .activate-path(grid-to-batt, @grid-color-out);
+  .activate-path(grid-to-cons, @grid-color-in);
+
+  .activate-path(batt-to-grid, @batt-color-out);
+  .activate-path(batt-to-cons, @batt-color-out);
+
+  //------------------------------------------------------------------------------
+  // Outlets
+
+  // .activate-outlet-out and .activate-outlet-in
+  // may have the same style, but are separately selected,
+  // in case we need to distinguish their visual appearance
+
+  .activate-outlet-out(@outlet-identifier; @color;) {
+    .@{outlet-identifier}-active {
+      [id=~"@{outlet-identifier}"] {
+        display: block;
+        & > text {
+          fill: @text-color;
+        }
+
+        path {
+          fill: @color;
+        }
+
+        mask {
+          // TODO: find out why a mask element is present in the exported svg
+          display: none;
+        }
+      }
+    }
+  }
+
+  .activate-outlet-in(@outlet-identifier; @color;) {
+    .@{outlet-identifier}-active {
+      [id=~"@{outlet-identifier}"] {
+        display: block;
+        & > text {
+          fill: @text-color;
+        }
+
+        path {
+          fill: @color;
+        }
+
+        mask {
+          // TODO: find out why a mask element is present in the exported svg
+          display: none;
+        }
+      }
+    }
+  }
+
+  .activate-outlet-out(pv-out, @pv-color);
+  .activate-outlet-out(grid-out, @grid-color-out);
+  .activate-outlet-out(batt-out, @batt-color-out);
+
+  .activate-outlet-in(batt-in, @batt-color-in);
+  .activate-outlet-in(grid-in, @grid-color-in);
+  .activate-outlet-in(cons-in, @text-color);
+
+  #pv-box,
+  #batt-box,
+  #grid-box,
+  #cons-box {
+    rect,
+    path {
+      stroke-width: 0;
+    }
+  }
+
+  .activate-box(@box-identifier, @color) {
+    .@{box-identifier}-in-active,
+    .@{box-identifier}-out-active {
+      [id=~"@{box-identifier}-box"] {
+        rect {
+          // stroke: @color !important;
+          // fill: white;
+          stroke-width: 0;
+        }
+
+        text {
+          fill: @color;
+          fill-opacity: 1;
+        }
+
+        [id="icon"],
+        [id="icon"] path {
+          fill: @color;
+        }
+      }
+    }
+  }
+
+  .activate-box(pv, @pv-color);
+  .activate-box(grid, @grid-color-out);
+  .activate-box(cons, @cons-color);
+  .activate-box(batt, @batt-color-out);
+
+  //------------------------------------------------------------------------------
+  // Switch battery icons
+
+  [id="batt-icon-default"] {
+    opacity: 1;
+  }
+
+  [id="batt-icon-charge"] {
+    opacity: 0;
+  }
+
+  .batt-in-active {
+    [id="batt-icon-default"] {
+      opacity: 0;
+    }
+
+    [id="batt-icon-charge"] {
+      opacity: 1;
+    }
+
+    #batt-box text {
+      fill: @batt-color-in;
+      fill-opacity: 1;
+    }
+  }
+
+  .grid-in-active {
+    #grid-box text {
+      fill: @grid-color-in;
+      fill-opacity: 1;
+    }
+
+    [id="grid-box"] [id="icon"],
+    [id="grid-box"] [id="icon"] path {
+      fill: @grid-color-in;
+    }
+  }
+
+  //------------------------------------------------------------------------------
+  // Toggle [batt -> grid] [grid -> batt] arrow visibility
+
+  .batt-to-grid-active {
+    #fp_grid-to-batt-appearance {
+      display: none;
+    }
+  }
+
+  .grid-to-batt-active {
+    #fp_batt-to-grid-appearance {
+      display: none;
+    }
+  }
+}

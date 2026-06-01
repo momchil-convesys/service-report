@@ -1,0 +1,39 @@
+<button
+  nz-button
+  [nzSize]="size"
+  (click)="onCalendarNavigation('back')"
+  [disabled]="isCalendarNavigationDisabled('back') || disabled"
+>
+  <span nz-icon nzType="left" nzTheme="outline"></span>
+</button>
+<nz-date-picker
+  [ngModel]="targetDate$ | async"
+  (ngModelChange)="onDateChange($event)"
+  [nzDisabledDate]="disabledDate"
+  [nzFormat]="dateFormatForCurrentMode"
+  nzAllowClear="false"
+  [nzMode]="mode"
+  [nzSize]="size"
+  [nzShowToday]="false"
+  [disabled]="disabled"
+></nz-date-picker>
+<!-- 
+  TODO: nzShowToday is not working properly with time zones.
+  Issue is related to hours and minutes being changed when Today is clicked.
+ -->
+<button
+  nz-button
+  [nzSize]="size"
+  (click)="onCalendarNavigation('forward')"
+  [disabled]="isCalendarNavigationDisabled('forward') || disabled"
+>
+  <span nz-icon nzType="right" nzTheme="outline"></span>
+</button>
+<button
+  nz-button
+  [nzSize]="size"
+  (click)="onCalendarNavigation('last')"
+  [disabled]="isCalendarNavigationDisabled('last') || disabled"
+>
+  <span nz-icon nzType="vertical-left" nzTheme="outline"></span>
+</button>

@@ -1,0 +1,44 @@
+@import "theme";
+
+app-ticket-list-page {
+  display: block;
+  padding: 2em;
+  padding-right: 1em;
+
+  height: 100%;
+  overflow-y: auto;
+  background-color: white;
+
+  border-right: 1px solid @border-color-base;
+
+  ul {
+    padding-left: 0;
+    list-style: none;
+
+    li a {
+      padding: 10px 20px;
+      display: block;
+      line-height: 1.2;
+      border-bottom: 1px solid @border-color-split;
+
+      color: @text-color;
+
+      &:hover {
+        color: @text-color;
+        background: @background-color-light;
+      }
+    }
+  }
+
+  .is-active {
+    background-color: @item-active-bg;
+
+    &:hover {
+      background-color: @item-active-bg;
+    }
+  }
+
+  small {
+    color: @text-color-secondary;
+  }
+}

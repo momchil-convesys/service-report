@@ -1,0 +1,53 @@
+@if (context$ | async; as context) {
+  <!--  -->
+  @if (metadataForLevel$ | async; as metadataRequest) {
+    <!--  -->
+    @if (metadataRequest.isLoading) {
+      <!--  -->
+      <nz-spin i18n-nzTip="@@loading" nzTip="Loading..." nzSize="large"> </nz-spin>
+    } @else if (metadataRequest.data) {
+      <div class="tab-panel-content">
+        <h2>
+          <ng-container i18n>Data at level</ng-container>
+          <span style="text-transform: lowercase">
+            {{ labelsForLevels[context.levelOfMeasurement] }}</span
+          >
+        </h2>
+
+        <app-epm-live-data-widget
+          [levelOfMeasurement]="context.levelOfMeasurement"
+          [metadata]="metadataRequest.data"
+        ></app-epm-live-data-widget>
+
+        <div class="historical-data-header">
+          <h3 i18n>Historical data</h3>
+        </div>
+
+        <app-epm-historical-data-widget
+          [metadata]="metadataRequest.data || null"
+          [showSubLevels]="true"
+        ></app-epm-historical-data-widget>
+      </div>
+    } @else {
+      <nz-alert
+        nzType="error"
+        i18n-nzMessage
+        nzMessage="Failed to load metadata"
+        i18-nzDescription
+        [nzDescription]="metadataRequest.error?.message || 'Unknown error'"
+        nzShowIcon
+      >
+      </nz-alert>
+    }
+  }
+} @else {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="An error occured"
+    i18-nzDescription
+    nzDescription="Missing context in route parameters"
+    nzShowIcon
+  >
+  </nz-alert>
+}

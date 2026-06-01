@@ -1,0 +1,28 @@
+@import "theme";
+
+app-alarm-trigger-view {
+  display: block;
+  padding: @padding-md @padding-lg;
+
+  .ant-descriptions-bordered .ant-descriptions-item-label {
+    max-width: 200px;
+  }
+
+  app-alarm-trigger-condition-preview + app-alarm-trigger-condition-preview {
+    margin-top: @margin-xss;
+  }
+
+  .edit-trigger-button {
+    margin-top: @margin-sm;
+  }
+
+  @media (max-width: @breakpoint-md) {
+    padding: @padding-sm;
+
+    .ant-descriptions-bordered.ant-descriptions-middle .ant-descriptions-item-label,
+    .ant-descriptions-bordered.ant-descriptions-middle .ant-descriptions-item-content {
+      padding: @padding-xs @padding-xs;
+      line-height: 1.3;
+    }
+  }
+}

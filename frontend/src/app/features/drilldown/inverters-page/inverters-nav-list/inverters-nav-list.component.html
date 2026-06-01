@@ -1,0 +1,23 @@
+<div class="items-nav">
+  <div class="nav-item-sticky">
+    <a nz-button routerLink="./" queryParamsHandling="merge">
+      <span nz-icon nzType="arrow-left" nzTheme="outline"></span>&nbsp;
+      <span i18n>Back</span>
+    </a>
+  </div>
+  <ul class="items-nav-list">
+    @for (inverter of invertersList; track inverter.inverterId) {
+      <li
+        class="items-nav-item"
+        [routerLink]="inverter.inverterId"
+        routerLinkActive="active"
+        queryParamsHandling="merge"
+      >
+        @if (showTsContext) {
+          <span class="secondary-text">{{ inverter.tsDisplayName }}&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+        }
+        <span>Inverter {{ inverter.displayIndex }}</span>
+      </li>
+    }
+  </ul>
+</div>

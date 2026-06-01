@@ -1,0 +1,21 @@
+@import "theme";
+
+app-home {
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+
+  .main-content {
+    height: 100%;
+    overflow: auto;
+    flex: 1;
+    border-left: 1px solid @border-color-base;
+  }
+
+  nz-spin,
+  nz-result {
+    flex: 1;
+    align-self: center;
+    text-align: center;
+  }
+}

@@ -1,0 +1,51 @@
+@if (parameters; as p) {
+  <div
+    [ngClass]="{
+      'pv-to-grid-active': p.pvOut && p.gridIn,
+      'pv-to-cons-active': p.pvOut && p.consIn?.fromPv,
+      'pv-to-batt-active': p.pvOut && p.battIn?.fromPv,
+      'grid-to-batt-active': p.gridOut && p.battIn?.fromGrid,
+      'grid-to-cons-active': p.gridOut && p.consIn?.fromGrid,
+      'batt-to-cons-active': p.battOut && p.consIn?.fromBatteries,
+      'batt-to-grid-active': p.battOut && p.gridIn,
+      'pv-out-active': p.pvOut,
+      'grid-out-active': p.gridOut,
+      'grid-in-active': p.gridIn,
+      'batt-out-active': p.battOut,
+      'batt-in-active': p.battIn?.total,
+      'cons-in-active': p.consIn?.total,
+    }"
+    class="chart-layout"
+  >
+    @if (options.hasPv) {
+      <div class="top-row">
+        <app-chart-block-pv></app-chart-block-pv>
+      </div>
+    }
+
+    <div class="center-row">
+      <div class="left-col">
+        <app-chart-block-grid></app-chart-block-grid>
+      </div>
+
+      <div class="flow-paths-container">
+        @if (options.hasPv) {
+          <app-flow-paths-full></app-flow-paths-full>
+        }
+
+        @if (!options.hasPv) {
+          <div class="chart-title">Energy flow</div>
+          <app-flow-paths-no-pv></app-flow-paths-no-pv>
+        }
+      </div>
+
+      <div class="right-col">
+        <app-chart-block-batteries></app-chart-block-batteries>
+      </div>
+    </div>
+
+    <div class="bottom-row">
+      <app-chart-block-cons></app-chart-block-cons>
+    </div>
+  </div>
+}

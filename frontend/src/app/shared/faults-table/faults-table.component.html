@@ -1,0 +1,114 @@
+@if (!hideFilteringOptions) {
+  <div class="options-block">
+    <div>
+      <nz-switch
+        [ngModel]="groupItems"
+        (ngModelChange)="onGroupItemsChange($event)"
+        [disabled]="faultGroups.length === 1"
+      ></nz-switch>
+      <span i18n>&nbsp;&nbsp;Show in groups</span>
+
+      @if (groupItems) {
+        <a i18n nzType="link" nzSize="small" (click)="toggleExpandForAllNodes(false)">Collapse</a>
+        <a i18n nzType="link" nzSize="small" (click)="toggleExpandForAllNodes(true)">Expand</a>
+      }
+    </div>
+
+    <div>
+      <nz-switch
+        [ngModel]="showMajorOnly"
+        (ngModelChange)="onSeverityFilterChange($event)"
+      ></nz-switch>
+      <span i18n>&nbsp;&nbsp;Show faults with high severity only</span>
+    </div>
+  </div>
+}
+
+<div class="search-block">
+  <nz-input-group [nzSuffix]="searchFilterValue === null ? suffixIconSearch : suffixIconClear">
+    <input
+      type="text"
+      nz-input
+      i18n-placeholder
+      placeholder="Filter by fault name"
+      [ngModel]="searchFilterValue"
+      (ngModelChange)="onSearchFilterChange($event)"
+    />
+  </nz-input-group>
+  <ng-template #suffixIconSearch>
+    <i nz-icon nzType="search"></i>
+  </ng-template>
+  <ng-template #suffixIconClear>
+    <i
+      nz-icon
+      class="ant-input-clear-icon"
+      nzTheme="fill"
+      nzType="close-circle"
+      (click)="onSearchFilterChange(null)"
+    ></i>
+  </ng-template>
+</div>
+
+<nz-table
+  #expandTable
+  [nzData]="listOfMapData"
+  [nzTableLayout]="scrollable ? 'fixed' : 'auto'"
+  nzSize="small"
+  nzBordered="false"
+  nzFrontPagination="false"
+  [nzLoading]="loadingData"
+  [nzScroll]="{ x: scrollable ? '300px' : undefined }"
+>
+  <thead>
+    <tr>
+      <th i18n nzLeft [nzWidth]="scrollable ? '300px' : null">Fault name</th>
+      <th i18n nzAlign="center" [nzWidth]="scrollable ? '100px' : null">Severity</th>
+      @for (extraCol of extraColumns; track $index) {
+        <ng-container *ngTemplateOutlet="extraCol.thTemplate"></ng-container>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (data of expandTable.data; track data.key) {
+      @for (item of mapOfExpandedData[data.key]; track item.key; let i = $index) {
+        @if ((item.parent && item.parent.isExpanded) || !item.parent) {
+          <tr (click)="onRowClick(item)">
+            <td
+              nzLeft
+              [class.group-header-cell]="item.level === 0 && groupItems"
+              [nzIndentSize]="item.level! * 1"
+              [nzShowExpand]="!!item.children"
+              [(nzExpand)]="item.isExpanded"
+              (nzExpandChange)="onExpandChange(mapOfExpandedData[data.key], item, $event)"
+            >
+              <span (click)="onRowTextSelect($event)">
+                <span class="fault-code">{{ item.faultCode }}</span>
+                @if (item.level !== 0 || !groupItems) {
+                  &nbsp;
+                }
+                <span class="fault-name">{{ item.name }}</span>
+              </span>
+            </td>
+
+            <td nzAlign="center" [class.group-header-cell]="item.level === 0 && groupItems">
+              <span class="severity">{{ item.severity }}</span>
+            </td>
+
+            @for (extraCol of extraColumns; track $index) {
+              @if (item.faultCode) {
+                <ng-container
+                  *ngTemplateOutlet="
+                    extraCol.tdTemplate;
+                    context: { $implicit: { itemId: item.originId } }
+                  "
+                ></ng-container>
+              } @else {
+                <td class="group-header-cell" [attr.colspan]="extraCol.colspan || 1"></td>
+              }
+            }
+          </tr>
+        }
+      }
+    }
+  </tbody>
+</nz-table>

@@ -1,0 +1,177 @@
+@import "theme";
+
+app-control-interface {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  .ant-card-body {
+    padding: @padding-md;
+  }
+
+  .control-interface-card {
+    height: 100%;
+    background-color: @component-background;
+    border: 1px solid @border-color-split;
+    border-radius: @border-radius-base;
+
+    .control-interface-header {
+      margin-bottom: @margin-sm;
+      padding-bottom: @padding-xs;
+      border-bottom: 1px solid @border-color-split;
+
+      .panel-title {
+        margin: 0;
+        font-size: @font-size-base;
+        font-weight: 500;
+        color: @text-color;
+      }
+    }
+
+    .control-section {
+      margin-bottom: @margin-md;
+      border: 1px solid @border-color-split;
+      border-radius: @border-radius-base;
+      padding: @padding-md;
+      transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &.active {
+        border-color: @primary-color;
+        box-shadow: 0 0 0 2px fade(@primary-color, 20%);
+      }
+
+      .section-title {
+        margin-bottom: 0;
+      }
+    }
+
+    .control-form-section {
+      padding-top: @padding-xss;
+
+      .manual-control-container {
+        background-color: @gray-2;
+        border-radius: @border-radius-base;
+        padding: @padding-md;
+      }
+
+      .manual-control-form-row {
+        display: flex;
+        align-items: flex-start;
+        gap: @margin-md;
+        flex-wrap: wrap;
+
+        nz-form-item {
+          flex: 1;
+          min-width: 150px;
+          max-width: 200px;
+          margin-bottom: 0;
+        }
+
+        .form-action-wrapper {
+          flex-shrink: 0;
+          margin-bottom: 0;
+          align-self: flex-end;
+          padding-bottom: @padding-xs;
+        }
+      }
+
+      .compact-form {
+        .form-fields {
+          display: flex;
+          align-items: flex-end;
+          gap: @margin-xs;
+          flex-wrap: wrap;
+
+          .compact-form-item {
+            flex: 1;
+            min-width: 120px;
+            margin-bottom: 0;
+
+            .compact-label {
+              font-size: @font-size-sm;
+              margin-bottom: @margin-xss;
+              padding-bottom: 0;
+            }
+
+            nz-form-control {
+              font-size: @font-size-sm;
+            }
+          }
+
+          .form-action-wrapper {
+            flex-shrink: 0;
+            margin-bottom: 0;
+          }
+        }
+      }
+
+      nz-table {
+        min-height: 100px;
+
+        .ant-form-item-control-input {
+          min-height: 24px;
+        }
+
+        .ant-table-tbody > tr.present > td {
+          background-color: @error-stack-current-index-background !important;
+          font-weight: 500;
+        }
+
+        .ant-table-tbody > tr.past > td {
+          color: @text-color-secondary !important;
+          background-color: @background-color-light !important;
+          opacity: 0.7;
+        }
+
+        .ant-table-tbody > tr.future > td {
+          // Future intervals keep default styling - no special styling needed
+        }
+      }
+
+      .ant-table-thead > tr > th {
+        vertical-align: top;
+        line-height: 1.3;
+        white-space: normal;
+      }
+
+      .secondary-text {
+        font-size: @font-size-sm;
+        color: @text-color-secondary;
+      }
+
+      .ant-table.ant-table-small .ant-table-tbody > tr > td {
+        padding: @padding-xss @padding-xs;
+        white-space: nowrap;
+      }
+
+      .charge {
+        color: @blue-6;
+      }
+
+      .discharge {
+        color: @green-6;
+      }
+
+      .hidden {
+        visibility: hidden;
+      }
+
+      .highlight-cell {
+        font-weight: bold;
+      }
+
+      .no-interval-message {
+        padding: @padding-sm;
+        text-align: center;
+        color: @text-color-secondary;
+        font-size: @font-size-sm;
+      }
+    }
+  }
+}

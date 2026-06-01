@@ -1,0 +1,31 @@
+@if (loading === true || loading === undefined) {
+  <div class="loading-block">
+    <nz-spin i18n-nzTip="@@loading" nzTip="Loading..."></nz-spin>
+  </div>
+}
+
+@if (error) {
+  <div class="error-block">
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load data"
+      [nzDescription]="error.message"
+      nzShowIcon
+    ></nz-alert>
+  </div>
+}
+
+<div class="timestamp">
+  &nbsp;
+  @if (data?.timestamp; as timestamp) {
+    <app-relative-timestamp [timestamp]="timestamp" [plain]="true"></app-relative-timestamp>
+  }
+</div>
+
+<div class="chart-container">
+  <app-flow-chart
+    [options]="{ hasPv: hasPv }"
+    [parameters]="flowChartParameters$ | async"
+  ></app-flow-chart>
+</div>

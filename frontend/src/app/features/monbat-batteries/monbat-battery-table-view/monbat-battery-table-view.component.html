@@ -1,0 +1,49 @@
+<nz-table
+  #expandTable
+  [nzData]="data"
+  nzTableLayout="auto"
+  nzSize="small"
+  nzBordered="true"
+  nzFrontPagination="false"
+  nzShowPagination="false"
+  #table
+>
+  <thead>
+    <tr>
+      <th [nzSortFn]="sortDefault" [nzSortDirections]="[null]" i18n>Battery</th>
+      <th [nzSortFn]="sortVoltage" [nzSortDirections]="['ascend', 'descend']" i18n>Voltage</th>
+      <th [nzSortFn]="sortTemperature" [nzSortDirections]="['ascend', 'descend']" i18n>
+        Temperature
+      </th>
+      <!-- <th [nzSortFn]="sortSoc" [nzSortDirections]="['ascend', 'descend']">SoC</th> -->
+    </tr>
+  </thead>
+  <tbody>
+    @for (battery of table.data; track battery.id; let i = $index) {
+      <tr
+        style="cursor: pointer"
+        [id]="'battery-anchor-' + battery.id"
+        routerLink="batteries/{{ battery.id }}"
+        queryParamsHandling="merge"
+      >
+        <td>{{ battery.displayName }}</td>
+
+        <td>
+          <app-monbat-battery-voltage-bar
+            [voltage]="battery.voltage"
+          ></app-monbat-battery-voltage-bar>
+        </td>
+
+        <td>
+          <app-monbat-battery-temperature-bar
+            [temperature]="battery.temperature"
+          ></app-monbat-battery-temperature-bar>
+        </td>
+
+        <!-- <td>
+        <app-monbat-battery-charge-bar [percentage]="battery.soc"></app-monbat-battery-charge-bar>
+      </td> -->
+      </tr>
+    }
+  </tbody>
+</nz-table>

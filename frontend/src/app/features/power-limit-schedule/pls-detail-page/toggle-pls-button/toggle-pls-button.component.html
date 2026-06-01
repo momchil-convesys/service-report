@@ -1,0 +1,32 @@
+<button
+  nz-button
+  nzSize="large"
+  [nzType]="type === 'enable' ? 'primary' : 'default'"
+  [nzDanger]="type === 'disable'"
+  [nzLoading]="loading"
+  [disabled]="disabled"
+  (click)="onClick()"
+  nz-tooltip
+  [nzTooltipTitle]="tooltipTitle"
+  [nzTooltipTrigger]="disabled ? 'hover' : null"
+>
+  @if (type === "enable") {
+    <span nz-icon nzType="check" nzTheme="outline"></span>
+    <span i18n>Enable schedule</span>&hellip;
+  }
+
+  @if (type === "disable") {
+    <span nz-icon nzType="stop" nzTheme="outline"></span>
+    <span i18n>Disable schedule</span>&hellip;
+  }
+</button>
+
+<ng-template #tooltipTitle>
+  @if (type === "enable") {
+    <ng-container i18n> Enabling past schedules is pointless! </ng-container>
+  }
+
+  @if (type === "disable") {
+    <ng-container i18n> Disabling past schedules is pointless! </ng-container>
+  }
+</ng-template>

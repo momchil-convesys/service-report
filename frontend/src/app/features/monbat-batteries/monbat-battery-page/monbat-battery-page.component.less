@@ -1,0 +1,42 @@
+@import "theme";
+
+app-monbat-battery-page {
+  display: block;
+
+  max-width: 1600px;
+
+  padding: 0 @padding-sm;
+
+  .header {
+    display: flex;
+    // gap: @margin-sm;
+    align-items: center;
+
+    margin-bottom: @margin-lg;
+
+    h1 {
+      margin: 0;
+    }
+
+    .parameter-title {
+      color: @text-color-secondary;
+      font-size: @font-size-sm;
+      text-align: right;
+    }
+  }
+
+  .sub-header {
+    display: flex;
+    gap: @margin-sm;
+    align-items: center;
+    padding-bottom: @padding-xss;
+
+    & > * {
+      margin: 0;
+    }
+
+    .extras {
+      margin-left: auto;
+    }
+  }
+}

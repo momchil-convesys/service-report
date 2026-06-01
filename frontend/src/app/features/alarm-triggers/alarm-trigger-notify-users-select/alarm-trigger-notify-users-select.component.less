@@ -1,0 +1,30 @@
+@import "theme";
+
+app-alarm-trigger-notify-users-select {
+  .ant-checkbox-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .details {
+    font-size: @font-size-sm;
+    color: @text-color-secondary;
+  }
+
+  .actions-block {
+    margin-top: @margin-xs;
+
+    .ant-divider-vertical {
+      border-color: @gray-5;
+    }
+
+    button {
+      padding: 0;
+    }
+  }
+
+  nz-alert,
+  nz-skeleton {
+    margin-top: @margin-sm;
+  }
+}

@@ -1,0 +1,319 @@
+@if (currentSchedule) {
+  @if (controlledByExternalSystem) {
+    <div
+      class="indicator-block active-compliant"
+      nz-popover
+      [nzPopoverTrigger]="mode === 'block' ? null : 'hover'"
+      [nzPopoverPlacement]="mode === 'icon-only' ? 'top' : ['bottom', 'bottomRight']"
+      [nzPopoverContent]="contentTemplate4"
+      nzPopoverOverlayClassName="power-limit-schedule-indicator-popover"
+    >
+      <div class="header">
+        <app-power-limit-icon [scheduledLimit]="true"></app-power-limit-icon>
+        @if (mode !== "icon-only") {
+          <div class="title">
+            <ng-container i18n>Power limit</ng-container>
+            <app-pls-value-formatted
+              [value]="controlledByExternalSystem.powerLimitMw"
+              [unit]="' MW'"
+            ></app-pls-value-formatted>
+          </div>
+        }
+      </div>
+
+      @if (mode === "block") {
+        <div class="block-mode-details-container">
+          <ng-container [ngTemplateOutlet]="contentTemplate4"></ng-container>
+        </div>
+      }
+
+      <ng-template #contentTemplate4>
+        <div style="margin-bottom: 8px">
+          <small style="color: rgba(0, 0, 0, 0.45)"> Limit applied by an external system </small>
+          <br />
+          <app-pls-value-formatted
+            [value]="controlledByExternalSystem.powerLimitMw"
+            [unit]="' MW'"
+          ></app-pls-value-formatted>
+        </div>
+
+        <div style="margin-bottom: 12px">
+          <small style="color: rgba(0, 0, 0, 0.45)"> Information is current as of </small>
+          <br />
+          @if (currentSchedule.timestamp) {
+            {{ convertTimestampToPlantTimeZone(currentSchedule.timestamp) | date: "HH:mm:ss" }}
+          } @else {
+            <span style="color: #d9343a">No information available</span>
+          }
+        </div>
+
+        <div class="external-control-warning">
+          {{ externalControlWarningText }}
+        </div>
+      </ng-template>
+    </div>
+  } @else {
+    <!--
+    ========================================================================== 
+      Current
+    -->
+    @if (currentSchedule.currentRecord; as currentRecord) {
+      <!--
+      ========================================================================== 
+      Compliant
+     -->
+      @if (currentSchedule.complianceStatus === "compliant") {
+        <div
+          class="indicator-block active-compliant"
+          nz-popover
+          [nzPopoverTrigger]="mode === 'block' ? null : 'hover'"
+          [nzPopoverTitle]="titleTemplate1"
+          [nzPopoverContent]="contentTemplate1"
+          nzPopoverOverlayClassName="power-limit-schedule-indicator-popover"
+        >
+          <div class="header">
+            <app-power-limit-icon [scheduledLimit]="true"></app-power-limit-icon>
+            @if (mode !== "icon-only") {
+              <div class="title">
+                <ng-container i18n>Active schedule</ng-container>
+                <app-pls-value-formatted
+                  [value]="currentRecord.calculatedTarget"
+                  [unit]="getUnitForRow(currentRecord)"
+                ></app-pls-value-formatted>
+              </div>
+            }
+          </div>
+
+          @if (mode === "block") {
+            <div class="block-mode-details-container">
+              <ng-container [ngTemplateOutlet]="titleTemplate1"></ng-container>
+              <ng-container [ngTemplateOutlet]="contentTemplate1"></ng-container>
+            </div>
+          }
+
+          <ng-template #titleTemplate1>
+            <div i18n style="padding: 4px 0; font-weight: bold">In compliance with schedule.</div>
+          </ng-template>
+
+          <ng-template #contentTemplate1>
+            <div style="line-height: 1.3">
+              <div style="margin-bottom: 8px">
+                <small style="color: rgba(0, 0, 0, 0.45)"> Scheduled limit </small>
+                <br />
+                @if (
+                  currentRecord.coefficient !== undefined &&
+                  currentRecord.coefficient !== 1 &&
+                  currentRecord.powerLimitMw
+                ) {
+                  <app-pls-value-formatted
+                    [value]="currentRecord.powerLimitMw"
+                    [bold]="false"
+                  ></app-pls-value-formatted>
+                  × {{ currentRecord.coefficient }} =
+                  <app-pls-value-formatted
+                    [value]="currentRecord.calculatedTarget"
+                    [unit]="getUnitForRow(currentRecord)"
+                  ></app-pls-value-formatted>
+                } @else {
+                  <app-pls-value-formatted
+                    [value]="currentRecord.powerLimitMw"
+                    [unit]="getUnitForRow(currentRecord)"
+                  ></app-pls-value-formatted>
+                }
+              </div>
+
+              @if (getTargetIntervalForRow(currentRecord); as interval) {
+                <div style="margin-bottom: 8px">
+                  <small style="color: rgba(0, 0, 0, 0.45)"> Interval </small>
+                  <br />
+
+                  <ng-container>
+                    {{ interval.start | date: "HH:mm" }}–{{ interval.end | date: "HH:mm" }}
+                  </ng-container>
+                </div>
+              }
+
+              <div style="margin-bottom: 16px">
+                <small style="color: rgba(0, 0, 0, 0.45)"> Information is current as of </small>
+                <br />
+                @if (currentSchedule.timestamp) {
+                  {{
+                    convertTimestampToPlantTimeZone(currentSchedule.timestamp) | date: "HH:mm:ss"
+                  }}
+                } @else {
+                  <span style="color: #d9343a">No information available</span>
+                }
+              </div>
+
+              <ng-container [ngTemplateOutlet]="linkToSchedule"> </ng-container>
+            </div>
+          </ng-template>
+        </div>
+      }
+
+      <!-- 
+      ==========================================================================
+      Enabled but NOT compliant
+     -->
+
+      @if (currentSchedule.complianceStatus === "non-compliant") {
+        <div
+          class="indicator-block active-non-compliant"
+          nz-popover
+          [nzPopoverTrigger]="mode === 'block' ? null : 'hover'"
+          [nzPopoverTitle]="titleTemplate2"
+          [nzPopoverContent]="contentTemplate2"
+          nzPopoverOverlayClassName="power-limit-schedule-indicator-popover"
+        >
+          <div class="header">
+            <app-power-limit-icon [scheduledLimit]="true"></app-power-limit-icon>
+            @if (mode !== "icon-only") {
+              <div i18n class="title">Schedule assignment ERROR</div>
+            }
+          </div>
+
+          @if (mode === "block") {
+            <div class="block-mode-details-container">
+              <ng-container [ngTemplateOutlet]="titleTemplate2"></ng-container>
+              <ng-container [ngTemplateOutlet]="contentTemplate2"></ng-container>
+            </div>
+          }
+
+          <ng-template #titleTemplate2>
+            <div style="padding: 4px 0; font-weight: bold; color: #d9343a" i18n>
+              Failed to observe applied schedule!
+            </div>
+            <br />
+          </ng-template>
+
+          <ng-template #contentTemplate2>
+            <div style="line-height: 1.3">
+              <!-- <div style="margin-bottom: 8px">
+            <small style="color: rgba(0, 0, 0, 0.45)"> Scheduled limit </small>
+            <br />
+            <ng-container
+              *ngIf="
+                currentRecord.coefficient !== undefined && currentRecord.powerLimitMw !== null;
+                else noAlteration
+              "
+            >
+              <app-pls-value-formatted
+                [value]="currentRecord.powerLimitMw"
+                [bold]="false"
+              ></app-pls-value-formatted>
+              × {{ currentRecord.coefficient }} =
+              <app-pls-value-formatted
+                [value]="currentRecord.calculatedTarget"
+              ></app-pls-value-formatted>
+            </ng-container>
+            <ng-template #noAlteration>
+              <app-pls-value-formatted
+                [value]="currentRecord.powerLimitMw"
+              ></app-pls-value-formatted>
+            </ng-template>
+          </div>
+
+          <div style="margin-bottom: 8px">
+            <small style="color: rgba(0, 0, 0, 0.45)"> Interval </small>
+            <br />
+
+            <ng-container *ngIf="getTargetIntervalForRow(currentRecord.timestamp) as interval">
+              {{ interval.start | date : "HH:mm" }}–{{ interval.end | date : "HH:mm" }}
+            </ng-container>
+          </div>
+
+          <div style="margin-bottom: 8px">
+            <small style="color: rgba(0, 0, 0, 0.45)"> Reason </small>
+            <br />
+            {{ currentSchedule.nonComplianceReason }}
+          </div>
+
+          <div style="margin-bottom: 16px">
+            <small style="color: rgba(0, 0, 0, 0.45)"> Information is current as of </small>
+            <br />
+            {{ convertTimestampToPlantTimeZone(currentSchedule.timestamp) | date : "HH:mm:ss" }}
+          </div> -->
+
+              <ng-container [ngTemplateOutlet]="linkToSchedule"> </ng-container>
+            </div>
+          </ng-template>
+        </div>
+      }
+    }
+
+    <!-- 
+    ==========================================================================
+      Upcoming (all records are in the future) 
+    -->
+
+    @if (!currentSchedule.currentRecord) {
+      <div
+        class="indicator-block disabled"
+        nz-popover
+        [nzPopoverTrigger]="mode === 'block' ? null : 'hover'"
+        [nzPopoverTitle]="titleTemplate3"
+        [nzPopoverContent]="contentTemplate3"
+        nzPopoverOverlayClassName="power-limit-schedule-indicator-popover"
+      >
+        <div class="header">
+          <app-power-limit-icon [scheduledLimit]="true"></app-power-limit-icon>
+          @if (mode !== "icon-only") {
+            <div i18n class="title">Upcoming schedule assignment</div>
+          }
+        </div>
+
+        @if (mode === "block") {
+          <div class="block-mode-details-container">
+            <ng-container [ngTemplateOutlet]="titleTemplate3"></ng-container>
+            <ng-container [ngTemplateOutlet]="contentTemplate3"></ng-container>
+          </div>
+        }
+
+        <ng-template #titleTemplate3>
+          <div i18n style="padding: 4px 0; font-weight: bold">
+            There is an active upcoming schedule assignment
+          </div>
+        </ng-template>
+
+        <ng-template #contentTemplate3>
+          <div style="line-height: 1.3">
+            <ng-container [ngTemplateOutlet]="linkToSchedule"> </ng-container>
+          </div>
+        </ng-template>
+      </div>
+    }
+
+    <!-- 
+    ==========================================================================
+      Shared content 
+    -->
+
+    <ng-template #linkToSchedule>
+      <div class="actions">
+        @if (scheduleLink) {
+          <button
+            i18n
+            nz-button
+            style="margin-bottom: 4px"
+            [routerLink]="scheduleLink"
+            [disabled]="!allowNavigateToPowerLimitSchedule"
+          >
+            View schedule
+          </button>
+        }
+
+        @if (fileLink) {
+          <button
+            i18n
+            nz-button
+            style="margin-bottom: 4px"
+            [routerLink]="fileLink"
+            [disabled]="!allowNavigateToPowerLimitSchedule"
+          >
+            View schedule
+          </button>
+        }
+      </div>
+    </ng-template>
+  }
+}

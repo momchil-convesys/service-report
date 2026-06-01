@@ -1,0 +1,13 @@
+@if (isLoading) {
+  <nz-spin i18n-nzTip="@@loading" nzTip="Loading..." nzSize="large"></nz-spin>
+}
+<!-- {{ pdfObject | json }} -->
+
+<pdf-viewer
+  [src]="pdfObject"
+  [autoresize]="true"
+  [original-size]="false"
+  style="height: 90%"
+  (after-load-complete)="afterLoadComplete($event)"
+  (error)="onError($event)"
+></pdf-viewer>

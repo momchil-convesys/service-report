@@ -1,0 +1,48 @@
+<div class="pr-formula-container">
+  <ng-content class="close-button"></ng-content>
+
+  <p class="intro">The performance ratio is calculated as follows</p>
+
+  <div class="formula">
+    <span>PR<sub>measured</sub> = </span>
+    <span class="fraction">
+      <span class="numerator">E × G<sub class="subscript">stc</sub></span>
+      <span class="denominator"
+        >P<sub class="subscript">p</sub> × G<sub class="subscript">poa</sub></span
+      >
+    </span>
+  </div>
+
+  <div class="legend">
+    <table>
+      <tr>
+        <td class="symbol">PR<sub>measured</sub></td>
+        <td class="description">Performance ratio (measured)</td>
+      </tr>
+      <tr>
+        <td class="symbol">E</td>
+        <td class="description">
+          Electricity generation [kWh] measured at Owner side of the Plant Step-up Substation
+          located on Site
+        </td>
+      </tr>
+      <tr>
+        <td class="symbol">G<sub>stc</sub></td>
+        <td class="description">
+          Installed capacity [kWp] as determined according to the provisions of the EPC Contract
+        </td>
+      </tr>
+      <tr>
+        <td class="symbol">P<sub>p</sub></td>
+        <td class="description">
+          Total global solar irradiation sum on the plane of array without possible downtimes
+          [kWh/m<sup>2</sup>] measured during the test periods
+        </td>
+      </tr>
+      <tr>
+        <td class="symbol">G<sub>poa</sub></td>
+        <td class="description">Global solar irradiance under STC = 1000 W/m<sup>2</sup></td>
+      </tr>
+    </table>
+  </div>
+</div>

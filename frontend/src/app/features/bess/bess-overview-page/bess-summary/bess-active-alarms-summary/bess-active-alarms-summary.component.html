@@ -1,0 +1,46 @@
+@if (summary) {
+  <section class="alarms-summary-card">
+    <span class="alarms-summary-card__title" i18n>Active alarms</span>
+
+    <div class="alarms-summary-card__content">
+      <div class="alarms-summary-card__chart" style="width: 100%">
+        <div class="alarms-summary-card__chart-center">
+          @if (totalActiveAlarms !== 0) {
+            <span class="alarms-summary-card__chart-value">
+              <app-value-display [value]="totalActiveAlarms"></app-value-display>
+            </span>
+            <span class="alarms-summary-card__chart-label" i18n>Total</span>
+          } @else {
+            <span class="alarms-summary-card__chart-value">
+              <nz-icon nzType="check" nzTheme="outline" class="secondary-text-color" />
+            </span>
+            <span class="alarms-summary-card__chart-label" i18n>No alarms</span>
+          }
+        </div>
+        <div #donutContainer class="alarms-summary-card__chart-canvas"></div>
+      </div>
+
+      <div class="alarms-summary-card__list">
+        @for (severity of severityOrder; track severity.key) {
+          <div
+            class="alarms-summary-card__item"
+            [class.alarms-summary-card__item--major]="
+              severity.key === 'major' && hasCount(severity.key)
+            "
+            [class.alarms-summary-card__item--minor]="
+              severity.key === 'minor' && hasCount(severity.key)
+            "
+            [class.alarms-summary-card__item--warning]="
+              severity.key === 'warning' && hasCount(severity.key)
+            "
+          >
+            <div class="alarms-summary-card__item-value">
+              <app-value-display [value]="summary[severity.key]"></app-value-display>
+            </div>
+            <div class="alarms-summary-card__item-label">{{ severity.label }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+}

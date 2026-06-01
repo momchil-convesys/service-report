@@ -1,0 +1,33 @@
+@import "theme";
+
+app-inverter-power-limit-indicator {
+  @horizontal-padding-default: 6px;
+  @horizontal-padding-large: 8px;
+
+  @height-large: 28px; // equals the font size of h1
+
+  @border-radius: 2px;
+
+  .tag-mode {
+    display: block;
+    background-color: @red-6;
+    color: white;
+    line-height: @height-large;
+    font-size: 14px;
+    border-radius: @border-radius;
+    padding: 0 @horizontal-padding-large;
+
+    app-power-limit-icon {
+      color: white;
+
+      svg {
+        fill: white;
+      }
+    }
+
+    b {
+      padding-left: @padding-xss;
+      font-size: 14px;
+    }
+  }
+}

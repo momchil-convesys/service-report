@@ -1,0 +1,58 @@
+<div class="trees-header">
+  <div class="header-title">BESS Asset Trees</div>
+  <div class="header-controls">
+    <button nz-button nzType="default" nzSize="small" (click)="expandAll()">
+      <span nz-icon nzType="plus-square" nzTheme="outline"></span>
+      <span>Expand All</span>
+    </button>
+    <button nz-button nzType="default" nzSize="small" (click)="collapseAll()">
+      <span nz-icon nzType="minus-square" nzTheme="outline"></span>
+      <span>Collapse All</span>
+    </button>
+  </div>
+</div>
+
+<div class="bess-trees-wrapper">
+  @for (tree of trees; track tree.root.asset.id) {
+    <div class="bess-tree-container">
+      <h2 class="tree-title">{{ tree.root.asset.name }}</h2>
+      <nz-tree-view #tv [nzDataSource]="tree.dataSource" [nzLevelAccessor]="levelAccessor">
+        <nz-tree-node *nzTreeNodeDef="let node" nzTreeNodeIndentLine>
+          <nz-tree-node-option
+            [nzSelected]="tree.selectListSelection.isSelected(node)"
+            (nzClick)="tree.selectListSelection.toggle(node)"
+          >
+            <span
+              class="asset-type-badge compact"
+              [attr.data-type]="getAssetTypeLabelShort(node.asset.type)"
+            >
+              {{ getAssetTypeLabel(node.asset.type) }}
+            </span>
+            <span class="asset-name secondary-text-size">{{ shortenAssetName(node.asset) }}</span>
+          </nz-tree-node-option>
+        </nz-tree-node>
+
+        <nz-tree-node *nzTreeNodeDef="let node; when: hasChild" nzTreeNodeIndentLine>
+          <nz-tree-node-toggle>
+            <nz-icon
+              [nzType]="tree.view?.isExpanded(node) ? 'minus-square' : 'plus-square'"
+              nzTheme="outline"
+            />
+          </nz-tree-node-toggle>
+          <nz-tree-node-option
+            [nzSelected]="tree.selectListSelection.isSelected(node)"
+            (nzClick)="tree.selectListSelection.toggle(node)"
+          >
+            <span
+              class="asset-type-badge compact"
+              [attr.data-type]="getAssetTypeLabelShort(node.asset.type)"
+            >
+              {{ getAssetTypeLabel(node.asset.type) }}
+            </span>
+            <b class="asset-name">{{ shortenAssetName(node.asset) }}</b>
+          </nz-tree-node-option>
+        </nz-tree-node>
+      </nz-tree-view>
+    </div>
+  }
+</div>

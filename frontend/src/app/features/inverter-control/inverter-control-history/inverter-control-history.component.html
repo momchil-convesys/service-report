@@ -1,0 +1,64 @@
+<div class="filters-block">
+  <div class="filter-title" i18n>Show requests of type</div>
+  <nz-radio-group
+    [ngModel]="filterByTypeValue$ | async"
+    nzButtonStyle="solid"
+    (ngModelChange)="onFilterChange($event)"
+  >
+    @for (option of filterByTypeOptions; track option.value) {
+      <label nz-radio-button [nzValue]="option.value">
+        {{ option.label }}
+      </label>
+    }
+  </nz-radio-group>
+</div>
+
+@if (!(historyRequestError$ | async)) {
+  <nz-spin
+    [nzSpinning]="(historyRequest$ | async)?.isLoading"
+    i18n-nzTip="@@loading"
+    nzTip="Loading..."
+  >
+    @if (totalCount > pageSize) {
+      <nz-pagination
+        [nzTotal]="totalCount"
+        [nzPageIndex]="pageIndex"
+        [nzPageSize]="pageSize"
+        (nzPageIndexChange)="onPageIndexChange($event)"
+        [nzSize]="'default'"
+        nzResponsive="true"
+      ></nz-pagination>
+    }
+
+    @if (historyRequestData$ | async; as requestItems) {
+      @for (item of requestItems; track item.id) {
+        <app-inverter-control-request-item [item]="item"></app-inverter-control-request-item>
+      }
+
+      @if (requestItems.length === 0) {
+        <div class="empty-container">
+          <nz-empty
+            nzNotFoundImage="simple"
+            i18n-nzNotFoundContent
+            nzNotFoundContent="No requests"
+          ></nz-empty>
+        </div>
+      }
+    }
+
+    @if (totalCount > pageSize) {
+      <nz-pagination
+        [nzTotal]="totalCount"
+        [nzPageIndex]="pageIndex"
+        [nzPageSize]="pageSize"
+        (nzPageIndexChange)="onPageIndexChange($event)"
+        [nzSize]="'default'"
+        nzResponsive="true"
+      ></nz-pagination>
+    }
+  </nz-spin>
+}
+
+@if (historyRequestError$ | async; as error) {
+  <nz-alert nzType="error" i18n-nzMessage nzMessage="Failed to load history" nzShowIcon></nz-alert>
+}

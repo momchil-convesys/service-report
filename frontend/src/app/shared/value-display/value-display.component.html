@@ -1,0 +1,11 @@
+<span class="value-text">
+  @if (value === null) {
+    {{ nullText }}
+  } @else if (value === undefined) {
+    {{ undefinedText }}
+  }
+  @if (value !== null && value !== undefined) {
+    {{ value > 0 && showPlusSignIfPositive ? "+" : "" }}{{ value | number: format }}{{ unit }}
+  }
+</span>
+<ng-content></ng-content>

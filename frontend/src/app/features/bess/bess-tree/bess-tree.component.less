@@ -1,0 +1,111 @@
+@import "theme";
+
+app-bess-tree {
+  display: block;
+
+  padding: @padding-md;
+  // background-color: @background-color-base;
+
+  .trees-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: @margin-md;
+    padding-bottom: @padding-sm;
+    border-bottom: 1px solid @border-color-base;
+
+    .header-title {
+      font-size: @font-size-lg;
+      font-weight: 500;
+      color: @text-color;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: @margin-xs;
+
+      button {
+        display: flex;
+        align-items: center;
+        gap: @margin-xss;
+      }
+    }
+  }
+
+  .bess-trees-wrapper {
+    display: flex;
+    gap: @padding-xss;
+    // flex-wrap: wrap;
+  }
+
+  .bess-tree-container {
+    flex: 1;
+    min-width: 300px;
+    padding: @padding-md;
+    border-radius: @border-radius-base;
+    background-color: white;
+  }
+
+  .asset-name {
+    padding-left: @margin-xss;
+  }
+
+  .asset-type-badge {
+    display: inline-block;
+    padding: 0 8px;
+    border-radius: @border-radius-sm;
+    font-size: @font-size-sm;
+    font-weight: 500;
+
+    &.compact {
+      line-height: 20px;
+    }
+
+    &[data-type="BESS"] {
+      background-color: @red-1;
+      color: @red-8;
+      border: 1px solid @red-3;
+    }
+
+    &[data-type="TS"] {
+      background-color: @blue-1;
+      color: @blue-8;
+      border: 1px solid @blue-3;
+    }
+
+    &[data-type="BC"] {
+      background-color: @gray-2;
+      color: @gray-9;
+      border: 1px solid @gray-5;
+    }
+
+    &[data-type="BR"] {
+      background-color: @gold-1;
+      color: @gold-8;
+      border: 1px solid @gold-4;
+    }
+
+    &[data-type="BP"] {
+      background-color: @green-1;
+      color: @green-8;
+      border: 1px solid @green-3;
+    }
+
+    &[data-type="BCL"] {
+      background-color: @red-1;
+      color: @red-8;
+      border: 1px solid @red-3;
+    }
+
+    &[data-type="INV"] {
+      background-color: @purple-1;
+      color: @purple-8;
+      border: 1px solid @purple-3;
+    }
+  }
+
+  .ant-tree .ant-tree-treenode {
+    padding-bottom: 1px;
+    margin-bottom: 0;
+  }
+}

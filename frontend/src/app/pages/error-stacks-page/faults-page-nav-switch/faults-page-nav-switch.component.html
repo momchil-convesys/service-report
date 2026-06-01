@@ -1,0 +1,24 @@
+<nz-radio-group [(ngModel)]="activeOption" nzButtonStyle="solid">
+  <label
+    i18n
+    nz-radio-button
+    nzValue="faults-history-option"
+    routerLink="../faults-history"
+    queryParamsHandling="merge"
+    routerLinkActive="active"
+    (isActiveChange)="onRouterLinkActive('faults-history-option')"
+  >
+    Faults history
+  </label>
+  <label
+    i18n
+    nz-radio-button
+    nzValue="error-stacks-option"
+    routerLink="../error-stacks"
+    queryParamsHandling="merge"
+    routerLinkActive="active"
+    (isActiveChange)="onRouterLinkActive('error-stacks-option')"
+  >
+    Error stacks
+  </label>
+</nz-radio-group>

@@ -1,0 +1,35 @@
+@if (inverse) {
+  <div class="alarm-icon inverse">
+    @switch (severity) {
+      @case ("major") {
+        <nz-icon nzType="warning" nzTheme="fill" />
+      }
+      @case ("warning") {
+        <nz-icon nzType="warning" nzTheme="fill" />
+      }
+      @case ("minor") {
+        <nz-icon nzType="warning" nzTheme="outline" />
+      }
+      @default {
+        <nz-icon nzType="info-circle" nzTheme="outline" />
+      }
+    }
+  </div>
+} @else {
+  <div class="alarm-icon default">
+    @switch (severity) {
+      @case ("major") {
+        <nz-icon nzType="warning" nzTheme="fill" />
+      }
+      @case ("warning") {
+        <nz-icon nzType="warning" nzTheme="fill" />
+      }
+      @case ("minor") {
+        <nz-icon nzType="warning" nzTheme="outline" />
+      }
+      @default {
+        <nz-icon nzType="info-circle" nzTheme="outline" />
+      }
+    }
+  </div>
+}

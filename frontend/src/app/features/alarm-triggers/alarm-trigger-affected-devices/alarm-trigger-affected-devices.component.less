@@ -1,0 +1,57 @@
+@import "theme";
+
+app-alarm-trigger-affected-devices {
+  button + button {
+    margin-left: 5px;
+  }
+
+  .status {
+    text-transform: uppercase;
+
+    font-size: small;
+
+    &.enabled {
+      color: @green-7;
+      font-weight: bold;
+    }
+
+    &.muted {
+      color: @gold-6;
+      font-weight: bold;
+    }
+  }
+
+  .footer-cell {
+    background-color: @background-color-light;
+  }
+
+  .ant-switch {
+    min-width: 100px;
+    font-weight: bold;
+  }
+
+  .ant-switch-checked {
+    background: @green-6;
+  }
+
+  .trigger-status-cell-content {
+    text-align: right;
+    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: baseline;
+    line-height: 1;
+  }
+
+  app-device-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: @margin-xs;
+
+    .ant-divider {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+<nz-card nzTitle="Custom widget (ID: {{ widgetId }})" [nzExtra]="extra" nzSize="small">
+  <div class="content"></div>
+</nz-card>
+
+<ng-template #extra>
+  <button
+    nz-button
+    (click)="onDelete()"
+    nzType="default"
+    nzDanger
+    class="delete-widget-button"
+    nzSize="small"
+  >
+    <span nz-icon nzType="delete" nzTheme="outline"></span> Delete widget
+  </button>
+</ng-template>

@@ -1,0 +1,36 @@
+@import "theme";
+
+app-custom-dashboards-side-nav {
+  display: block;
+
+  height: 100%;
+
+  width: 300px;
+  padding: @padding-sm 0;
+
+  .ant-menu {
+    width: 100%;
+    border-right: 0;
+
+    .ant-menu-item-group-title {
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 80%;
+
+      padding-left: @padding-md + @padding-sm;
+    }
+
+    // item title for items with icon
+    .ant-menu-item span:last-child {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .actions-container {
+    margin: 0 @padding-md + @padding-sm;
+    margin-top: @margin-xs;
+    margin-bottom: @margin-sm;
+  }
+}

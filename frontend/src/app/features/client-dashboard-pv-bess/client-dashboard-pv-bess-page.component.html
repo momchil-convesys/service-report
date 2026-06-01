@@ -1,0 +1,54 @@
+@let plant = plant$ | async;
+
+@if (plant && !plant.plantSpecificMetadata?.bessId) {
+  <nz-result
+    nzStatus="error"
+    nzTitle="This page is applicable only for plants with a BESS."
+  ></nz-result>
+}
+
+@if (plant && plant.plantSpecificMetadata?.bessId) {
+  <div class="panels-row">
+    <div class="panel w-full">
+      <app-power-schedule-manual-adjustment
+        [onDashboard]="true"
+      ></app-power-schedule-manual-adjustment>
+    </div>
+  </div>
+
+  <div class="panels-header">
+    <div class="view-mode-toggle">
+      <nz-radio-group [(ngModel)]="viewMode" nzButtonStyle="solid" nzSize="large">
+        <label nz-radio-button nzValue="default" i18n>Default view</label>
+        <label nz-radio-button nzValue="high-voltage" i18n>
+          Grid export&nbsp;/&nbsp;import view
+        </label>
+      </nz-radio-group>
+    </div>
+  </div>
+
+  <div class="panels-row">
+    <div class="power-section">
+      <div class="panel">
+        <app-live-metrics-widget [viewMode]="viewMode"></app-live-metrics-widget>
+      </div>
+      <div class="panel">
+        <app-historical-power-chart
+          [plant]="plant"
+          [viewMode]="viewMode"
+        ></app-historical-power-chart>
+      </div>
+    </div>
+    <div class="energy-section">
+      <div class="panel">
+        <app-energy-distribution [viewMode]="viewMode"></app-energy-distribution>
+      </div>
+      <div class="panel">
+        <app-historical-energy-chart
+          [plant]="plant"
+          [viewMode]="viewMode"
+        ></app-historical-energy-chart>
+      </div>
+    </div>
+  </div>
+}

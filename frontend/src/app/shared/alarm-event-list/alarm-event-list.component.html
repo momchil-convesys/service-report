@@ -1,0 +1,67 @@
+@if ((alarmEventsRequest | async)?.isLoading) {
+  <div class="loading-block">
+    <nz-spin i18n-nzTip="@@loading" nzTip="Loading..."></nz-spin>
+  </div>
+}
+
+@if ((alarmEventsRequest | async)?.error) {
+  <div class="error-block">
+    <nz-alert nzType="error" i18n-nzMessage nzMessage="Failed to load events" nzShowIcon></nz-alert>
+  </div>
+}
+
+@if ((alarmEventsRequest | async)?.data; as data) {
+  @if (data.length === 0) {
+    <div>
+      <nz-empty nzNotFoundImage="simple"></nz-empty>
+    </div>
+  }
+
+  @for (item of data; track item.id) {
+    <div
+      class="item"
+      routerLink="{{ '/alarm-events/detail/' + item.alarmType + '/' + item.id }}"
+      routerLinkActive="is-active"
+      queryParamsHandling="merge"
+      [routerLinkActiveOptions]="{
+        exact: true,
+        queryParams: 'ignored',
+        matrixParams: 'ignored',
+        paths: 'subset',
+      }"
+      [queryParams]="deviceIds ? { deviceId: deviceIds } : undefined"
+    >
+      <app-relative-timestamp [timestamp]="item.timestamp"></app-relative-timestamp>
+
+      <app-alarm-type [type]="item.alarmType"></app-alarm-type>
+
+      <div class="item-content">
+        <span class="item-title">
+          @switch (item.alarmType) {
+            @case (AlarmTriggerType.DeviceStateChange) {
+              <ng-container i18n>Device state changed to </ng-container>
+              @for (details of detailsForDeviceStateChange(item); track details.timestamp) {
+                <app-device-state
+                  [state]="{ baseState: details.state }"
+                  variant="full"
+                ></app-device-state>
+              }
+            }
+
+            @default {
+              {{ item.displayNameRequest | async }}
+            }
+          }
+        </span>
+
+        <div class="secondary-text" style="line-height: 1.3">
+          <app-device-link
+            [deviceId]="item.deviceId"
+            [deviceLink]="false"
+            [devicePath]="true"
+          ></app-device-link>
+        </div>
+      </div>
+    </div>
+  }
+}

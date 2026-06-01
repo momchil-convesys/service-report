@@ -1,0 +1,39 @@
+@import "theme";
+
+app-pt-grid-view {
+  .grid {
+    display: flex;
+    gap: @margin-xs;
+
+    background-color: @gray-2;
+    padding: @padding-sm;
+
+    overflow: auto;
+  }
+
+  .ts-container {
+    .ts-header {
+      flex: 0 0 60px;
+      font-weight: bold;
+      margin-bottom: @margin-xs;
+      padding-left: @padding-sm;
+    }
+
+    // margin-bottom: @margin-xss;
+    // border-bottom: @border-color-base;
+  }
+
+  .inverters-grid {
+    .inverter-box {
+      background-color: white;
+      // border: 1px solid @border-color-base;
+      border-radius: @border-radius-sm;
+
+      padding: @padding-xss @padding-sm;
+
+      min-width: 140px;
+
+      margin-bottom: 2px;
+    }
+  }
+}

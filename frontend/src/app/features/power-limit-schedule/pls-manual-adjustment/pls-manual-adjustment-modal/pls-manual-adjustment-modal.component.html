@@ -1,0 +1,27 @@
+@if (successResult$ | async) {
+  <nz-result
+    nzStatus="success"
+    i18n-nzTitle
+    nzTitle="Command sent successfully!"
+    i18n-nzSubTitle
+    nzSubTitle="The operation may take some time to complete."
+  >
+    <div nz-result-extra>
+      <button type="button" nz-button nzType="primary" (click)="onFinish()">OK</button>
+    </div>
+  </nz-result>
+}
+
+@if (!(successResult$ | async)) {
+  <app-pls-manual-adjustment-form
+    [data]="data.data"
+    [loadingMessage]="loadingMessage$ | async"
+    [customError]="customError$ | async"
+    [scheduleAdjustmentCoefficient]="
+      data.plant?.plantSpecificMetadata?.powerLimitTargetCoefficient || 1
+    "
+    [powerLimitType]="data.plant?.plantSpecificMetadata?.powerLimitType"
+    (cancel)="onCancel()"
+    (submitForm)="onSubmit($event)"
+  ></app-pls-manual-adjustment-form>
+}

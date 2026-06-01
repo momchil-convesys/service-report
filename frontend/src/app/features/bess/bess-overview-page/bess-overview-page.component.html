@@ -1,0 +1,19 @@
+<div class="bess-overview-layout">
+  <div class="bess-overview-layout__summary">
+    <app-bess-summary></app-bess-summary>
+  </div>
+
+  <div class="bess-overview-layout__content">
+    <div class="bess-overview-container">
+      <app-bess-containers-bars></app-bess-containers-bars>
+    </div>
+
+    @if (metadata) {
+      <app-momentary-data-chart-widget [bessMetadata]="metadata"></app-momentary-data-chart-widget>
+
+      <app-historical-data-chart-widget
+        [bessMetadata]="metadata"
+      ></app-historical-data-chart-widget>
+    }
+  </div>
+</div>

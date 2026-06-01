@@ -1,0 +1,13 @@
+@if (status === "pending") {
+  <span class="index">
+    {{ index !== undefined ? index + 1 : "" }}
+  </span>
+}
+
+@if (status === "in-progress") {
+  <span nz-icon nzType="play-circle" nzTheme="twotone" nzTwotoneColor="#09BCD7"></span>
+}
+
+@if (status === "done") {
+  <span nz-icon nzType="check-circle" nzTheme="fill" style="color: #39c481"></span>
+}

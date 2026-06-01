@@ -1,0 +1,7 @@
+<span class="value">
+  <app-value-display [value]="voltage" unit=" V" format="1.2-2"></app-value-display>
+</span>
+
+<div class="bar" [class.full-height]="fullHeight">
+  <div class="fill" [style.width]="((voltage || 0) / 13.5) * 100 + '%'"></div>
+</div>

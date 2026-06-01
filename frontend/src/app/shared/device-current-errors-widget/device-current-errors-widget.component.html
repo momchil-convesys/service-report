@@ -1,0 +1,27 @@
+<nz-card
+  i18n-nzTitle
+  nzTitle="Current Faults"
+  nzBordered="true"
+  nzSize="small"
+  [nzExtra]="errorStackLink"
+>
+  @if (faultsForDevice$ | async; as currentFaults) {
+    <app-device-current-errors [currentFaults]="currentFaults"></app-device-current-errors>
+  } @else {
+    <div class="empty" i18n>No faults</div>
+  }
+</nz-card>
+
+<ng-template #errorStackLink>
+  @if (faultsForDevice$ | async; as currentFaults) {
+    <a
+      i18n
+      class="stack-link"
+      nz-tooltip
+      nzTooltipTitle="Show full stack"
+      [routerLink]="getRouteForStackId(currentFaults)"
+    >
+      View error stack
+    </a>
+  }
+</ng-template>

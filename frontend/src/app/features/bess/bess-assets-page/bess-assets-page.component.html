@@ -1,0 +1,160 @@
+<!-- Template for parameters popover -->
+<ng-template #parametersPopoverTemplate>
+  <div class="parameters-popover-content">
+    <nz-table
+      [nzData]="getParameterDetails(currentPopoverKeys)"
+      nzSize="small"
+      [nzFrontPagination]="false"
+    >
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Key</th>
+          <th>Name</th>
+          <th>Unit</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (param of getParameterDetails(currentPopoverKeys); track param.key) {
+          <tr>
+            <td>{{ param.id }}</td>
+            <td>
+              <code>{{ param.key }}</code>
+            </td>
+            <td>{{ param.displayName || param.name }}</td>
+            <td>{{ param.unit || "—" }}</td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+</ng-template>
+
+<div class="assets-container">
+  <!-- Filters and search -->
+  <div class="filters-section">
+    <nz-input-group class="search-input" nzPrefixIcon="search" [nzSuffix]="inputClearTpl">
+      <input
+        type="text"
+        nz-input
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearchChange($event)"
+        i18n-placeholder="@@search"
+        placeholder="Search by ID, name, or parent..."
+      />
+    </nz-input-group>
+    <ng-template #inputClearTpl>
+      @if (searchQuery) {
+        <nz-icon
+          class="ant-input-clear-icon"
+          nzTheme="fill"
+          nzType="close-circle"
+          (click)="onClearSearch()"
+        />
+      }
+    </ng-template>
+
+    <nz-select
+      [(ngModel)]="selectedAssetType"
+      (ngModelChange)="onAssetTypeChange($event)"
+      [nzShowSearch]="false"
+      class="type-filter"
+    >
+      @for (option of assetTypeOptions; track option.value) {
+        <nz-option [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+      }
+    </nz-select>
+  </div>
+
+  <!-- Empty state -->
+  @if (!filteredAssets.length) {
+    <nz-empty
+      nzNotFoundImage="simple"
+      i18n-nzNotFoundContent
+      nzNotFoundContent="No assets found"
+    ></nz-empty>
+  }
+
+  <!-- Assets table -->
+  @else {
+    <nz-table
+      [nzData]="filteredAssets"
+      nzSize="small"
+      [nzFrontPagination]="false"
+      [nzPageSize]="50"
+    >
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Name</th>
+          <th>Vendor Profile</th>
+          <th>Parameters</th>
+          <th>Parent</th>
+          <th>Children</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (asset of filteredAssets; track asset.id) {
+          <tr>
+            <td>
+              <code>{{ asset.id }}</code>
+            </td>
+            <td>
+              <span class="asset-type-badge" [attr.data-type]="asset.assetTypeLabelShort">
+                {{ asset.assetTypeLabel }}
+              </span>
+            </td>
+            <td>
+              <span class="clickable-name" (click)="onNameClick(asset.name)">{{ asset.name }}</span>
+            </td>
+            <td>
+              @if (asset.vendorProfileName) {
+                <span class="vendor-profile-name">{{ asset.vendorProfileName }}</span>
+              } @else {
+                <span class="no-data">—</span>
+              }
+            </td>
+            <td>
+              @if (asset.applicableParameterKeys.length > 0) {
+                <span
+                  class="parameter-count"
+                  nz-popover
+                  [nzPopoverTitle]="
+                    'Applicable Parameters (' + asset.applicableParameterKeys.length + ')'
+                  "
+                  [nzPopoverContent]="parametersPopoverTemplate"
+                  nzPopoverPlacement="topLeft"
+                  nzPopoverTrigger="hover"
+                  (mouseenter)="onPopoverEnter(asset)"
+                >
+                  {{ asset.applicableParameterKeys.length }}
+                </span>
+              } @else {
+                <span class="no-data">—</span>
+              }
+            </td>
+            <td>
+              @if (asset.parentName) {
+                <span class="clickable-name" (click)="onNameClick(asset.parentName)">{{
+                  asset.parentName
+                }}</span>
+              } @else {
+                <span class="no-data">—</span>
+              }
+            </td>
+            <td>
+              @if (asset.childrenNames.length > 0) {
+                <span class="children-count" [title]="asset.childrenNames.join(', ')">
+                  {{ asset.childrenNames.length }}
+                </span>
+              } @else {
+                <span class="no-data">—</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  }
+</div>

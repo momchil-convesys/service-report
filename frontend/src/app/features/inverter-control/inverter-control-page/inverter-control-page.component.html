@@ -1,0 +1,45 @@
+@let plant = plant$ | async;
+
+<!--  -->
+@if (plant?.plantSpecificMetadata?.hasOnSiteSetup === true) {
+  <app-system-setup-banner [plant]="plant"></app-system-setup-banner>
+}
+
+<div class="page-content">
+  <div class="header">
+    <h2 class="title">
+      @if (activeRoute === "control-panel") {
+        <ng-container i18n>Control panel</ng-container>
+      }
+      @if (activeRoute === "history") {
+        <ng-container i18n>Control requests history</ng-container>
+      }
+    </h2>
+
+    <!--  (isActiveChange) does not work without routerLinkActive=""  -->
+    <nz-radio-group nzButtonStyle="solid" [ngModel]="activeRoute" nzSize="default">
+      <label
+        i18n
+        nz-radio-button
+        nzValue="control-panel"
+        routerLink="control-panel"
+        routerLinkActive=""
+        (isActiveChange)="onRouteChange('control-panel', $event)"
+      >
+        Control panel
+      </label>
+      <label
+        i18n
+        nz-radio-button
+        nzValue="history"
+        routerLink="history"
+        routerLinkActive=""
+        (isActiveChange)="onRouteChange('history', $event)"
+      >
+        History
+      </label>
+    </nz-radio-group>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>

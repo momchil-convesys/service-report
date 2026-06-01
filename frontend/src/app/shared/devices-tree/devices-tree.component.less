@@ -1,0 +1,117 @@
+@import "theme";
+
+app-devices-tree {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+
+  nz-tree-view,
+  nz-tree {
+    flex: 1;
+    overflow-y: auto;
+
+    max-width: 300px;
+
+    &.ant-tree {
+      padding: @padding-xs;
+    }
+
+    &.ant-tree .ant-tree-switcher {
+      line-height: 36px;
+    }
+
+    &.ant-tree .ant-tree-node-content-wrapper {
+      padding: 6px 8px 6px 0;
+      overflow: hidden;
+
+      .title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  nz-tree-view {
+    &.ant-tree.ant-tree-directory .ant-tree-treenode::before {
+      bottom: 0;
+      border-radius: 2px;
+    }
+    &.ant-tree .ant-tree-treenode {
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  .device-node {
+    display: flex;
+    align-items: center;
+
+    app-device-state {
+      margin-left: auto;
+    }
+  }
+
+  .plant-node {
+    display: flex;
+    align-items: center;
+
+    .title {
+      flex: 1;
+    }
+
+    .counters-slot {
+      // margin-left: auto;
+      min-width: 60px;
+
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .counter {
+      margin-left: @padding-sm;
+    }
+
+    .power-limit-schedule-slot,
+    .monbat-schedule-slot {
+      margin-left: @margin-xss;
+      margin-top: -2px;
+      margin-bottom: -2px;
+    }
+  }
+
+  .actions-container {
+    padding: 0 @padding-xs;
+    margin: @padding-sm 0;
+  }
+
+  .filters-container {
+    padding: 0 @padding-xs;
+    margin: @padding-sm 0;
+    // max-width: 300px;
+
+    nz-select {
+      width: 100%;
+    }
+  }
+
+  & > .header {
+    flex: 0 0 auto;
+    border-bottom: 1px solid @border-color-base;
+  }
+
+  & > .footer {
+    flex: 0 0 auto;
+    border-top: 1px solid @border-color-base;
+  }
+
+  .power-limit-placeholder {
+    text-align: left;
+  }
+
+  .title.power-limit-applied {
+    // font-weight: bold;
+    color: @red-7;
+  }
+}

@@ -1,0 +1,100 @@
+@import "theme";
+
+app-energy-summary-box {
+  .title {
+    font-size: @font-size-lg;
+    margin-bottom: @margin-md;
+
+    b {
+      font-size: @font-size-lg + 4px;
+    }
+  }
+
+  app-icons {
+    text-align: left;
+    width: auto;
+  }
+
+  .unit {
+    color: @text-color-secondary;
+  }
+
+  .total-value span:first-child {
+    font-size: 28px;
+  }
+
+  .subtle-title-base {
+    font-weight: regular;
+  }
+
+  .title-with-icon {
+    width: 50px;
+    flex: 1 1 50px;
+
+    display: flex;
+    align-items: center;
+    gap: @padding-sm;
+    justify-content: space-between;
+
+    min-height: 44px;
+
+    .icon-container {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+
+      opacity: 0.5;
+
+      .title-icon {
+        // width: 32px;
+        // height: 32px;
+        // flex-shrink: 0;
+        fill: currentColor;
+        display: block;
+      }
+
+      .arrow-icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        fill: currentColor;
+        display: block;
+      }
+    }
+  }
+
+  .total-value-cell {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .total-value {
+      flex: 1 1 120px;
+
+      text-align: right;
+      flex: 1;
+      min-width: 120px;
+    }
+  }
+
+  table {
+    width: 100%;
+
+    td {
+      white-space: nowrap;
+      min-height: 24px;
+    }
+  }
+
+  table td:last-child {
+    text-align: right;
+    height: 24px; // keep heigh while loading
+  }
+
+  .sub-plant-row {
+    td:first-child {
+      color: @text-color-secondary;
+      font-size: @font-size-sm;
+    }
+  }
+}

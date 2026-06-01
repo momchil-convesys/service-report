@@ -1,0 +1,25 @@
+@import "theme";
+
+app-pv-production-chart-widget {
+  .custom-card .card-header .card-title {
+    display: flex;
+    flex-wrap: wrap;
+
+    width: 100%;
+
+    .extra-hint {
+      margin-left: auto;
+      font-size: @font-size-sm;
+      color: @blue-7;
+    }
+  }
+
+  .custom-card .card-header .card-extra {
+    width: 100%;
+    margin-left: 0;
+
+    app-highcharts-export-option {
+      margin-left: auto;
+    }
+  }
+}

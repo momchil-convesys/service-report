@@ -1,0 +1,88 @@
+<!-- <h3>Preview of the uploaded file</h3> -->
+<nz-table
+  #basicTable
+  [nzData]="data"
+  [nzFrontPagination]="false"
+  nzSize="small"
+  nzBordered="false"
+  nzShowPagination="false"
+>
+  <thead>
+    <tr>
+      <th [nzWidth]="firstColumnWidth + 'px'">Date</th>
+      <th>Hour</th>
+      <th nzAlign="right">Min price setting</th>
+      <th nzAlign="right">Price (BGN&thinsp;/&thinsp;MWh)</th>
+      <th>Export to grid</th>
+      <th>Events</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (rowData of basicTable.data; track $index; let i = $index) {
+      <tr
+        [class]="getRowClass(rowData)"
+        [class.export-disabled]="rowData.objective.exportToGrid === false"
+        [class.expanded]="expandSet.has(i)"
+      >
+        <td>{{ rowData.interval.from | date: "EEEE, d MMMM" }}</td>
+
+        <td>
+          {{ rowData.interval.from | date: "HH:mm" }}–{{ rowData.interval.to | date: "HH:mm" }}
+        </td>
+
+        <td nzAlign="right" class="secondary-text-size">
+          {{ rowData.objective.minPriceToEnableExport | number: "0.2-2" }}
+        </td>
+
+        <td class="can-highlight" nzAlign="right">
+          {{ rowData.ibex.priceMWh | number: "0.2-2" }}
+        </td>
+
+        <td class="can-highlight">
+          @if (rowData.objective.exportToGrid === true) {
+            <div class="export-enabled">
+              <span nz-icon nzType="check" nzTheme="outline"></span>
+              Exporting
+            </div>
+          }
+          @if (rowData.objective.exportToGrid === false) {
+            <div>
+              <span nz-icon nzType="stop" nzTheme="outline"></span>
+              No Export
+            </div>
+          }
+        </td>
+
+        @if (rowData.events && rowData.events.length > 0) {
+          <td [nzExpand]="expandSet.has(i)" (nzExpandChange)="onExpandChange(i, $event)"></td>
+        } @else {
+          <td></td>
+        }
+      </tr>
+      <tr [nzExpand]="expandSet.has(i)" [class]="getRowClass(rowData)">
+        <div [style.padding-left]="firstColumnWidth + 'px'" style="padding-bottom: 8px">
+          @if (rowData.events && rowData.events.length > 0) {
+            <div>Events</div>
+            @for (e of rowData.events; track e.timestamp) {
+              <div>{{ e }}</div>
+            }
+          } @else {
+            No events
+          }
+        </div>
+      </tr>
+    }
+  </tbody>
+</nz-table>
+
+<div class="footer">
+  <div class="actions-container">
+    <button nz-button nzType="link" nzSize="small" (click)="onCollapseAll()">Collapse all</button>
+    <nz-divider nzType="vertical"></nz-divider>
+    <button nz-button nzType="link" nzSize="small" (click)="onExpandAll(false)">Expand all</button>
+    <nz-divider nzType="vertical"></nz-divider>
+    <button nz-button nzType="link" nzSize="small" (click)="onExpandAll(true)">
+      Expand all rows with events
+    </button>
+  </div>
+</div>

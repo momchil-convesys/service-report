@@ -1,0 +1,133 @@
+@if (interval; as intervalValue) {
+  @if ((intervalValue.historyIntervals?.length ?? 0) > 1) {
+    <span
+      nz-popover
+      [nzPopoverContent]="contentTemplate"
+      nzPopoverPlacement="right"
+      nzPopoverOverlayClassName="power-schedule-history-popover"
+    >
+      <!-- <span nz-icon nzType="history" nzTheme="outline" class="trigger-icon"></span> -->
+      <span style="white-space: nowrap" class="interval-with-tooltip">
+        {{ intervalValue.zonedInterval.start | date: "HH:mm" }}–{{
+          intervalValue.zonedInterval.end | date: "HH:mm"
+        }}
+      </span>
+
+      <ng-template #contentTemplate>
+        <div class="popover-section">
+          <div class="secondary-text" i18n>Interval</div>
+          {{ intervalValue.zonedInterval.start | date: "HH:mm" }}–{{
+            intervalValue.zonedInterval.end | date: "HH:mm"
+          }}
+        </div>
+
+        <div class="popover-section">
+          <!-- <div class="secondary-text" i18n>Subintervals</div> -->
+          <table class="popover-table">
+            <thead>
+              <tr>
+                <th i18n>Subinterval</th>
+                <th i18n>Schedule<br />status</th>
+                <th i18n>Priority<br />mode</th>
+                <th i18n>PV custom<br />setpoint</th>
+                <th i18n>BESS custom<br />setpoint</th>
+                <th i18n>Responsible<br />user</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (
+                subInterval of intervalValue.historyIntervals ?? [];
+                track subInterval.zonedInterval.start
+              ) {
+                <tr>
+                  <td>
+                    <span class="secondary-text-size">
+                      {{ subInterval.zonedInterval.start | date: "HH:mm:ss" }}–{{
+                        subInterval.zonedInterval.end | date: "HH:mm:ss"
+                      }}
+                    </span>
+                  </td>
+                  <td>
+                    <small class="g-schedule-status" [class]="subInterval.scheduleStatus">
+                      {{ subInterval.scheduleStatus || "N/A" }}
+                    </small>
+                  </td>
+                  <td>
+                    <span class="priority-mode-title">
+                      {{ subInterval.priorityModeCustom }}
+                    </span>
+                  </td>
+                  <td>
+                    @if (subInterval.pvPowerSetpointCustom) {
+                      @if (
+                        subInterval.pvPowerSetpointCustom.valueAdjusted !== null &&
+                        subInterval.pvPowerSetpointCustom.valueAdjusted !==
+                          subInterval.pvPowerSetpointCustom.value
+                      ) {
+                        @if (subInterval.pvPowerSetpointCustom.value !== null) {
+                          <span class="secondary-text">
+                            <app-power-schedule-setpoint-value
+                              [value]="subInterval.pvPowerSetpointCustom.value"
+                            ></app-power-schedule-setpoint-value>
+                            <span>|</span>
+                          </span>
+                        }
+                      }
+                      <app-power-schedule-setpoint-value
+                        [value]="
+                          subInterval.pvPowerSetpointCustom.valueAdjusted ??
+                          subInterval.pvPowerSetpointCustom.value
+                        "
+                      ></app-power-schedule-setpoint-value>
+                    }
+                  </td>
+                  <td>
+                    @if (subInterval.bessPowerSetpointCustom) {
+                      @if (
+                        subInterval.bessPowerSetpointCustom.valueAdjusted !== null &&
+                        subInterval.bessPowerSetpointCustom.valueAdjusted !==
+                          subInterval.bessPowerSetpointCustom.value
+                      ) {
+                        @if (subInterval.bessPowerSetpointCustom.value !== null) {
+                          <span class="secondary-text">
+                            <app-power-schedule-setpoint-value
+                              [value]="subInterval.bessPowerSetpointCustom.value"
+                              [showPlusSignIfPositive]="true"
+                            ></app-power-schedule-setpoint-value>
+                            <span>|</span>
+                          </span>
+                        }
+                      }
+                      <span
+                        [class]="getBessPowerSetpointClass(subInterval.bessPowerSetpointCustom)"
+                      >
+                        <app-power-schedule-setpoint-value
+                          [value]="
+                            subInterval.bessPowerSetpointCustom.valueAdjusted ??
+                            subInterval.bessPowerSetpointCustom.value
+                          "
+                          [showPlusSignIfPositive]="true"
+                        ></app-power-schedule-setpoint-value>
+                      </span>
+                    }
+                  </td>
+                  <td>
+                    <span class="secondary-text">
+                      {{ subInterval.responsibleUserDisplayName || "N/A" }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+    </span>
+  } @else {
+    <span style="white-space: nowrap">
+      {{ intervalValue.zonedInterval.start | date: "HH:mm" }}–{{
+        intervalValue.zonedInterval.end | date: "HH:mm"
+      }}
+    </span>
+  }
+}

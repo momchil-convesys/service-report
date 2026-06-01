@@ -1,0 +1,118 @@
+@import "theme";
+
+app-bess-soc-indicator {
+  display: block;
+  padding: @padding-xs;
+  // background-color: @background-color-base;
+
+  border-radius: 0 0 5px 5px;
+
+  background: linear-gradient(180deg, white, @gray-3);
+  border-bottom: 1px solid @gray-4;
+
+  &.sub-plant {
+    padding-bottom: @padding-xss;
+    padding-top: @padding-xss;
+  }
+
+  .bess-soc-indicator {
+    display: flex;
+    gap: @padding-xs;
+    align-items: stretch;
+
+    .bar-container {
+      flex: 1 1 auto;
+    }
+
+    .energy-row {
+      display: flex;
+      gap: @padding-xss;
+      justify-content: space-between;
+
+      // margin-bottom: @margin-xss;
+
+      .chargeable {
+        text-align: right;
+      }
+
+      .title {
+        font-size: @font-size-sm;
+        color: @text-color-secondary;
+      }
+    }
+
+    .bess-soc-indicator-bar {
+      height: 12px;
+      flex: 1;
+    }
+
+    .bess-soc-indicator-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+
+      min-width: 60px;
+    }
+
+    .label {
+      font-size: @font-size-sm;
+      color: @text-color-secondary;
+      line-height: 1;
+    }
+
+    .bess-soc-indicator-value {
+      color: @green-8;
+    }
+  }
+
+  .bess-soc-indicator-bar {
+    display: flex;
+    gap: 1px;
+
+    &.small {
+      gap: 1px;
+    }
+
+    .bess-soc-indicator-bar-step {
+      flex: 1;
+      background-color: @gray-4;
+      border-radius: 1px;
+
+      &.active {
+        background-color: @green-7;
+      }
+    }
+  }
+
+  &.main-plant {
+    .chargeable,
+    .dischargeable {
+      .value {
+        span {
+          // font-weight: bold;
+        }
+      }
+    }
+
+    .bess-soc-indicator-value {
+      font-size: 32px;
+      line-height: 1;
+    }
+  }
+
+  &.sub-plant {
+    .bess-soc-indicator-bar {
+      display: none;
+    }
+
+    .bess-soc-indicator-value,
+    .value {
+      font-size: @font-size-sm;
+    }
+
+    // .label {
+    //   display: none;
+    // }
+  }
+}

@@ -1,0 +1,40 @@
+@import "theme";
+
+app-monbat-battery-temperature-bar {
+  display: flex;
+  flex-wrap: wrap;
+
+  align-items: center;
+  column-gap: @margin-xs;
+
+  .bar-container {
+    width: 100px;
+    background-color: @gray-3;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .bar {
+    border-radius: 2px;
+    overflow: hidden;
+
+    height: 12px;
+
+    background-color: @gray-4;
+
+    .fill {
+      width: 100px;
+      height: 100%;
+      background: linear-gradient(to right, rgba(255, 158, 19, 1) 40%, rgba(255, 0, 19, 1));
+    }
+  }
+
+  .value {
+    min-width: 80px;
+    text-align: right;
+  }
+
+  .full-height .bar {
+    height: 22px;
+  }
+}

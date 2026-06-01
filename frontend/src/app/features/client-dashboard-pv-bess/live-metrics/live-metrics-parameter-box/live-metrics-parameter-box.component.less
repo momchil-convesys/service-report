@@ -1,0 +1,99 @@
+@import "theme";
+
+app-live-metrics-parameter-box {
+  & > .title {
+    line-height: 1.2;
+    margin-bottom: @margin-xss;
+  }
+
+  & > .content {
+    background-color: @gray-2;
+    border-radius: @border-radius-sm;
+
+    .label-row {
+      display: flex;
+      align-items: center;
+      padding: @padding-xs;
+      gap: @margin-xs;
+    }
+
+    .label {
+      line-height: 1;
+      font-size: @font-size-sm;
+      color: @text-color-secondary;
+    }
+
+    .value-row {
+      display: flex;
+      align-items: center;
+      gap: @margin-xs;
+      padding: 0 @padding-sm @padding-xs;
+    }
+
+    .content-icon {
+      display: inline-flex;
+      align-items: center;
+      color: @text-color-secondary;
+    }
+
+    .value {
+      text-align: right;
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    .unit {
+      color: @text-color-secondary;
+    }
+  }
+
+  .plant-total {
+    min-height: 80px;
+    flex-direction: column;
+
+    .value {
+      font-size: 36px;
+
+      .unit {
+        font-size: @font-size-base;
+      }
+    }
+  }
+
+  .content--emphasized {
+    .plant-total {
+      // min-height: 110px;
+
+      .value {
+        // font-size: 56px;
+
+        .unit {
+          // font-size: @font-size-lg;
+        }
+      }
+    }
+  }
+
+  .pm-specific {
+    border-top: 2px solid white;
+
+    .label {
+      padding: @padding-xs;
+    }
+
+    .value {
+      padding: @padding-xs @padding-sm;
+    }
+  }
+
+  .plant-total,
+  .pm-specific {
+    display: flex;
+    flex-wrap: wrap;
+
+    .value {
+      margin-top: auto;
+      margin-left: auto;
+    }
+  }
+}

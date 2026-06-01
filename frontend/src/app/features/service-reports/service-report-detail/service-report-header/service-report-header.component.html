@@ -1,0 +1,18 @@
+<nz-row class="header">
+  <h2 class="title">{{ title }}</h2>
+  @for (buttonConfig of reportService.buttonLst; track buttonConfig.buttonId) {
+    @if (buttonConfig.isVisible()) {
+      <button
+        [ngClass]="
+          buttonConfig.context === 'danger' ? 'ant-btn-primary dangerBtn' : 'ant-btn-primary'
+        "
+        nz-button
+        nzType="primary"
+        [disabled]="buttonConfig.isDisabled() || false"
+        (click)="buttonConfig.onClick()"
+      >
+        {{ buttonConfig.label }}
+      </button>
+    }
+  }
+</nz-row>

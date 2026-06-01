@@ -1,0 +1,25 @@
+<nz-upload
+  [(nzFileList)]="fileList"
+  nzType="drag"
+  [nzMultiple]="false"
+  nzListType="picture"
+  [nzShowUploadList]="{ showRemoveIcon: false, showDownloadIcon: false }"
+  nzAccept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  [nzAction]="onUpload"
+  [nzCustomRequest]="customRequest"
+  [nzHeaders]="setUploadHeaders"
+>
+  <p class="ant-upload-drag-icon">
+    <span nz-icon nzType="upload" nzTheme="outline"></span>
+  </p>
+  <p i18n class="ant-upload-text">Click or drag file to this area to upload</p>
+  <p i18n class="ant-upload-hint">Accepted file types are .xls and .xlsx</p>
+</nz-upload>
+
+@if (customError$ | async; as customError) {
+  <app-custom-alert
+    [customError]="customError"
+    [nzBanner]="false"
+    [nzCloseable]="true"
+  ></app-custom-alert>
+}

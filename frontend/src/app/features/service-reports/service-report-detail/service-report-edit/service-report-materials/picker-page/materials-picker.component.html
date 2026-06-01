@@ -1,0 +1,100 @@
+<div class="header">
+  <div class="title">{{ schema?.name }}</div>
+
+  <div class="controls form-row">
+    <div class="controls">
+      <!-- 
+      TODO: 
+      nz-button-group is not a known element, so it was replaced with a div.
+      Proper styling is needed probably.
+      -->
+      <div class="nz-button-group">
+        <button nz-button nzType="default" (click)="materialsPickerService.schemaZoomIn.next(1)">
+          <span nz-icon nzType="zoom-in" nzTheme="outline"></span> Zoom in
+        </button>
+        <button nz-button nzType="default" (click)="materialsPickerService.schemaZoomOut.next(1)">
+          <span nz-icon nzType="zoom-out" nzTheme="outline"></span> Zoom out
+        </button>
+      </div>
+      <button nz-button nzType="default" (click)="materialsPickerService.schemaAutofit.next(1)">
+        <span nz-icon nzType="fullscreen" nzTheme="outline"></span> Auto fit
+      </button>
+    </div>
+    <!-- <nz-button-group>
+      <div class="col-auto">
+        <button
+          class="btn btn-light col-auto"
+          (click)="materialsPickerService.schemaAutofit.next(1)"
+        >
+          <i class="fa fa-arrows-alt"></i> Auto Fit
+        </button>
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-light" (click)="materialsPickerService.schemaZoomOut.next(1)">
+          <i class="fa fa-search-minus"></i> Zoom Out
+        </button>
+      </div>
+      <div class="col-auto">
+        <button
+          class="btn btn-light col-auto"
+          (click)="materialsPickerService.schemaZoomIn.next(1)"
+        >
+          <i class="fa fa-search-plus"></i> Zoom In
+        </button>
+      </div>
+    </nz-button-group> -->
+  </div>
+  <div class="footer">
+    <!-- <div class="col-auto" *ngIf="materialsPickerService.selectedElements.length > 0">
+      <button type="button" class="btn btn-primary" (click)="onSubmit()">Add items</button>
+    </div>
+    <div class="col-auto">
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+    </div> -->
+    @if (materialsPickerService.selectedElements.length > 0) {
+      <div class="col-auto">
+        <button
+          nz-button
+          nzType="primary"
+          [disabled]="materialsPickerService.formArray.invalid"
+          (click)="onSubmit()"
+        >
+          Add items
+        </button>
+      </div>
+    }
+    <div class="col-auto">
+      <button nz-button nzType="default" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <app-materials-schema-view
+    [schema]="schema"
+    (elementSelectedToggle)="onElementSelectedToggle($event)"
+  ></app-materials-schema-view>
+
+  <div class="items-view">
+    @if (selectedElements.length === 0) {
+      <div class="empty-list">
+        Select elements from the interactive inverter schema on the left.
+      </div>
+    }
+    @for (el of selectedElements; track el.id; let i = $index) {
+      <div>
+        <app-materials-entry-form-fields
+          [entryForm]="asFormGroup(materialsPickerService.formArray, i)"
+          [schema]="schema"
+          [readonlySchematicLabel]="true"
+        >
+          <!-- <button type="button" class="btn btn-outline-secondary btn-sm" (click)="onRemoveItem(el)">
+          Remove
+        </button> -->
+
+          <button nz-button nzType="default" nzDanger (click)="onRemoveItem(el)">Remove</button>
+        </app-materials-entry-form-fields>
+        <hr />
+      </div>
+    }
+  </div>
+</div>

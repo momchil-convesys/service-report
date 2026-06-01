@@ -1,0 +1,62 @@
+<h1>{{ series?.options?.id || "No ID" }}</h1>
+
+@if (series?.options) {
+  <section>
+    <h2>Name</h2>
+    <div class="section-subtitle"></div>
+    <div class="block">
+      <p>
+        <!-- Name: {{ series?.name }}
+      <br /> -->
+        <input
+          nz-input
+          [ngModel]="series?.name"
+          (ngModelChange)="onInputChange($event, 'name')"
+          type="text"
+        />
+        <button nz-button (click)="onInputChange(undefined, 'name')">Reset</button>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Type</h2>
+    <div class="section-subtitle"></div>
+    <div class="block">
+      <p>
+        <nz-select
+          [ngModel]="series?.options?.type"
+          (ngModelChange)="onInputChange($event, 'type')"
+          style="min-width: 200px"
+        >
+          <nz-option nzValue="line" nzLabel="Line"></nz-option>
+          <nz-option nzValue="bar" nzLabel="Bar"></nz-option>
+          <nz-option nzValue="column" nzLabel="Column"></nz-option>
+        </nz-select>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Y Axis</h2>
+    <div class="section-subtitle"></div>
+    <div class="block">
+      <nz-select
+        [ngModel]="series?.options?.yAxis"
+        (ngModelChange)="onInputChange($event, 'yAxis')"
+        style="min-width: 200px"
+      >
+        @for (yAxis of series?.chart?.yAxis || []; track $index) {
+          <nz-option
+            [nzValue]="yAxis.options.id"
+            [nzLabel]="yAxis.options.title?.text || yAxis.options.id || 'Y axis'"
+          ></nz-option>
+        }
+      </nz-select>
+    </div>
+  </section>
+
+  <!-- <section>
+  <p class="secondary-text">Options: {{ series?.options | json }}</p>
+</section> -->
+}

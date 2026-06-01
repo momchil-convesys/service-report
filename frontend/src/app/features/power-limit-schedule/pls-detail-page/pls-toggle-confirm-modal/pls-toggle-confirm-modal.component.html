@@ -1,0 +1,54 @@
+@if (preCheckError) {
+  <nz-alert
+    nzType="error"
+    [nzMessage]="preCheckError.title"
+    [nzDescription]="preCheckError.description"
+    nzShowIcon
+    nzBanner="true"
+  ></nz-alert>
+
+  <div class="footer">
+    <button type="button" nz-button nzType="default" (click)="onCancel()" i18n>OK</button>
+  </div>
+}
+
+@if (!preCheckError) {
+  @if (successResultData$ | async; as updatedSchedule) {
+    <nz-result
+      nzStatus="success"
+      i18n-nzTitle
+      nzTitle="Request was sent successfully!"
+      i18n-nzSubTitle
+      nzSubTitle="The operation may take some time to complete."
+    >
+      <div nz-result-extra>
+        <button type="button" nz-button nzType="default" (click)="onFinish(updatedSchedule)" i18n>
+          OK
+        </button>
+      </div>
+    </nz-result>
+  }
+
+  @if (customError$ | async; as customError) {
+    <app-custom-alert
+      [customError]="customError"
+      [nzBanner]="true"
+      [nzCloseable]="false"
+    ></app-custom-alert>
+  }
+
+  <nz-spin
+    [nzSpinning]="loadingMessage$ | async"
+    i18n-nzTip
+    nzTip="Sending request..."
+    nzSize="large"
+  >
+    @if (!(successResultData$ | async)) {
+      <app-pls-toggle-confirm-form
+        [toggleAction]="data.action"
+        (cancel)="onCancel()"
+        (submitForm)="onSubmit($event)"
+      ></app-pls-toggle-confirm-form>
+    }
+  </nz-spin>
+}

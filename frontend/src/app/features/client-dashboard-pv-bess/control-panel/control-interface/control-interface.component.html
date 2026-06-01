@@ -1,0 +1,109 @@
+@if (plant$ | async; as plant) {
+  @if (targetRange$ | async; as targetRange) {
+    <app-power-schedule-manual-adjustment-table
+      [plant]="plant"
+      [targetRange]="targetRange"
+      [dataRequest]="trackingDataRequest$ | async"
+      [inWidget]="true"
+    ></app-power-schedule-manual-adjustment-table>
+  } @else {
+    <nz-skeleton [nzActive]="true" [nzParagraph]="{ rows: 3 }"></nz-skeleton>
+  }
+} @else {
+  <nz-skeleton [nzActive]="true" [nzParagraph]="{ rows: 3 }"></nz-skeleton>
+}
+
+<!-- Schedule Section -->
+<!-- <div class="control-section" [class.active]="activeSection === 'schedule'">
+    <h3 class="section-title" i18n>Schedule</h3>
+    <div class="control-form-section">
+      @if (plant$ | async; as plant) {
+        @if (targetRange$ | async; as targetRange) {
+          <app-power-schedule-manual-adjustment-table
+            [plant]="plant"
+            [targetRange]="targetRange"
+            [dataRequest]="trackingDataRequest$ | async"
+            [dynamicHeight]="false"
+          ></app-power-schedule-manual-adjustment-table>
+        } @else {
+          <nz-skeleton [nzActive]="true" [nzParagraph]="{ rows: 3 }"></nz-skeleton>
+        }
+      } @else {
+        <nz-skeleton [nzActive]="true" [nzParagraph]="{ rows: 3 }"></nz-skeleton>
+      }
+    </div>
+  </div> -->
+
+<!-- Manual Control Section -->
+<!-- <div class="control-section" [class.active]="activeSection === 'manual'">
+    <h3 class="section-title" i18n>Manual Control</h3>
+    <div class="control-form-section">
+      <div class="manual-control-container">
+        <form [formGroup]="controlForm" (ngSubmit)="onSubmit()" nz-form nzLayout="vertical">
+          <div class="manual-control-form-row">
+            <nz-form-item>
+              <nz-form-label nzRequired i18n>PV Power</nz-form-label>
+              <nz-form-control
+                nzValidateStatus="{{
+                  controlForm.get('pvPower')?.invalid && controlForm.get('pvPower')?.dirty
+                    ? 'error'
+                    : undefined
+                }}"
+                i18n-nzErrorTip
+                nzErrorTip="Please enter a valid PV power value"
+              >
+                <nz-input-number
+                  formControlName="pvPower"
+                  [nzMin]="0"
+                  [nzStep]="0.1"
+                  [nzPrecision]="2"
+                  autocomplete="off"
+                >
+                  <span nzInputAddonAfter>kW</span>
+                </nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label i18n>BESS Power</nz-form-label>
+              <nz-form-control
+                nzValidateStatus="{{
+                  controlForm.get('bessPower')?.invalid && controlForm.get('bessPower')?.dirty
+                    ? 'error'
+                    : undefined
+                }}"
+                i18n-nzErrorTip
+                nzErrorTip="Please enter a valid BESS power value"
+              >
+                <nz-input-number
+                  formControlName="bessPower"
+                  [nzStep]="0.1"
+                  [nzPrecision]="2"
+                  autocomplete="off"
+                >
+                  <span nzInputAddonAfter>kW</span>
+                </nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label i18n>Priority Mode</nz-form-label>
+              <nz-form-control>
+                <nz-select formControlName="priorityMode">
+                  @for (mode of priorityModes; track mode.id) {
+                    <nz-option [nzValue]="mode.id" [nzLabel]="mode.title"></nz-option>
+                  }
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+
+            <div class="form-action-wrapper">
+              <button nz-button nzType="primary" type="submit" [disabled]="controlForm.invalid">
+                <span i18n>Update</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> -->

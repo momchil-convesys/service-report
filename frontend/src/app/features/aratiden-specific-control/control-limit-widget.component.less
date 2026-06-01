@@ -1,0 +1,46 @@
+@import "theme";
+
+app-control-limit-widget {
+  .current-state-section {
+    margin-bottom: @margin-sm;
+
+    nz-spin {
+      min-height: 80px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: @margin-sm;
+
+      h3 {
+        margin: 0;
+      }
+    }
+  }
+
+  nz-form-item {
+    max-width: 190px; // equals max width of master control password input
+  }
+
+  .update-form-section {
+    padding: @padding-md;
+    padding-top: @padding-sm;
+
+    background-color: @gray-2;
+    border-radius: 5px;
+
+    nz-alert {
+      margin-bottom: @margin-sm;
+    }
+  }
+
+  .indented {
+    margin-left: @margin-lg;
+  }
+
+  .limit-type-container {
+    padding: 0 10px;
+  }
+}

@@ -1,0 +1,25 @@
+@if (successResult$ | async) {
+  <nz-result
+    nzStatus="success"
+    i18n-nzTitle
+    nzTitle="Command sent successfully!"
+    i18n-nzSubTitle
+    nzSubTitle="The operation may take some time to complete."
+  >
+    <div nz-result-extra>
+      <button type="button" nz-button nzType="primary" (click)="onFinish()" i18n>OK</button>
+    </div>
+  </nz-result>
+}
+
+@if (!(successResult$ | async)) {
+  <app-inverter-control-form
+    [devices]="data.devices"
+    [requestType]="data.requestType"
+    [loadingMessage]="loadingMessage$ | async"
+    [errorMessage]="errorMessage$ | async"
+    [activePowerLimitSchedule]="activePowerLimitSchedule$ | async"
+    (cancel)="onCancel()"
+    (submitForm)="onSubmit($event)"
+  ></app-inverter-control-form>
+}

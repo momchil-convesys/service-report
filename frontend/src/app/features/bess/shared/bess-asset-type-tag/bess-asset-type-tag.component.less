@@ -1,0 +1,61 @@
+@import "theme";
+
+app-bess-asset-type-tag {
+  display: inline-block;
+
+  .asset-type-badge {
+    display: inline-block;
+    padding: 0 8px;
+    border-radius: @border-radius-sm;
+    font-size: @font-size-sm;
+    font-weight: 500;
+
+    &.compact {
+      padding: 0 4px;
+      font-size: (@font-size-sm - 2);
+      line-height: 20px;
+    }
+
+    &[data-type="BESS"] {
+      background-color: @red-1;
+      color: @red-8;
+      border: 1px solid @red-3;
+    }
+
+    &[data-type="TS"] {
+      background-color: @blue-1;
+      color: @blue-8;
+      border: 1px solid @blue-3;
+    }
+
+    &[data-type="BC"] {
+      background-color: @gray-2;
+      color: @gray-9;
+      border: 1px solid @gray-5;
+    }
+
+    &[data-type="BR"] {
+      background-color: @gold-1;
+      color: @gold-8;
+      border: 1px solid @gold-4;
+    }
+
+    &[data-type="BP"] {
+      background-color: @green-1;
+      color: @green-8;
+      border: 1px solid @green-3;
+    }
+
+    &[data-type="BCL"] {
+      background-color: @red-1;
+      color: @red-8;
+      border: 1px solid @red-3;
+    }
+
+    &[data-type="INV"] {
+      background-color: @purple-1;
+      color: @purple-8;
+      border: 1px solid @purple-3;
+    }
+  }
+}

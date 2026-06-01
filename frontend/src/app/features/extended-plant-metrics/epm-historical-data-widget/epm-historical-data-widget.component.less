@@ -1,0 +1,29 @@
+@import "theme";
+
+app-epm-historical-data-widget {
+  display: block;
+  width: 100%;
+
+  & > .content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @margin-sm;
+
+    .sub-levels-navigation {
+      flex: 0 0 200px;
+
+      border-right: 1px solid @border-color-split;
+
+      padding-right: @padding-sm;
+    }
+
+    .detail-container {
+      flex: 1 1 400px;
+      max-width: 100%;
+    }
+  }
+
+  nz-alert {
+    margin-top: @margin-xs;
+  }
+}

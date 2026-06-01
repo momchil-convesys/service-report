@@ -1,0 +1,28 @@
+@if (userHasAccess) {
+  @if ((triggerRequest$ | async)?.data; as trigger) {
+    <h3>{{ trigger.title }}</h3>
+
+    @if (deviceId) {
+      <p>
+        @if (getTriggerDetailsForDevice(trigger, deviceId); as details) {
+          <ng-container i18n>Current trigger status for affected device:</ng-container>
+          <span class="trigger-status-text" [ngClass]="details.status">
+            {{ triggerStatusLabels[details.status] }}
+          </span>
+          @if (details.mutedUntilTimestamp) {
+            <ng-container i18n>until</ng-container>
+            {{ details.mutedUntilTimestamp | date: "d MMMM y, HH:mm:ss" }}
+          }
+        } @else {
+          <i>The affected device is not related to this trigger any more.</i>
+        }
+      </p>
+    }
+  }
+
+  <a i18n nz-button nzType="default" routerLink="/alarm-triggers/{{ type }}/{{ id }}">
+    View trigger
+  </a>
+} @else {
+  <i i18n>Trigger is not accessible for current user!</i>
+}

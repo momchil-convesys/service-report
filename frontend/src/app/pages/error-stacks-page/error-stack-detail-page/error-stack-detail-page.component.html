@@ -1,0 +1,17 @@
+@if ((errorStackDetailRequest$ | async)?.error) {
+  <nz-result
+    i18n-nzTitle
+    nzTitle="Failed to load error stack."
+    nzStatus="error"
+    [nzSubTitle]="(errorStackDetailRequest$ | async)?.error | json"
+  >
+  </nz-result>
+} @else {
+  <app-error-stack-detail
+    [errorStackSummary]="(errorStackDetail$ | async) || undefined"
+    [errorStackDetail]="(errorStackDetail$ | async) || undefined"
+    [loadingData]="(errorStackDetailRequest$ | async)?.isLoading || false"
+    [faultGroups]="(faultGroups$ | async) || []"
+    [hideFilteringOptions]="(faultsTemplate$ | async)?.hideFilteringOptions"
+  ></app-error-stack-detail>
+}

@@ -1,0 +1,63 @@
+@if (plant$ | async; as plant) {
+  @if (deviceId$ | async) {
+    @if ((batteryStringsRequest$ | async)?.isLoading) {
+      <div class="loading-block">
+        <nz-spin i18n-nzTip="@@loading" nzTip="Loading..."></nz-spin>
+      </div>
+    }
+
+    @if ((batteryStringsRequest$ | async)?.error) {
+      <div class="error-block">
+        <nz-alert
+          nzType="error"
+          i18n-nzMessage
+          nzMessage="Failed to load battery strings"
+          nzShowIcon
+        ></nz-alert>
+      </div>
+    }
+
+    @if ((batteryStringsRequest$ | async)?.data; as batteryStrings) {
+      @if (batteryStrings.length > 1) {
+        <div class="navigation-container">
+          <!--  (isActiveChange) does not work without routerLinkActive=""  -->
+          <nz-radio-group
+            nzButtonStyle="solid"
+            [ngModel]="activeStringIndex$ | async"
+            nzSize="default"
+          >
+            @for (string of batteryStrings; track string.id) {
+              <label
+                nz-radio-button
+                [nzValue]="string.index"
+                [routerLink]="string.index"
+                routerLinkActive=""
+                (isActiveChange)="onStringIndexChange(string.index, $event)"
+              >
+                {{ string.displayName }}
+              </label>
+            }
+          </nz-radio-group>
+        </div>
+      }
+
+      @if (batteryStrings.length > 0) {
+        <router-outlet></router-outlet>
+      } @else {
+        <div class="error-block">
+          <nz-empty
+            nzNotFoundImage="simple"
+            i18n-nzNotFoundContent
+            nzNotFoundContent="No battery strings"
+          ></nz-empty>
+        </div>
+      }
+    }
+  }
+
+  @if (!(deviceId$ | async)) {
+    <div class="strings-overview">
+      <h1>{{ plant.name }}</h1>
+    </div>
+  }
+}

@@ -1,0 +1,211 @@
+<form [formGroup]="reportService.formGroup" (ngSubmit)="onSubmit()">
+  <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="6">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            reportService.formGroup.controls['plantId'].invalid &&
+            reportService.formGroup.controls['plantId'].dirty
+              ? 'error'
+              : undefined
+          }}"
+          nzErrorTip="errorTipRequired"
+        >
+          <nz-form-label i18n nzRequired>Plant Name</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              formControlName="plantId"
+              [nzDisabled]="!(reportService.displayMode === 'c')"
+              (ngModelChange)="getDevicesOptionOnPlantId($event, true)"
+            >
+              @for (
+                userPlant of (this.reportService.reportData &&
+                  this.reportService.reportData["userPlants"]) ||
+                  [];
+                track userPlant.id
+              ) {
+                <nz-option [nzValue]="userPlant.id" [nzLabel]="userPlant.name"></nz-option>
+              }
+            </nz-select>
+          </nz-form-control>
+          <!-- {{ genericData && genericData["userPlants"][0].id }} -->
+
+          <!-- <input nz-input formControlName="plantName" nzRequired id="plantName" /> -->
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-form-label i18n>Installed Power kW</nz-form-label>
+      <input nz-input [readonly]="true" formControlName="installedPowerKw" id="installedPowerKw" />
+      <!-- <input nz-input [disabled]="true" formControlName="installedPowerKw" id="installedPowerKw" /> -->
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-form-label i18n>Country</nz-form-label>
+      <input nz-input [readonly]="true" formControlName="country" id="country" />
+    </div>
+
+    <!-- <div nz-col [nzSpan]="6">
+      <nz-form-label nzRequired>Report Status</nz-form-label>
+      <input nz-input formControlName="statusReport" nzRequired id="statusReport" />
+    </div> -->
+    <!-- <div nz-col [nzSpan]="6">
+      <nz-form-item>
+        <nz-form-label nzRequired>Report Status</nz-form-label>
+        <nz-select nzRequired formControlName="statusReport" id="statusReport">
+          <nz-option nzLabel="Done" nzValue="Done"></nz-option>
+          <nz-option nzLabel="Draft" nzValue="Draft"></nz-option>
+        </nz-select>
+      </nz-form-item>
+    </div> -->
+
+    <div nz-col [nzSpan]="6">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            reportService.formGroup.controls['plantId'].invalid &&
+            reportService.formGroup.controls['plantId'].dirty
+              ? 'error'
+              : undefined
+          }}"
+          nzErrorTip="errorTipRequired"
+        >
+          <nz-form-label i18n nzRequired>Report Status</nz-form-label>
+
+          <nz-form-control>
+            <nz-select nzRequired formControlName="statusReport" id="statusReport">
+              <nz-option i18n-nzLabel nzLabel="Done" nzValue="Done"></nz-option>
+              <nz-option i18n-nzLabel nzLabel="Draft" nzValue="Draft"></nz-option>
+            </nz-select>
+          </nz-form-control>
+          <!-- {{ genericData && genericData["userPlants"][0].id }} -->
+
+          <!-- <input nz-input formControlName="plantName" nzRequired id="plantName" /> -->
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="6">
+      <nz-form-item>
+        <nz-form-control
+          nzValidateStatus="{{
+            reportService.formGroup.controls['deviceId'].invalid &&
+            reportService.formGroup.controls['deviceId'].dirty
+              ? 'error'
+              : undefined
+          }}"
+          nzErrorTip="errorTipRequired"
+        >
+          <nz-form-label i18n nzRequired>Device Id</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              formControlName="deviceId"
+              (ngModelChange)="getDataonDeviceId($event)"
+              [nzDisabled]="!(reportService.displayMode === 'c')"
+            >
+              @for (device of this.reportService.reportData["devices"]; track device.id) {
+                <nz-option [nzValue]="device['id']" [nzLabel]="device['name']"></nz-option>
+              }
+            </nz-select>
+          </nz-form-control>
+          <!-- {{ reportService.editMode }} -->
+          <!-- {{ genericData && genericData["userPlants"][0].id }} -->
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-form-label i18n>StringBox Serial Number</nz-form-label>
+      <input
+        nz-input
+        [readonly]="true"
+        formControlName="stringBoxSerialNumber"
+        id="stringBoxSerialNumber"
+      />
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-form-label i18n>Complaint №</nz-form-label>
+      <input nz-input formControlName="complaintNumber" id="complaintNumber" />
+    </div>
+
+    <!-- <div nz-col [nzSpan]="6">
+      <nz-form-label nzRequired>Report Status</nz-form-label>
+      <input nz-input formControlName="statusReport" nzRequired id="statusReport" />
+    </div> -->
+  </div>
+  <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="6" nzOffset="6">
+      <nz-form-label i18n>Inverter Type</nz-form-label>
+      <input nz-input [readonly]="true" formControlName="inverterType" id="inverterType" />
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-form-label i18n>StringBox Type</nz-form-label>
+      <input nz-input [readonly]="true" formControlName="stringBoxType" id="stringBoxType" />
+    </div>
+
+    <div nz-col [nzSpan]="6">
+      <nz-form-label i18n nzRequired>Contract Number</nz-form-label>
+      <input
+        nz-input
+        [readonly]="true"
+        formControlName="contractNumber"
+        nzRequired
+        id="contractNumber"
+      />
+    </div>
+  </div>
+  <div nz-row [nzGutter]="{ xs: 4, sm: 8, md: 12, lg: 16 }">
+    <div nz-col [nzSpan]="6" nzOffset="6">
+      <nz-form-label i18n>Device Serial Number</nz-form-label>
+      <input
+        nz-input
+        [readonly]="true"
+        formControlName="deviceSerialNumber"
+        id="deviceSerialNumber"
+      />
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-form-label i18n>StringBox Number</nz-form-label>
+      <input nz-input [readonly]="true" formControlName="stringBoxNumber" id="stringBoxNumber" />
+    </div>
+
+    <div nz-col [nzSpan]="6">
+      <nz-form-label i18n nzRequired>Warranty Status</nz-form-label>
+      <input
+        nz-input
+        [readonly]="true"
+        formControlName="warrantyStatus"
+        nzRequired
+        id="warrantyStatus"
+      />
+    </div>
+  </div>
+  <div nz-row>
+    <!-- <div nz-col [nzSpan]="24"> -->
+    <nz-form-label i18n>Other equipment</nz-form-label>
+
+    <textarea
+      id="otherEquipment"
+      nz-input
+      rows="3"
+      [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+      formControlName="otherEquipment"
+    ></textarea>
+    <!-- </div> -->
+  </div>
+  <nz-form-label i18n nzRequired>Type Activity (Tick where applicable) </nz-form-label>
+  <div nz-row>
+    <!-- {{ reportService.formGroup.controls["typeActivity"].value | json }} -->
+    <nz-checkbox-group
+      formControlName="typeActivity"
+      [nzOptions]="typeActivityOptions"
+    ></nz-checkbox-group>
+    <!-- <div nz-col [nzSpan]="24"> -->
+
+    <!-- <nz-checkbox-group nzRequired formControlName="typeActivity"></nz-checkbox-group> -->
+
+    <!-- </div> -->
+  </div>
+</form>
+
+<!-- {{ genericData | json }} -->
+<!--[nzAutocomplete]="auto" <nz-autocomplete [nzDataSource]="filteredInventoryItems" nzBackfill #auto></nz-autocomplete> -->

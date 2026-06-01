@@ -1,0 +1,46 @@
+@import "theme";
+
+:host {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+
+  margin-bottom: @margin-xs;
+
+  flex: 0 0 auto;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.flex-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: @margin-sm;
+
+  margin-bottom: @margin-sm;
+
+  flex: 0 0 auto;
+}
+
+.right-align {
+  margin-left: auto;
+}
+
+.chart-container {
+  flex: 1 1 300px;
+  overflow-y: hidden; // makes chart height responsive
+}
+
+.table-container {
+  flex: 1 1 300px;
+  overflow-y: hidden;
+}

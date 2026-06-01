@@ -1,0 +1,36 @@
+@if (!loading && data.length === 0) {
+  <div class="empty-list">
+    <nz-empty
+      nzNotFoundImage="simple"
+      i18n-nzNotFoundContent
+      nzNotFoundContent="Schedules list is empty"
+    ></nz-empty>
+  </div>
+}
+
+<ul class="custom-list">
+  @for (item of data; track item.id) {
+    <li
+      class="list-item"
+      [routerLink]="item.id"
+      routerLinkActive="is-active"
+      queryParamsHandling="merge"
+    >
+      <div class="header">
+        {{ item.file.name }}
+        <br />
+        <div class="subtitle">
+          <app-relative-timestamp
+            [timestamp]="item.file.uploadedTimestamp"
+            [plain]="true"
+          ></app-relative-timestamp>
+          <nz-divider nzType="vertical"></nz-divider>
+          ID: {{ item.id }}
+        </div>
+      </div>
+      <div class="status">
+        <app-monbat-status [schedule]="item"></app-monbat-status>
+      </div>
+    </li>
+  }
+</ul>

@@ -1,0 +1,36 @@
+@import "theme";
+
+app-inverter-control-page {
+  display: block;
+
+  .page-content {
+    display: block;
+    padding: @padding-md @padding-lg;
+
+    max-width: 1200px;
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: @margin-xs;
+
+      margin-bottom: @margin-sm;
+
+      .title {
+        margin: 0;
+        flex: 1 1 auto;
+      }
+    }
+
+    @media (max-width: @breakpoint-sm) {
+      padding: @padding-xs @padding-sm;
+
+      .header {
+        .title {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

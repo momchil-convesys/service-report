@@ -1,0 +1,77 @@
+@if (item$ | async; as requestItem) {
+  <div class="request-item">
+    <div class="timestamp">
+      <app-relative-timestamp
+        [timestamp]="requestItem.timestamp"
+        [plain]="false"
+      ></app-relative-timestamp>
+    </div>
+
+    <div class="icon-container">
+      @switch (requestItem.type) {
+        @case ("start-inverter") {
+          <span class="icon start" nz-icon nzType="play-circle" nzTheme="outline"></span><br />
+          <!-- <span class="icon-text">START</span> -->
+        }
+        @case ("stop-inverter") {
+          <span class="icon stop" nz-icon nzType="poweroff" nzTheme="outline"></span>
+        }
+        @case ("limit-inverter-power") {
+          <span
+            class="icon limit"
+            [ngClass]="{
+              'set-limit':
+                requestItem.powerLimitValue !== null && requestItem.powerLimitValue !== undefined,
+            }"
+            nz-icon
+            nzType="vertical-align-top"
+            nzTheme="outline"
+          ></span>
+        }
+      }
+    </div>
+
+    <div class="item-content">
+      <div class="title">
+        @switch (requestItem.type) {
+          @case ("start-inverter") {
+            <span i18n>START</span>
+          }
+          @case ("stop-inverter") {
+            <span i18n>STOP</span>
+          }
+          @case ("limit-inverter-power") {
+            @if (
+              requestItem.powerLimitValue !== null && requestItem.powerLimitValue !== undefined
+            ) {
+              <span>
+                <ng-container i18n>Limit power to</ng-container>&nbsp;<span class="limit set-limit"
+                  >{{ requestItem.powerLimitValue }} kW</span
+                >
+              </span>
+            } @else {
+              <span i18n>Remove power limit</span>
+            }
+          }
+        }
+      </div>
+
+      <div class="user">
+        <ng-container i18n>Requested by</ng-container> {{ requestItem.user.displayName }}
+      </div>
+
+      <div class="commands-status">
+        <app-inverter-control-commands-status
+          [loading]="(isLoading$ | async) || false"
+          [requestItem]="requestItem"
+          (refreshStatus)="onRefresh($event)"
+        ></app-inverter-control-commands-status>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- <ng-container *ngIf="isLoading$ | async"> TODO: Loading </ng-container> -->
+@if (error$ | async) {
+  <ng-container i18n> TODO: ERROR </ng-container>
+}

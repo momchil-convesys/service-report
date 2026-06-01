@@ -1,0 +1,29 @@
+<header>
+  <h1>{{ dashboardConfig?.name || "New dashboard" }}</h1>
+
+  @if (editMode$ | async) {
+    <button nz-button nzType="primary" (click)="onDoneEditingLayout()">Done</button>
+
+    <nz-divider nzType="vertical"></nz-divider>
+
+    <button nz-button (click)="onAddWidget()">
+      <span i18n nz-icon nzType="plus" nzTheme="outline"></span> Add widget
+    </button>
+  } @else {
+    <button nz-button (click)="onEditLayout()">
+      <span i18n nz-icon nzType="appstore-add" nzTheme="outline"></span> Customize widgets
+    </button>
+  }
+
+  @if (dashboardConfig) {
+    <button nz-button nzType="default" nzDanger (click)="onDeleteDashboard()">
+      Delete dashboard
+    </button>
+  }
+</header>
+
+<div class="grid-container">
+  <gridstack [options]="gridOptions" #gridstackRef [class.edit-mode]="editMode$ | async">
+    <div empty-content>TODO: empty grid help page</div>
+  </gridstack>
+</div>

@@ -1,0 +1,47 @@
+<div class="content">
+  @if (showSubLevels) {
+    <div class="sub-levels-navigation">
+      <app-epm-measurement-level-nav
+        [subLevels]="(metadata$ | async)?.subLevels || []"
+      ></app-epm-measurement-level-nav>
+    </div>
+  }
+
+  <div class="detail-container">
+    <div class="flex-header">
+      <app-datetime-range-select
+        (modelChange)="onDatetimeRangeChange($event)"
+        [defaultOption]="'day'"
+        [timeZone]="(timeZone$ | async) || undefined"
+        [showIntegrationPeriod]="true"
+      >
+      </app-datetime-range-select>
+
+      <div class="extra">
+        <app-highcharts-export-option
+          [chartComponent]="chartComponent"
+          [disabled]="!(chartDataRequest$ | async)?.data"
+          [filename]="(chartDataRequest$ | async)?.data?.exportFileName"
+          [limitedOptions]="true"
+        ></app-highcharts-export-option>
+      </div>
+    </div>
+
+    @if ((chartDataRequest$ | async)?.error; as error) {
+      <nz-alert
+        nzType="error"
+        i18n-nzMessage
+        nzMessage="Failed to load data"
+        [nzDescription]="error.message"
+        nzShowIcon
+      ></nz-alert>
+    }
+
+    <app-epm-historical-data-chart
+      [loading]="(chartDataRequest$ | async)?.isLoading"
+      [data]="(chartDataRequest$ | async)?.data"
+      [context]="chartContext$ | async"
+      #chartComponent
+    ></app-epm-historical-data-chart>
+  </div>
+</div>

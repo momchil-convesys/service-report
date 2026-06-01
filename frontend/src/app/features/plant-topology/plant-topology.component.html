@@ -1,0 +1,35 @@
+<div class="header">
+  <div class="right-align">
+    <ng-container i18n>View as&nbsp;</ng-container>
+    <nz-radio-group [(ngModel)]="selectedView" nzButtonStyle="solid">
+      <label nz-radio-button nzValue="table" i18n>Table</label>
+      <label nz-radio-button nzValue="grid" i18n>Grid</label>
+    </nz-radio-group>
+  </div>
+</div>
+
+@if (error$ | async; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Failed to load data"
+    [nzDescription]="error.message"
+    nzShowIcon
+  ></nz-alert>
+}
+<!--  -->
+@if (loading$ | async) {
+  <nz-spin i18n-nzTip="@@loading" nzTip="Loading..." nzSize="large"> </nz-spin>
+}
+
+<!--  -->
+@if (data$ | async; as data) {
+  <!--  -->
+  @if (selectedView === "table") {
+    <app-pt-table-view [plantTopology]="data"></app-pt-table-view>
+  }
+  <!--  -->
+  @else if (selectedView === "grid") {
+    <app-pt-grid-view [plantTopology]="data"></app-pt-grid-view>
+  }
+}

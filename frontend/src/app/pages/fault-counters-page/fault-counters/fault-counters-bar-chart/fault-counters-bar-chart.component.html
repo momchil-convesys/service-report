@@ -1,0 +1,13 @@
+<nz-spin [nzSpinning]="isLoadingData && (faults ? faults.length > 0 : false)">
+  <header>
+    <h3 i18n>Faults counters</h3>
+    <div class="auto-sort-option">
+      <nz-switch [ngModel]="autoSort" (ngModelChange)="onAutoSortChange($event)"></nz-switch>
+      &nbsp;&nbsp;<ng-container i18n>Sort data by faults count</ng-container>
+    </div>
+  </header>
+
+  <div class="chart-container" style="min-height: 500px">
+    <div #chartElement [id]="chartContainerId" style="width: 100%; height: auto"></div>
+  </div>
+</nz-spin>

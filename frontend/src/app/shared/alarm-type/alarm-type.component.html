@@ -1,0 +1,32 @@
+@if (type) {
+  <div
+    class="alarm-type"
+    [ngClass]="cssClassesByType[type]"
+    [class.variant-icon]="variant === 'icon'"
+    [class.variant-short]="variant === 'short'"
+  >
+    @if (variant === "short" && type === AlarmTriggerType.DeviceStateChange) {
+      <span nz-icon nzType="swap" nzTheme="outline"></span>
+    } @else {
+      {{ labelForType(type) }}
+    }
+
+    @if (variant === "icon") {
+      @switch (type) {
+        @case (AlarmTriggerType.ParameterBoundaries) {
+          <span nz-icon nzType="control" nzTheme="outline"></span>
+        }
+
+        @case (AlarmTriggerType.FaultRecurrence) {
+          <span nz-icon nzType="diff" nzTheme="outline"></span>
+        }
+
+        @case (AlarmTriggerType.DeviceStateChange) {
+          <span nz-icon nzType="swap" nzTheme="outline"></span>
+        }
+      }
+    }
+  </div>
+} @else {
+  —
+}

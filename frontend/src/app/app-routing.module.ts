@@ -1,0 +1,45 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { environment } from '../environments/environment';
+import { CustomPreloadingStrategy } from './app-custom-preload-strategy';
+import { loginGuard } from './auth/auth.guard';
+import { NotAuthorizedComponent } from './pages/not-authorized/not-authorized.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
+
+const routes: Routes = [
+  {
+    path: 'login',
+    loadComponent: () => import('./auth/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: '',
+    loadComponent: () => import('./app-content.component').then((m) => m.AppContentComponent),
+    children: [
+      {
+        path: 'service-reports',
+        loadChildren: () =>
+          import('./features/service-reports/service-reports.module').then(
+            (m) => m.ServiceReportsModule,
+          ),
+        canActivate: [loginGuard],
+        canActivateChild: [loginGuard],
+      },
+      { path: '', pathMatch: 'full', redirectTo: '/service-reports/mock-plant-1' },
+      { path: '404', component: NotFoundComponent },
+      { path: '403', component: NotAuthorizedComponent },
+      { path: '**', redirectTo: '/service-reports/mock-plant-1' },
+    ],
+  },
+];
+
+@NgModule({
+  imports: [
+    RouterModule.forRoot(routes, {
+      paramsInheritanceStrategy: 'always',
+      preloadingStrategy: CustomPreloadingStrategy,
+      ...(environment.electron ? { useHash: true } : {}),
+    }),
+  ],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}

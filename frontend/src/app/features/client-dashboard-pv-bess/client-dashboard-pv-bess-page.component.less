@@ -1,0 +1,83 @@
+@import "theme";
+
+@panel-spacing: @margin-xss;
+
+app-client-dashboard-pv-bess-page {
+  display: block;
+  padding: @panel-spacing;
+
+  background-color: @background-color-base;
+
+  display: flex;
+  flex-direction: column;
+  gap: @panel-spacing;
+
+  .panels-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: @panel-spacing;
+  }
+
+  .view-mode-toggle {
+    display: flex;
+    gap: @margin-xs;
+  }
+
+  .panels-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @panel-spacing;
+  }
+
+  .panel {
+    border: 1px solid @border-color-split;
+    border-radius: @border-radius-base;
+    padding: @padding-xs;
+    background-color: @component-background;
+
+    min-width: 0;
+  }
+
+  .w-full {
+    flex: 1 1;
+  }
+
+  .power-section,
+  .energy-section {
+    flex: 1 1 500px;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: @panel-spacing;
+  }
+
+  app-flow-chart {
+    max-width: 300px;
+  }
+
+  app-control-panel {
+    height: 270px;
+  }
+
+  app-historical-energy-chart .chart-container,
+  app-historical-power-chart .chart-container {
+    margin-left: -@margin-xs;
+    margin-right: -@margin-xs;
+  }
+
+  @media (min-width: @breakpoint-md) {
+    app-power-schedule-manual-adjustment .empty-container,
+    app-power-schedule-manual-adjustment .charts-container.take-all-height {
+      height: 400px;
+    }
+  }
+
+  @media (max-width: @breakpoint-md) {
+    app-power-schedule-manual-adjustment .empty-container,
+    app-power-schedule-manual-adjustment .charts-container.take-all-height {
+      height: 500px;
+    }
+  }
+}

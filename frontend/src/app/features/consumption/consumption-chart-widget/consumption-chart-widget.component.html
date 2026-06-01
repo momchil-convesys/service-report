@@ -1,0 +1,13 @@
+<nz-card i18n-nzTitle nzTitle="Energy Consumption" nzBordered="true" nzSize="small">
+  @if (timeRange$ | async; as timeRange) {
+    <app-datetime-range-filter
+      (rangeChange)="onTimeRangeChange($event)"
+      (predefinedRangeChange)="onPredefinedTimeRangeChange($event)"
+      [initialRange]="timeRange"
+    ></app-datetime-range-filter>
+  }
+  <app-consumption-chart-loader
+    [timeRange]="(timeRangeConverted$ | async) || undefined"
+    [devices]="(devices$ | async) || undefined"
+  ></app-consumption-chart-loader>
+</nz-card>

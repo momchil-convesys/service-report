@@ -1,0 +1,142 @@
+@import "theme";
+
+app-power-schedule-manual-adjustment-form {
+  @left-side-space: 100px;
+
+  .content {
+    padding: @padding-lg @padding-lg;
+    padding-left: @left-side-space;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    gap: @margin-xs;
+
+    border-top: 1px solid @border-color-split;
+
+    padding: @padding-md @padding-lg;
+    padding-left: @left-side-space;
+
+    button {
+      flex: 1 1 auto;
+    }
+  }
+
+  .ant-form-item-with-help .ant-form-item-explain {
+    padding-top: 2px;
+  }
+
+  .ant-form-item {
+    margin-bottom: @margin-xss;
+  }
+
+  .intro {
+    display: flex;
+    margin: 0 0 @margin-md 0;
+
+    .description {
+      flex: 1;
+    }
+  }
+
+  .ant-spin-nested-loading > div > .ant-spin .ant-spin-dot,
+  .ant-spin-nested-loading > div > .ant-spin .ant-spin-text {
+    top: 40%;
+  }
+
+  .power-controls {
+    display: flex;
+    flex-direction: column;
+    gap: @margin-sm;
+  }
+
+  .power-control-group {
+    h2 {
+      margin-bottom: @margin-xs;
+    }
+
+    h4 {
+      margin-bottom: @margin-sm;
+    }
+  }
+
+  .power-options {
+    width: 100%;
+
+    [nz-radio] {
+      display: flex;
+      align-items: baseline;
+      padding: @padding-xs @padding-sm;
+      border: 1px solid @gray-3;
+      border-radius: 5px;
+      margin-bottom: @margin-xss;
+      margin-right: 0;
+
+      &.active {
+        background-color: @blue-1;
+        border-color: @blue-7;
+      }
+
+      &:not(.active):hover {
+        background-color: @gray-2;
+      }
+
+      .ant-input-group-wrapper {
+        display: block;
+        max-width: 150px;
+      }
+
+      input[disabled] {
+        pointer-events: none;
+      }
+
+      span.ant-radio + * {
+        flex: 1;
+      }
+    }
+  }
+
+  .charge {
+    color: @blue-6;
+  }
+
+  .discharge {
+    color: @green-6;
+  }
+
+  .passcode-container {
+    margin-top: @margin-md;
+  }
+
+  .priority-mode-title {
+    font-weight: 500;
+  }
+
+  .priority-mode-description {
+    font-size: 12px;
+    color: @text-color-secondary;
+    margin-top: @margin-xss;
+  }
+
+  .power-control-group {
+    nz-select {
+      max-width: 300px;
+    }
+  }
+
+  .ant-form-item-control-input-content {
+    display: flex;
+    gap: @margin-xs;
+    flex-wrap: wrap;
+  }
+
+  .hints {
+    font-size: @font-size-sm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

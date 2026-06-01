@@ -1,0 +1,25 @@
+@if (chart) {
+  <button nz-button nzType="default" (click)="open()">
+    <nz-icon nzType="setting" nzTheme="outline" />
+  </button>
+  @if (visible) {
+    <nz-drawer
+      [nzClosable]="true"
+      [nzVisible]="visible"
+      [nzPlacement]="'right'"
+      nzTitle="Chart config"
+      (nzOnClose)="close()"
+      [nzMask]="true"
+      [nzPlacement]="'right'"
+      [nzWidth]="600"
+      [nzMaskStyle]="{
+        opacity: '0',
+      }"
+      nzWrapClassName="chart-config-drawer-wrap"
+    >
+      <ng-container *nzDrawerContent>
+        <app-chart-options-gui [chart]="chart"></app-chart-options-gui>
+      </ng-container>
+    </nz-drawer>
+  }
+}

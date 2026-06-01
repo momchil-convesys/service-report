@@ -1,0 +1,10 @@
+<header>
+  <h3 i18n>Faults counters with integration period</h3>
+</header>
+@if (!faults || faults.length === 0) {
+  <p i18n class="empty-chart">No faults selected.</p>
+} @else {
+  @if (data$ | async; as data) {
+    <app-fault-counters-column-chart [data]="data"></app-fault-counters-column-chart>
+  }
+}

@@ -1,0 +1,40 @@
+@if (metadata$ | async; as metadata) {
+  <nz-tabs
+    nzLinkRouter
+    nzLinkExact="false"
+    nzTabPosition="top"
+    nzSize="small"
+    [nzAnimated]="false"
+    nzType="card"
+  >
+    <nz-tab>
+      <a *nzTabLink nz-tab-link [routerLink]="'bess-overview'">Overview</a>
+    </nz-tab>
+    <nz-tab>
+      <a *nzTabLink nz-tab-link [routerLink]="'bess-live-metrics'">Live metrics</a>
+    </nz-tab>
+    <nz-tab>
+      <a *nzTabLink nz-tab-link [routerLink]="'bess-assets'">Assets</a>
+    </nz-tab>
+    <nz-tab>
+      <a *nzTabLink nz-tab-link [routerLink]="'bess-parameters'">Parameters</a>
+    </nz-tab>
+    <nz-tab>
+      <a *nzTabLink nz-tab-link [routerLink]="'bess-tree'">Topology</a>
+    </nz-tab>
+  </nz-tabs>
+
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+} @else if (loading$ | async; as loading) {
+  <nz-spin i18n-nzTip="@@loading" nzTip="Loading..." nzSize="large"> </nz-spin>
+} @else if (error$ | async; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Failed to load metadata"
+    [nzDescription]="error.message"
+    nzShowIcon
+  ></nz-alert>
+}

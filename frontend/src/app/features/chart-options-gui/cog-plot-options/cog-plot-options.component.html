@@ -1,0 +1,17 @@
+<h1>All series options</h1>
+
+<section>
+  <h2>Get extremes from all</h2>
+  <div class="section-subtitle">
+    Whether to use the Y extremes of the total chart width or only the zoomed area when zooming in
+    on parts of the X axis. By default, the Y axis adjusts to the min and max of the visible data.
+  </div>
+  <div class="block">
+    <p>
+      <nz-switch
+        [ngModel]="plotOptions?.series?.getExtremesFromAll"
+        (ngModelChange)="onInputChange($event, 'series.getExtremesFromAll')"
+      ></nz-switch>
+    </p>
+  </div>
+</section>

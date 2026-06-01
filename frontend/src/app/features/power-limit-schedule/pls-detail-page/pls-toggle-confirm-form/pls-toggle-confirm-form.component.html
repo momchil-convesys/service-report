@@ -1,0 +1,66 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="form" nz-form nzLayout="vertical">
+  <div class="content">
+    @if (toggleAction === "enable") {
+      <div i18n>Please confirm that you want to enable schedule!</div>
+    }
+    @if (toggleAction === "disable") {
+      <div i18n>Please confirm that you want to disable schedule!</div>
+    }
+
+    <div class="passcode-container">
+      <input
+        class="autocomplete-hint"
+        type="text"
+        name="username"
+        autocomplete="username"
+        formControlName="usernameAutosaveHint"
+      />
+
+      <nz-form-item>
+        <nz-form-label i18n>Master control password</nz-form-label>
+        <nz-form-control
+          nzValidateStatus="{{
+            form.controls.passcode.invalid && form.controls.passcode.dirty ? 'error' : undefined
+          }}"
+          i18n-nzErrorTip
+          nzErrorTip="Password is required to perform this operation!"
+        >
+          <input
+            type="password"
+            name="master-password"
+            nz-input
+            nzSize="large"
+            autocomplete="current-password"
+            [required]="true"
+            formControlName="passcode"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button type="button" nz-button nzSize="large" (click)="onCancel()" i18n>Cancel</button>
+
+    @switch (toggleAction) {
+      @case ("enable") {
+        <button type="submit" nz-button nzSize="large" nzType="primary">
+          <span nz-icon nzType="check" nzTheme="outline"></span>
+          <span i18n>Enable schedule</span>
+        </button>
+      }
+
+      @case ("disable") {
+        <button type="submit" nz-button nzSize="large" nzType="default" nzDanger>
+          <span nz-icon nzType="stop" nzTheme="outline"></span>
+          <span i18n>Disable schedule</span>
+        </button>
+      }
+
+      @default {
+        <ng-container i18n>Unknown action requested: </ng-container>
+        {{ toggleAction }}
+      }
+    }
+  </div>
+</form>

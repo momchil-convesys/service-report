@@ -1,0 +1,42 @@
+@if (plant$ | async; as plant) {
+  @if (isWind(plant)) {
+    <!-- <app-wt-power-chart-widget></app-wt-power-chart-widget> -->
+  }
+
+  @if (!isWind(plant)) {
+    <div class="left-pane" [class.wider-left]="plant.deviceIds.length > devicesCountBreakpoint">
+      @if (isSolar(plant)) {
+        <app-pv-combined-chart-data-loader>
+          <!-- Pv production chart is nested between charts via content projection -->
+          <app-pv-production-chart-widget></app-pv-production-chart-widget>
+        </app-pv-combined-chart-data-loader>
+        <app-pv-power-chart-widget></app-pv-power-chart-widget>
+        @if (plant.plantSpecificMetadata?.hasPowerMeter) {
+          <app-pv-average-power-chart-plant-widget></app-pv-average-power-chart-plant-widget>
+        }
+      }
+
+      @if (isPump(plant)) {
+        <app-consumption-chart-widget></app-consumption-chart-widget>
+      }
+    </div>
+
+    <div class="right-pane" [class.wider-left]="plant.deviceIds.length > devicesCountBreakpoint">
+      @if (isAratidenPlant(plant)) {
+        <app-control-limit-widget
+          [plantId]="plant.id"
+          [plantLimitType]="plant.plantSpecificMetadata?.powerLimitType"
+        ></app-control-limit-widget>
+      }
+
+      <app-alarm-events-widget
+        [alarmEventsRequest]="alarmEventsRequest$"
+        [deviceIds]="plant.deviceIds"
+      ></app-alarm-events-widget>
+
+      <app-device-availability-widget>
+        <ng-container i18n>Devices operation state</ng-container>
+      </app-device-availability-widget>
+    </div>
+  }
+}

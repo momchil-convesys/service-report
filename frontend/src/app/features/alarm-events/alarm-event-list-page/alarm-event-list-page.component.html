@@ -1,0 +1,140 @@
+<div class="filters-block" [class.conditionally-collapsed]="outlet.isActivated">
+  <div class="list-filters-block">
+    <h1 i18n>Filters</h1>
+    <nz-divider></nz-divider>
+    <ng-container *ngTemplateOutlet="filters"></ng-container>
+  </div>
+</div>
+
+<nz-drawer
+  [nzVisible]="sidebarVisible"
+  nzPlacement="left"
+  i18n-nzTitle
+  nzTitle="Filters"
+  [nzClosable]="true"
+  [nzMaskClosable]="true"
+  (nzOnClose)="onCloseSidebar()"
+  [nzBodyStyle]="{ padding: 0 }"
+  nzWrapClassName="filters-block-drawer"
+  nzWidth="300px"
+>
+  <ng-container *nzDrawerContent>
+    <div class="list-filters-block">
+      <ng-container *ngTemplateOutlet="filters"></ng-container>
+    </div>
+  </ng-container>
+</nz-drawer>
+
+<ng-template #filters>
+  @if (queryParameters$ | async; as queryParameters) {
+    @if (queryParameters.triggerId) {
+      <nz-alert
+        class="filter-by-trigger"
+        nzType="warning"
+        i18n-nzMessage
+        nzMessage="Filter by trigger"
+        [nzDescription]="triggerInfo"
+        nzShowIcon="false"
+        nzCloseable="true"
+        (nzOnClose)="onRemoveFilterByTrigger(queryParameters)"
+      ></nz-alert>
+
+      <ng-template #triggerInfo>
+        <br />
+        <app-alarm-trigger-link
+          [id]="queryParameters.triggerId"
+          [type]="queryParameters.triggerType!"
+        ></app-alarm-trigger-link>
+      </ng-template>
+    }
+
+    @if (!queryParameters.triggerId) {
+      <h3 i18n>Show events of type</h3>
+      @if (selectedAlarmTypes !== undefined) {
+        <app-filter-by-alarm-type
+          [model]="selectedAlarmTypes"
+          (modelChange)="onEventTypeChange($event)"
+        ></app-filter-by-alarm-type>
+      }
+    }
+  }
+
+  <nz-divider></nz-divider>
+
+  <h3 i18n>Related to plant / device</h3>
+  <p>
+    <app-device-select
+      (selectDevices)="onDevicesSelected($event)"
+      [selectedDeviceIds]="selectedDeviceIds"
+    ></app-device-select>
+  </p>
+
+  <nz-divider></nz-divider>
+
+  <!-- <h3>Handled / Actions taken / Assigned?</h3>
+  <p>
+    TODO: handled / not handled<br />
+    Handled by: list of users?
+  </p> -->
+</ng-template>
+
+<div class="list-block" [class.conditionally-collapsed]="outlet.isActivated">
+  <div class="header" [class.unseen-events]="(unseenAlarmEvents$ | async)?.length">
+    <div class="flex-row">
+      <h1 i18n>Alarm events</h1>
+
+      @if ((unseenAlarmEvents$ | async)?.length; as unseenCount) {
+        <button
+          nz-button
+          nzSize="default"
+          nzType="primary"
+          (click)="onShowUnseen()"
+          class="unseen-events-action"
+        >
+          <ng-container i18n>Show</ng-container>
+          &nbsp;{{ unseenCount }}&nbsp;
+          <ng-container [ngPlural]="unseenCount">
+            <ng-template ngPluralCase="=1" i18n>new event</ng-template>
+            <ng-template ngPluralCase="other" i18n>new events</ng-template>
+          </ng-container>
+        </button>
+      }
+    </div>
+
+    <!-- <div class="flex-row"> -->
+    <button
+      nz-button
+      (click)="onShowSidebar()"
+      class="filters-button"
+      [class.conditionally-visible]="outlet.isActivated"
+    >
+      <span nz-icon nzType="menu-unfold" nzTheme="outline"></span>
+      &nbsp;
+      <ng-container i18n>Show filters</ng-container>
+    </button>
+
+    <nz-pagination
+      [nzTotal]="totalCount"
+      [nzPageIndex]="pageIndex"
+      [nzPageSize]="pageSize"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzSize]="'small'"
+      [nzShowTotal]="totalTemplate"
+    ></nz-pagination>
+    <!-- </div> -->
+
+    <ng-template #totalTemplate let-total>
+      <ng-container i18n>Total items</ng-container>
+      {{ total }}
+    </ng-template>
+  </div>
+
+  <div class="content">
+    <div id="top-of-list"></div>
+    <app-alarm-event-list [alarmEventsRequest]="alarmEventsRequest$"></app-alarm-event-list>
+  </div>
+</div>
+
+<div class="details-block" [class.collapsed]="!outlet.isActivated">
+  <router-outlet #outlet="outlet"></router-outlet>
+</div>

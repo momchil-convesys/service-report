@@ -1,0 +1,37 @@
+<h2>{{ task.taskNodeDefinition.name }}</h2>
+<p class="description">{{ task.taskNodeDefinition.description }}</p>
+
+<div class="resolve-block">
+  @if (task.enabled) {
+    @if (task.status !== "done") {
+      <form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="onSubmit(form)">
+        <nz-form-item style="max-width: 600px">
+          <nz-form-label nzRequired nzFor="task-result">Result</nz-form-label>
+          <nz-form-control>
+            <textarea nz-input rows="5" id="task-result" formControlName="result"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+
+        <button nz-button type="submit">Submit</button>
+      </form>
+    }
+
+    @if (task.status === "done") {
+      <p style="max-width: 600px">
+        Task resolved!<br />
+        {{ task.outcome }}
+      </p>
+    }
+  } @else {
+    <p class="disabled-block">
+      <!-- <span nz-icon nzType="stop" nzTheme="outline" class="icon"></span>
+      <br /> -->
+      <span class="text">
+        This task is not yet available for completion. Previous tasks must be resolved first or
+        parent group status should be set to
+        <q>{{ statusLabelForGroupStatus("in-progress") }}</q
+        >!
+      </span>
+    </p>
+  }
+</div>

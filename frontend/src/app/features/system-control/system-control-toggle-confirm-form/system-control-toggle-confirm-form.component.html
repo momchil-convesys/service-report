@@ -1,0 +1,105 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="form" nz-form nzLayout="vertical">
+  <div class="content">
+    <div class="visualization">
+      <div class="from-setup">
+        <app-system-setup-icon [setup]="setupInControl"></app-system-setup-icon>
+        <app-system-setup-tag [setup]="setupInControl"></app-system-setup-tag>
+      </div>
+      <nz-icon nzType="arrow-right" nzTheme="outline" class="arrow-icon" />
+      <div class="to-setup">
+        <app-system-setup-icon [setup]="otherSetupType(setupInControl)"></app-system-setup-icon>
+        <app-system-setup-tag [setup]="otherSetupType(setupInControl)"></app-system-setup-tag>
+      </div>
+    </div>
+
+    @if (toggleAction === "take") {
+      <div>
+        <p>
+          <ng-container i18n>Please confirm that you want to TAKE control from the </ng-container>
+          <app-system-setup-tag [setup]="setupInControl"></app-system-setup-tag>
+          <ng-container i18n> system setup</ng-container>!
+        </p>
+        <p>
+          <ng-container i18n
+            >After taking control, the system will start following istructions from your setup
+          </ng-container>
+          (<app-system-setup-tag [setup]="thisSetup"></app-system-setup-tag>).
+        </p>
+        <p i18n>
+          Ensure that you have UPLOADED and ENABLED a power limit schedule before taking control.
+          Otherwise the plant will continue to operate on full power.
+        </p>
+      </div>
+    }
+    @if (toggleAction === "release") {
+      <div>
+        <p>
+          <ng-container i18n>Please confirm that you want to RELEASE control to the </ng-container>
+          <app-system-setup-tag [setup]="otherSetupType(setupInControl)"></app-system-setup-tag>
+          <ng-container i18n> system setup</ng-container>!
+        </p>
+        <p>
+          <ng-container i18n
+            >After releasing control, the system will start following istructions from the
+          </ng-container>
+          <app-system-setup-tag [setup]="otherSetupType(setupInControl)"></app-system-setup-tag>
+          <ng-container i18n> system setup</ng-container>.
+        </p>
+      </div>
+    }
+
+    <div class="passcode-container">
+      <input
+        class="autocomplete-hint"
+        type="text"
+        name="username"
+        autocomplete="username"
+        formControlName="usernameAutosaveHint"
+      />
+
+      <nz-form-item>
+        <nz-form-label i18n>Master control password</nz-form-label>
+        <nz-form-control
+          nzValidateStatus="{{
+            form.controls.passcode.invalid && form.controls.passcode.dirty ? 'error' : undefined
+          }}"
+          i18n-nzErrorTip
+          nzErrorTip="Password is required to perform this operation!"
+        >
+          <input
+            type="password"
+            name="master-password"
+            nz-input
+            nzSize="large"
+            autocomplete="current-password"
+            [required]="true"
+            formControlName="passcode"
+          />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button type="button" nz-button nzSize="large" (click)="onCancel()" i18n>Cancel</button>
+
+    @switch (toggleAction) {
+      @case ("take") {
+        <button type="submit" nz-button nzSize="large" nzType="primary">
+          <span i18n>Take control</span>
+        </button>
+      }
+
+      @case ("release") {
+        <button type="submit" nz-button nzSize="large" nzType="default" nzDanger>
+          <span i18n>Release control</span>
+        </button>
+      }
+
+      @default {
+        <ng-container i18n>Unknown action requested: </ng-container>
+        {{ toggleAction }}
+      }
+    }
+  </div>
+</form>

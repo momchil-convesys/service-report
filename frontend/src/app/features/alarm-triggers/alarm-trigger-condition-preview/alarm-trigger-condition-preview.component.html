@@ -1,0 +1,62 @@
+<div class="condition-container">
+  @switch (type) {
+    @case (AlarmTriggerType.ParameterBoundaries) {
+      <b>
+        {{
+          (parameterById(pb(condition).parameter) | async)?.name ||
+            "Parameter " + pb(condition).parameter
+        }}
+      </b>
+      <span> {{ labelForComparisonOperator(pb(condition).comparisonOperator) }} </span>
+      <b>{{ pb(condition).value }} {{ pb(condition).unit }}</b>
+    }
+
+    @case (AlarmTriggerType.FaultRecurrence) {
+      <div>
+        @for (faultId of fr(condition).faultIds; track faultId; let i = $index) {
+          <div>
+            {{ (faultsById$ | async)?.[faultId]?.code }}
+            {{ (faultsById$ | async)?.[faultId]?.name }}
+          </div>
+        }
+        <div style="margin-top: 4px">
+          <span i18n>Any of the faults occurs more than</span>
+          <b [ngPlural]="fr(condition).count">
+            <ng-template ngPluralCase="=1" i18n="@@one-time">once</ng-template>
+            <ng-template ngPluralCase="other">
+              {{ fr(condition).count }}
+              <ng-container i18n="@@many-times">times</ng-container>
+            </ng-template>
+          </b>
+          <span i18n> in a span of</span>
+          <b [ngPlural]="fr(condition).duration.value">
+            {{ fr(condition).duration.value }}
+            <ng-template ngPluralCase="=1">{{
+              durationUnitLabels_NumericalForm_Single[fr(condition).duration.unit]
+            }}</ng-template>
+            <ng-template ngPluralCase="other">{{
+              durationUnitLabels_NumericalForm_Plural[fr(condition).duration.unit]
+            }}</ng-template></b
+          >.
+        </div>
+      </div>
+    }
+
+    @case (AlarmTriggerType.DeviceStateChange) {
+      <span i18n>Device state is</span>
+      &nbsp;
+      <app-device-state
+        [state]="{ baseState: sc(condition).stateOfInterest }"
+        variant="full"
+        style="display: inline-flex; margin-top: -2px; vertical-align: middle"
+      ></app-device-state>
+      &nbsp;
+      <span i18n>for at least </span>
+      <b [ngPlural]="sc(condition).persistenceSeconds">
+        {{ sc(condition).persistenceSeconds }}
+        <ng-template ngPluralCase="=1" i18n="@@second">second</ng-template>
+        <ng-template ngPluralCase="other" i18n="@@seconds">seconds</ng-template>
+      </b>
+    }
+  }
+</div>

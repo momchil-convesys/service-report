@@ -1,0 +1,157 @@
+<div class="filters-block" [class.conditionally-collapsed]="outlet.isActivated">
+  <div class="list-filters-block">
+    <h1 i18n>Filters</h1>
+    <nz-divider></nz-divider>
+    <ng-container *ngTemplateOutlet="filters"></ng-container>
+  </div>
+</div>
+
+<nz-drawer
+  [nzVisible]="sidebarVisible"
+  nzPlacement="left"
+  i18n-nzTitle
+  nzTitle="Filters"
+  [nzClosable]="true"
+  [nzMaskClosable]="true"
+  (nzOnClose)="onCloseSidebar()"
+  [nzBodyStyle]="{ padding: 0 }"
+  nzWrapClassName="filters-block-drawer"
+  nzWidth="300px"
+>
+  <ng-container *nzDrawerContent>
+    <div class="list-filters-block">
+      <ng-container *ngTemplateOutlet="filters"></ng-container>
+    </div>
+  </ng-container>
+</nz-drawer>
+
+<ng-template #filters>
+  <h3 i18n>Show triggers of type</h3>
+  <app-filter-by-alarm-type
+    [model]="selectedAlarmTypes"
+    (modelChange)="onAlarmTypeChange($event)"
+  ></app-filter-by-alarm-type>
+
+  <nz-divider></nz-divider>
+
+  <h3 i18n>Related to plant / device</h3>
+  <p>
+    <app-device-select
+      (selectDevices)="onDevicesSelected($event)"
+      [selectedDeviceIds]="selectedDeviceIds"
+    ></app-device-select>
+  </p>
+</ng-template>
+
+<div class="list-block" [class.conditionally-collapsed]="outlet.isActivated">
+  <div class="header">
+    <div class="flex-row">
+      <h1 i18n>Alarm triggers</h1>
+      <div class="actions">
+        <a type="button" nz-button nzType="primary" routerLink="new" queryParamsHandling="merge">
+          <i nz-icon nzType="plus"></i>
+          <span i18n>Create new</span>
+        </a>
+      </div>
+    </div>
+
+    <button
+      nz-button
+      (click)="onShowSidebar()"
+      class="filters-button"
+      [class.conditionally-visible]="outlet.isActivated"
+    >
+      <span nz-icon nzType="menu-unfold" nzTheme="outline"></span>&nbsp;Show filters
+    </button>
+  </div>
+
+  <div class="alarms-config-list">
+    @if ((alarmTriggersRequest$ | async)?.isLoading) {
+      <nz-spin i18n-nzTip="@@loading" nzTip="Loading..." nzSize="large"> </nz-spin>
+    } @else {
+      @if ((alarmTriggersRequest$ | async)?.error) {
+        <div class="error-block">
+          <nz-alert
+            nzType="error"
+            i18n-nzMessage
+            nzMessage="Failed to load alarm triggers"
+            nzShowIcon
+          ></nz-alert>
+        </div>
+      } @else {
+        <nz-pagination
+          [nzTotal]="totalCount"
+          [nzPageIndex]="pageIndex"
+          [nzPageSize]="pageSize"
+          (nzPageIndexChange)="onPageIndexChange($event)"
+          [nzSize]="'default'"
+          [nzShowTotal]="totalTemplate"
+        ></nz-pagination>
+
+        <ng-template #totalTemplate let-total>
+          <ng-container i18n>Total items</ng-container>
+          {{ total }}
+        </ng-template>
+
+        @if ((alarmTriggersRequest$ | async)?.data; as alarmTriggers) {
+          <div class="list">
+            @if (alarmTriggers.length === 0) {
+              <div class="item empty">
+                <nz-empty nzNotFoundImage="simple"></nz-empty>
+              </div>
+            }
+
+            @for (item of alarmTriggers; track item.id; let i = $index) {
+              <div
+                class="item"
+                routerLinkActive="selected"
+                [routerLink]="item.type + '/' + item.id"
+                queryParamsHandling="merge"
+              >
+                <div class="header">
+                  <h3>{{ item.title }}</h3>
+
+                  <div class="extra">
+                    <a i18n nz-button nzType="link">View</a>
+                  </div>
+                </div>
+
+                <p>
+                  {{ item.description || noDescriprion }}
+                </p>
+
+                <p class="footer">
+                  <app-alarm-type [type]="item.type" variant="full"></app-alarm-type>
+
+                  <!-- <nz-divider nzType="vertical"></nz-divider> -->
+
+                  <!-- <span i18n>
+              {{ item.affectedDeviceIds.length }} affected device<ng-container
+                *ngIf="item.affectedDeviceIds.length !== 1"
+                >s</ng-container
+              >
+            </span> -->
+                  <span>
+                    {{ item.affectedDeviceIds.length }}
+
+                    @switch (item.affectedDeviceIds.length) {
+                      @case (1) {
+                        <ng-container i18n>affected device</ng-container>
+                      }
+                      @default {
+                        <ng-container i18n>affected devices</ng-container>
+                      }
+                    }
+                  </span>
+                </p>
+              </div>
+            }
+          </div>
+        }
+      }
+    }
+  </div>
+</div>
+<div class="detail-block" [class.collapsed]="!outlet.isActivated">
+  <router-outlet #outlet="outlet"></router-outlet>
+</div>

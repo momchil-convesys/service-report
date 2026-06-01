@@ -1,0 +1,108 @@
+@import "theme";
+
+app-power-limit-schedule-indicator {
+  display: inline-block;
+  vertical-align: middle;
+
+  border-radius: 2px;
+  overflow: hidden; // To clip the border radius
+
+  .header {
+    & > * {
+      display: inline-block;
+    }
+
+    .title {
+      margin-left: @margin-xs;
+    }
+  }
+
+  &.mode-block {
+    display: block;
+    border: 1px solid @red-7;
+  }
+
+  &.mode-block .indicator-block .header,
+  &.mode-full .indicator-block .header {
+    padding: @margin-xs - 1 @margin-sm;
+  }
+
+  &.mode-icon .indicator-block .header {
+    padding: 0 5px;
+
+    font-size: 16px;
+    line-height: 26px;
+  }
+
+  .block-mode-details-container {
+    padding: @padding-md;
+
+    padding-left: 38px; // aligh with header text
+
+    & > :first-child {
+      margin-bottom: @margin-xs;
+    }
+  }
+
+  .indicator-block {
+    border: 1px solid transparent;
+
+    &.active-compliant {
+      border-color: @gold-1;
+
+      .header {
+        app-power-limit-icon svg {
+          fill: @red-7;
+        }
+
+        background-color: @gold-1;
+      }
+    }
+
+    &.active-non-compliant .header {
+      app-power-limit-icon svg {
+        fill: white;
+      }
+
+      color: white;
+      background-color: @red-7;
+    }
+
+    &.disabled .header {
+      background-color: @gray-2;
+
+      app-power-limit-icon svg {
+        // fill: @text-color;
+        fill: @red-7;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @margin-xss;
+  }
+
+  app-pls-value-formatted {
+    font-weight: bold;
+  }
+
+  &.controlled-by-external-system .indicator-block {
+    border-color: black;
+    background-color: #00000011;
+
+    .header {
+      background-color: transparent;
+      color: @text-color;
+
+      app-power-limit-icon svg {
+        fill: @text-color;
+      }
+    }
+  }
+}
+
+.power-limit-schedule-indicator-popover {
+  max-width: 300px;
+}

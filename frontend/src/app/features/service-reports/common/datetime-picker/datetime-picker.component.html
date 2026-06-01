@@ -1,0 +1,31 @@
+<!-- <label for="{{ labelFor }}">{{ label }}</label> -->
+
+<div nz-form-item>
+  <nz-form-label [nzFor]="'datePickerId'">{{ label }}</nz-form-label>
+  <nz-form-control>
+    <nz-date-picker
+      id="datePickerId"
+      [formControl]="formControlDP"
+      nzMode="date"
+      [nzShowTime]="{ nzFormat: 'HH:mm' }"
+      [nzFormat]="format"
+      [nzAllowClear]="false"
+    ></nz-date-picker>
+  </nz-form-control>
+</div>
+
+<!-- <ng-container
+  [ngTemplateOutlet]="groupErrors"
+  [ngTemplateOutletContext]="{ formControl: formControlDP }"
+>
+</ng-container>
+
+<ng-template #groupErrors let-control="formGroup">
+  <div
+    *ngIf="control.invalid && control.errors && control.dirty"
+    class="invalid-feedback"
+    style="display: block"
+  >
+    <div *ngIf="control.errors.custom">{{ control.errors.custom }}</div>
+  </div>
+</ng-template> -->

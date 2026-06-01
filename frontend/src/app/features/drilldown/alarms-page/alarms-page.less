@@ -1,0 +1,93 @@
+@import "theme";
+
+.alarms-page-shared {
+  display: block;
+  background-color: white;
+  height: 100%;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+
+  .main-page {
+    padding: @padding-md @padding-lg;
+
+    @media (max-width: @breakpoint-sm) {
+      padding: @padding-xs @padding-sm;
+    }
+
+    overflow-y: auto;
+  }
+
+  .detail-page {
+    overflow-y: auto;
+
+    border-left: 1px solid @border-color-split;
+  }
+
+  app-alarm-detail-page {
+    overflow-y: auto;
+    width: 100%;
+
+    max-width: 500px;
+    min-width: 500px;
+  }
+
+  nz-alert {
+    margin-bottom: @margin-sm;
+  }
+
+  .main-page > .header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: @margin-sm;
+
+    h2 {
+      margin: 0;
+      line-height: 1.2;
+    }
+  }
+
+  @media (max-width: @breakpoint-md) {
+    .conditionally-collapsed {
+      display: none;
+    }
+
+    .conditionally-full-width {
+      border-left: 0;
+
+      app-alarm-detail-page {
+        min-width: auto;
+        max-width: auto;
+      }
+    }
+  }
+
+  .alarm-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .alarm-message {
+    flex: 1;
+  }
+
+  .uppercase {
+    text-transform: uppercase;
+  }
+
+  // Nested table styles
+  tr[nzExpand] td {
+    padding: 8px 16px;
+
+    nz-table {
+      margin: 16px 0;
+    }
+  }
+
+  nz-alert,
+  app-datetime-range-select {
+    margin-bottom: @margin-sm;
+  }
+}

@@ -1,0 +1,70 @@
+@import "theme";
+
+app-bess-containers-bars {
+  display: block;
+
+  .bess-containers-bars-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .containers-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: @margin-xs;
+  }
+
+  .container-card {
+    background: @gray-2;
+    // border: 1px solid @border-color-base;
+    border-radius: @border-radius-base;
+    padding: @padding-sm;
+
+    app-value-display {
+      text-align: right;
+    }
+  }
+
+  .name {
+    font-size: @font-size-sm;
+    margin-bottom: @margin-sm;
+    font-weight: bold;
+    color: @text-color-secondary;
+    // text-align: center;
+  }
+
+  .empty {
+    padding: @padding-md;
+    color: @text-color-secondary;
+  }
+
+  app-bess-state-indicator {
+    margin-bottom: @margin-xs;
+  }
+
+  .capacity-power {
+    margin: @margin-xss 0;
+    margin-bottom: @margin-xs;
+
+    display: flex;
+    flex-direction: column;
+    gap: @margin-xss;
+    line-height: 1;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: @font-size-sm;
+  }
+
+  .capacity-power .label {
+    color: @text-color-secondary;
+  }
+
+  .stat-row app-value-display {
+    color: @text-color;
+    // font-weight: bold;
+  }
+}

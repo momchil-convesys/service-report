@@ -1,0 +1,246 @@
+<!-- <a routerLink=".."><span nz-icon nzType="arrow-left" nzTheme="outline"></span> Alarm alarmEvents</a>
+<nz-divider></nz-divider> -->
+
+@if (alarmEvent$ | async; as alarmEvent) {
+  <div class="event-header">
+    <h1 i18n>Alarm event title/id (TBD)</h1>
+
+    @if (showCloseButton$ | async) {
+      <a role="button" class="close-page-button" routerLink="../../../" queryParamsHandling="merge">
+        &times;
+      </a>
+    }
+  </div>
+
+  <nz-descriptions nzBordered nzSize="middle" [nzColumn]="1">
+    <nz-descriptions-item i18n-nzTitle nzTitle="Event timestamp">
+      {{ alarmEvent.timestamp | date: "d MMMM y, HH:mm:ss" }}
+    </nz-descriptions-item>
+
+    <nz-descriptions-item i18n-nzTitle nzTitle="Affected device">
+      <app-device-link
+        [deviceId]="alarmEvent.deviceId"
+        [deviceLink]="true"
+        [devicePath]="true"
+      ></app-device-link>
+    </nz-descriptions-item>
+
+    <nz-descriptions-item i18n-nzTitle nzTitle="Alarm type">
+      <app-alarm-type [type]="alarmEvent.alarmType" variant="full"></app-alarm-type>
+    </nz-descriptions-item>
+
+    @if (
+      alarmEvent.alarmType === AlarmTriggerType.FaultRecurrence &&
+        detailsForFaultRecurrence(alarmEvent);
+      as details
+    ) {
+      @for (detailsItem of details; track detailsItem.faultId) {
+        @if (details.length > 1) {
+          <nz-descriptions-item [nzTitle]="conditionRef1"></nz-descriptions-item>
+        }
+        <ng-template #conditionRef1>
+          <span class="condition-index-row">—</span>
+        </ng-template>
+
+        @if (faultById(detailsItem.faultId) | async; as fault) {
+          <nz-descriptions-item i18n-nzTitle nzTitle="Fault">
+            {{ fault.code }} {{ fault.name }}
+          </nz-descriptions-item>
+
+          <nz-descriptions-item [nzTitle]="faultOccurrencesTitle">
+            <ng-template #faultOccurrencesTitle>
+              <ng-container i18n>Fault occurrences</ng-container>
+              ({{ detailsItem.occurrences.length }})
+            </ng-template>
+            <nz-timeline>
+              @for (occurence of detailsItem.occurrences; track occurence.toISOString()) {
+                <nz-timeline-item nzColor="red">
+                  <small>
+                    {{ occurence | date: "hh:mm:ss | d MMMM y" }}
+                  </small>
+                </nz-timeline-item>
+              }
+            </nz-timeline>
+          </nz-descriptions-item>
+        } @else {
+          <ng-container i18n> Loading fault... </ng-container>
+        }
+      }
+    }
+
+    @if (
+      alarmEvent.alarmType === AlarmTriggerType.ParameterBoundaries &&
+        detailsForParameterBoundaries(alarmEvent);
+      as details
+    ) {
+      @for (detailsItem of details; track detailsItem.parameterId) {
+        @if (details.length > 1) {
+          <nz-descriptions-item [nzTitle]="conditionRef2"></nz-descriptions-item>
+        }
+        <ng-template #conditionRef2>
+          <span class="condition-index-row">—</span>
+        </ng-template>
+
+        <nz-descriptions-item i18n-nzTitle nzTitle="Parameter name">
+          {{ (parameterNameById(detailsItem.parameterId) | async)?.name }}
+        </nz-descriptions-item>
+
+        <nz-descriptions-item i18n-nzTitle nzTitle="Parameter value">
+          {{ detailsItem.value | number: "1.2-2"
+          }}<app-device-parameter-unit-display
+            [unit]="detailsItem.unit"
+          ></app-device-parameter-unit-display>
+        </nz-descriptions-item>
+
+        <nz-descriptions-item i18n-nzTitle nzTitle="Time of measurement">
+          {{ detailsItem.timestamp | date: "d MMMM y, HH:mm:ss" }}
+        </nz-descriptions-item>
+      }
+    }
+
+    @if (
+      alarmEvent.alarmType === AlarmTriggerType.DeviceStateChange &&
+        detailsForDeviceStateChange(alarmEvent);
+      as details
+    ) {
+      @for (detailsItem of details; track $index) {
+        @if (details.length > 1) {
+          <nz-descriptions-item [nzTitle]="conditionRef3"></nz-descriptions-item>
+        }
+        <ng-template #conditionRef3>
+          <span class="condition-index-row">—</span>
+        </ng-template>
+
+        <nz-descriptions-item i18n-nzTitle nzTitle="Device state">
+          <app-device-state
+            [state]="{ baseState: detailsItem.state }"
+            variant="full"
+          ></app-device-state>
+        </nz-descriptions-item>
+
+        <nz-descriptions-item i18n-nzTitle nzTitle="State changed at">
+          {{ detailsItem.timestamp | date: "d MMMM y, HH:mm:ss" }}
+        </nz-descriptions-item>
+
+        <nz-descriptions-item i18n-nzTitle nzTitle="Persistance">
+          {{
+            detailsItem.duration.seconds && detailsItem.duration.seconds > 0
+              ? (detailsItem.duration | duration)
+              : eventFiredImmediately
+          }}
+        </nz-descriptions-item>
+      }
+    }
+
+    <nz-descriptions-item i18n-nzTitle nzTitle="E-mail notification sent">
+      @if (alarmEvent.notifiedByEmail === null) {
+        &mdash;
+      }
+      @if (alarmEvent.notifiedByEmail === true) {
+        <ng-container i18n>Yes</ng-container>
+      }
+      @if (alarmEvent.notifiedByEmail === false) {
+        <ng-container i18n>No</ng-container>
+      }
+    </nz-descriptions-item>
+  </nz-descriptions>
+
+  @if (isCurrentUserAuthorizedToAccessAlarmTriggers()) {
+    <h3 i18n>Related trigger</h3>
+    @if (alarmEvent.triggerInfo === null) {
+      <nz-alert
+        nzType="error"
+        i18n-nzMessage
+        nzMessage="The trigger that initiated this event was deleted!"
+        nzShowIcon
+      ></nz-alert>
+    }
+
+    @if (alarmEvent.triggerInfo === undefined) {
+      <nz-alert
+        nzType="error"
+        i18n-nzMessage
+        nzMessage="Unfortunately this alarm event is not associated to any trigger."
+        nzShowIcon
+      ></nz-alert>
+    }
+
+    @if (alarmEvent.triggerInfo) {
+      <p>
+        @if (
+          isTriggerModifiedAfterEventWasFired(
+            alarmEvent.triggerInfo.lastModifiedTimestamp,
+            alarmEvent.timestamp
+          )
+        ) {
+          <nz-alert
+            class="irrelevant-trigger-warning"
+            nzType="warning"
+            i18n-nzMessage
+            nzMessage="The trigger that initiated this event has been modified after the event was fired."
+            nzShowIcon
+          ></nz-alert>
+        }
+
+        <app-alarm-trigger-link
+          [id]="alarmEvent.triggerInfo.triggerId"
+          [type]="alarmEvent.alarmType"
+          [deviceId]="alarmEvent.deviceId"
+        ></app-alarm-trigger-link>
+      </p>
+    }
+  }
+
+  <div class="acknowledge-action-block">
+    <h3 i18n>Acknowledge</h3>
+    @if (alarmEvent.acknowledged; as acknowledgedInfo) {
+      <p>
+        <ng-container i18n>This event was acknowledged by</ng-container><br />
+        <b>{{ acknowledgedInfo.user.displayName }}</b>
+        <br />
+        {{ acknowledgedInfo.timestamp | date: "d MMMM y, HH:mm:ss" }}
+      </p>
+    } @else {
+      @if ((akcnowledgeRequest$ | async)?.error; as error) {
+        <nz-alert
+          nzType="error"
+          i18n-nzMessage
+          nzMessage="Failed to execute request!"
+          nzDescription="{{ error.message }}"
+          nzShowIcon
+          nzCloseable="true"
+        ></nz-alert>
+      }
+
+      <nz-spin [nzSpinning]="(akcnowledgeRequest$ | async)?.isLoading">
+        <p i18n>This event is not acknowledget by anyone yet.</p>
+        <button
+          nz-button
+          nzType="primary"
+          (click)="onAcknowledge(alarmEvent.id, alarmEvent.alarmType)"
+          i18n
+        >
+          Acknowledge
+        </button>
+      </nz-spin>
+    }
+  </div>
+} @else {
+  @if ((alarmEventRequest$ | async)?.error; as error) {
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load alarm event!"
+      nzDescription="{{ error.message }}"
+      nzShowIcon
+      nzCloseable="true"
+    ></nz-alert>
+  } @else {
+    <nz-spin
+      [nzSpinning]="(alarmEventRequest$ | async)?.isLoading"
+      i18n-nzTip="@@loading"
+      nzTip="Loading..."
+    >
+    </nz-spin>
+  }
+}

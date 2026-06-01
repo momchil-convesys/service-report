@@ -1,0 +1,23 @@
+<nz-select
+  nzMode="tags"
+  i18n-nzPlaceHolder
+  nzPlaceHolder="Filter by state"
+  [ngModel]="listOfTagOptions"
+  (ngModelChange)="onFilterChange($event)"
+  nzAllowClear="true"
+  [nzOptionOverflowSize]="stateFilter.length"
+  closeOnSelect="true"
+  [(nzOpen)]="isOpenSelect"
+>
+  @for (option of stateFilter; track option.value) {
+    <nz-option [nzLabel]="option.label" [nzValue]="option.value" nzCustomContent>
+      <app-device-state
+        [state]="{ baseState: option.value }"
+        [fixedWidth]="true"
+        style="margin-top: 2px; vertical-align: top"
+      ></app-device-state>
+      &nbsp;
+      {{ option.label }}
+    </nz-option>
+  }
+</nz-select>

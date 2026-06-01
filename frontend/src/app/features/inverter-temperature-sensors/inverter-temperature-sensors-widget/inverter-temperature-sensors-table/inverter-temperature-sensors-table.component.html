@@ -1,0 +1,134 @@
+<nz-table
+  #basicTable
+  [nzData]="(tableData$ | async)?.dataPoints || []"
+  [nzLoading]="loading"
+  [nzSize]="'small'"
+  [nzBordered]="true"
+  [nzScroll]="{ x: '1400px', y: viewHeight - 220 + 'px' }"
+  nzTableLayout="fixed"
+  [nzFrontPagination]="false"
+  [nzShowPagination]="false"
+  [nzVirtualItemSize]="39"
+  [nzVirtualForTrackBy]="trackByFn"
+  [nzVirtualMinBufferPx]="300"
+  [nzVirtualMaxBufferPx]="viewHeight"
+>
+  <thead>
+    <!-- Primary header with sensor names and sorters -->
+    <tr>
+      <th
+        nzLeft
+        [nzWidth]="primaryColWidth"
+        [nzShowSort]="true || basicTable.data.length > 0"
+        [nzSortDirections]="['descend', null]"
+        [nzSortOrder]="sortedBy.timestamp ? sortedBy.order : null"
+        (nzSortOrderChange)="onSortByTimestamp($event)"
+        i18n
+      >
+        Timestamp
+      </th>
+      @for (sensorLabel of (tableData$ | async)?.sensorLabels; track sensorLabel; let i = $index) {
+        <th
+          [nzAlign]="'center'"
+          [nzWidth]="sensorColWidth"
+          [nzShowSort]="true || basicTable.data.length > 0"
+          [nzSortDirections]="['ascend', 'descend', null]"
+          [nzSortOrder]="sortedBy.columnIndex === i ? sortedBy.order : null"
+          (nzSortOrderChange)="onSortOrderChange($event, i)"
+        >
+          {{ sensorLabel }}
+        </th>
+      }
+    </tr>
+    <!-- Long-term extremes -->
+    @if ((tableData$ | async)?.extremePoints; as extremePoints) {
+      <tr>
+        <th nzLeft [nzWidth]="primaryColWidth" i18n>Uptime extremes</th>
+        @for (min of extremePoints.minPoints; track $index; let i = $index) {
+          <th [nzAlign]="'center'" [nzWidth]="sensorColWidth" class="longtime-min-max-cell">
+            <app-long-term-extremes-cell
+              [min]="min"
+              [max]="extremePoints.maxPoints[i]"
+              (goToExtreme)="onGoToRecord($event)"
+            ></app-long-term-extremes-cell>
+          </th>
+        }
+      </tr>
+    }
+    <!-- Current day MIN -->
+    <tr>
+      <th nzLeft [nzWidth]="primaryColWidth" i18n>MIN</th>
+      @for (minMax of (tableData$ | async)?.dataPointsMinMax; track $index; let i = $index) {
+        <th [nzAlign]="'center'" [nzWidth]="sensorColWidth" class="min-max-cell">
+          <button
+            nz-button
+            nzType="default"
+            [disabled]="minMax.min === null"
+            (click)="onScrollTo(minMax.min)"
+          >
+            <app-value-display
+              [value]="minMax.min?.value"
+              [unit]="celsiusDegreeSymbol"
+              [format]="'1.1-1'"
+            ></app-value-display>
+          </button>
+        </th>
+      }
+    </tr>
+    <!-- Current day MAX -->
+    <tr>
+      <th nzLeft [nzWidth]="primaryColWidth" i18n>MAX</th>
+      @for (minMax of (tableData$ | async)?.dataPointsMinMax; track $index; let i = $index) {
+        <th [nzAlign]="'center'" [nzWidth]="sensorColWidth" class="min-max-cell">
+          <button
+            nz-button
+            nzType="default"
+            [disabled]="minMax.max === null"
+            (click)="onScrollTo(minMax.max)"
+          >
+            <app-value-display
+              [value]="minMax.max?.value"
+              [unit]="celsiusDegreeSymbol"
+              [format]="'1.1-1'"
+            ></app-value-display>
+          </button>
+        </th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    <ng-template nz-virtual-scroll let-data let-index="index">
+      <tr [id]="data.timestamp.toISOString()">
+        <td nzLeft>
+          <span class="secondary-text-color">
+            {{ data.timestamp | relativeDate: "mediumDate" }}
+            &nbsp;|&nbsp;
+          </span>
+          <span> {{ data.timestamp | date: "HH:mm:ss" }} </span>
+        </td>
+        @for (value of data.values; track $index; let i = $index) {
+          <td [nzAlign]="'center'" [class.sorted]="sortedBy.columnIndex === i">
+            <app-value-display
+              [value]="value"
+              [unit]="celsiusDegreeSymbol"
+              [format]="'1.1-1'"
+            ></app-value-display>
+          </td>
+        }
+      </tr>
+    </ng-template>
+  </tbody>
+</nz-table>
+
+<div class="bottom-border-workaround"></div>
+
+<div class="actions">
+  <button nz-button nzType="link" (click)="onScrollToTop()">
+    <span nz-icon nzType="vertical-align-top" nzTheme="outline"></span>
+    <span i18n>Scroll to top</span>
+  </button>
+  <button nz-button nzType="link" (click)="onScrollToBottom()">
+    <span nz-icon nzType="vertical-align-bottom" nzTheme="outline"></span>
+    <span i18n>Scroll to bottom</span>
+  </button>
+</div>

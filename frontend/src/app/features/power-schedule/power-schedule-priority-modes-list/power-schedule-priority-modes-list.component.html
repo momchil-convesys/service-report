@@ -1,0 +1,51 @@
+<app-nav-up [label]="'All schedules'"></app-nav-up>
+<div class="priority-modes-list">
+  <h2 class="priority-modes-title" i18n>Priority Modes Documentation</h2>
+  <p class="priority-modes-intro" i18n>
+    Priority modes define the logic by which the system combines setpoints for the photovoltaic
+    plant (PV) and the battery energy storage system (BESS), in order to control the overall power
+    flow to or from the electrical grid.
+  </p>
+
+  <div class="conventions-section">
+    <ul>
+      <li><strong>PV power setpoint ≥ 0</strong> → PV export target</li>
+      <li><strong>BESS power setpoint &gt; 0</strong> → BESS is discharging</li>
+      <li><strong>BESS power setpoint &lt; 0</strong> → BESS is charging</li>
+    </ul>
+  </div>
+
+  <!-- Detailed Mode Descriptions -->
+  <div class="modes-details-section">
+    @for (mode of priorityModes; track mode.id) {
+      <div class="mode-card">
+        <div class="mode-header">
+          <h2 class="mode-title">
+            {{ mode.title }}
+          </h2>
+        </div>
+        <p class="mode-description">{{ mode.description }}</p>
+        @if (mode.appLogic.length > 0) {
+          <div class="mode-app-logic">
+            <h4 i18n>Application Logic</h4>
+            <ul>
+              @for (appLogic of mode.appLogic; track appLogic) {
+                <li>{{ appLogic }}</li>
+              }
+            </ul>
+          </div>
+        }
+        @if (mode.restrictions.length > 0) {
+          <div class="mode-restrictions">
+            <h4 i18n>Restrictions</h4>
+            <ul>
+              @for (restriction of mode.restrictions; track restriction) {
+                <li>{{ restriction }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

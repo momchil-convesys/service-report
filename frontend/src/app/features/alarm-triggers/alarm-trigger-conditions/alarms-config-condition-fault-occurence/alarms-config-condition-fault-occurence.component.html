@@ -1,0 +1,137 @@
+<div class="condition-form" [formGroup]="formGroup">
+  <nz-form-item>
+    <nz-form-label nzRequired="true">
+      <ng-container i18n>Faults</ng-container>
+      <ng-container [ngPlural]="formGroup.controls.faultIds.value.length">
+        ({{ formGroup.controls.faultIds.value.length }}
+        <ng-template ngPluralCase="=1" i18n="@@one-selected-fault">selected</ng-template>
+        <ng-template ngPluralCase="other" i18n="@@many-selected-faults">selected</ng-template>)
+      </ng-container>
+    </nz-form-label>
+    <nz-form-control
+      nzValidateStatus="{{
+        formGroup.controls.faultIds.invalid && formGroup.controls.faultIds.dirty
+          ? 'error'
+          : undefined
+      }}"
+      i18n-nzErrorTip
+      nzErrorTip="This field is required!"
+      class="faults-select-container"
+    >
+      <button nz-button type="button" (click)="openDrawer()" [nzType]="'default'">
+        @if ((formGroup.controls.faultIds.value.length || 0) === 0) {
+          <span i18n> Select faults </span>
+        }
+        @if ((formGroup.controls.faultIds.value.length || 0) > 0) {
+          <span i18n> Refine selection </span>
+        }
+        <i nz-icon nzType="right"></i>
+      </button>
+
+      @if (formGroup.controls.faultIds.value.length > 0) {
+        <div class="selected-fault-tags">
+          @for (faultId of formGroup.controls.faultIds.value; track faultId; let i = $index) {
+            <div class="tag-wrapper">
+              <nz-tag nzMode="closeable" (nzOnClose)="onRemoveSelectedFault(faultId)">
+                {{ (faultsById$ | async)?.[faultId]?.code }}
+                {{ (faultsById$ | async)?.[faultId]?.name }}
+              </nz-tag>
+            </div>
+          }
+        </div>
+      }
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label i18n nzRequired="true">Time span</nz-form-label>
+    <nz-form-control
+      nzValidateStatus="{{
+        formGroup.controls.duration.invalid && formGroup.controls.duration.dirty
+          ? 'error'
+          : undefined
+      }}"
+      i18n-nzErrorTip
+      nzErrorTip="This field is required!"
+      class="duration-fc"
+      [formGroup]="formGroup.controls.duration"
+    >
+      <nz-input-number formControlName="value" [nzMin]="1" [nzStep]="1">
+        <nz-select formControlName="unit" nzInputAddonAfter>
+          @for (unit of durationUnits; track unit) {
+            <nz-option [nzValue]="unit" [nzLabel]="durationUnitLabels[unit]"></nz-option>
+          }
+        </nz-select>
+      </nz-input-number>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label i18n nzRequired="true">Count limit</nz-form-label>
+    <nz-form-control
+      nzValidateStatus="{{
+        formGroup.controls.count.invalid && formGroup.controls.count.dirty ? 'error' : undefined
+      }}"
+      i18n-nzErrorTip
+      nzErrorTip="This field is required!"
+    >
+      <nz-input-number formControlName="count" [nzMin]="1" [nzStep]="1"></nz-input-number>
+    </nz-form-control>
+  </nz-form-item>
+</div>
+
+<p class="human-readable-description">
+  <small>
+    <ng-container i18n>
+      Condition will be satisfied when any of the selected faults occurs more than
+    </ng-container>
+    <b [ngPlural]="formGroup.controls.count.value">
+      <ng-template ngPluralCase="=1" i18n="@@one-time">once</ng-template>
+      <ng-template ngPluralCase="other">
+        {{ formGroup.controls.count.value }}
+        <ng-container i18n="@@many-times">times</ng-container>
+      </ng-template> </b
+    >&nbsp;<ng-container i18n>in a span of</ng-container>
+    <b [ngPlural]="formGroup.controls.duration.controls.value.value">
+      {{ formGroup.controls.duration.controls.value.value }}
+      <ng-template ngPluralCase="=1">{{
+        durationUnitLabels_NumericalForm_Single[formGroup.controls.duration.controls.unit.value]
+      }}</ng-template>
+      <ng-template ngPluralCase="other">{{
+        durationUnitLabels_NumericalForm_Plural[formGroup.controls.duration.controls.unit.value]
+      }}</ng-template> </b
+    >.
+  </small>
+</p>
+
+<nz-drawer
+  [nzVisible]="drawerVisible"
+  nzPlacement="right"
+  nzWidth="100%"
+  nzClosable="false"
+  [nzMaskClosable]="false"
+  [nzTitle]="headerTpl"
+  nzWrapClassName="faults-select-drawer"
+>
+  <ng-template #headerTpl>
+    <div style="display: flex; align-items: center">
+      <div i18n>Select faults</div>
+      <div style="margin-left: auto">
+        <button nz-button style="margin-right: 8px" (click)="closeDrawer(false)" i18n="@@cancel">
+          Cancel
+        </button>
+        <button nz-button nzType="primary" (click)="closeDrawer(true)" i18n="@@done">Done</button>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-container *nzDrawerContent>
+    @if (drawerVisible) {
+      <app-faults-select
+        #faultsSelect
+        [initiallySelectedFaultIds]="formGroup.controls.faultIds.value"
+        [faultsTemplate]="(faultsTemplate$ | async) || undefined"
+      ></app-faults-select>
+    }
+  </ng-container>
+</nz-drawer>

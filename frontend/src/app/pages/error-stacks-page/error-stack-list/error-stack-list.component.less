@@ -1,0 +1,87 @@
+@import "theme";
+
+app-error-stack-list {
+  display: flex;
+  background: white;
+  height: 100%;
+
+  app-faults-page-nav-switch,
+  .list-block > header > .back-button {
+    display: block;
+    width: 100%;
+    margin-bottom: @margin-sm;
+  }
+
+  .list-block {
+    padding-bottom: @padding-md;
+
+    border-right: 1px solid @border-color-split;
+
+    // position: sticky;
+    // top: 0;
+    // align-self: flex-start;
+
+    nz-spin {
+      min-height: 100px;
+    }
+
+    flex: 1 0 250px;
+    max-width: 300px;
+
+    & > header {
+      padding: @padding-md @padding-lg 0 @padding-lg;
+    }
+  }
+
+  .details-block {
+    flex: 3 3 300px;
+
+    min-width: 300px;
+    max-width: 1200px;
+  }
+
+  .pagination-block {
+    padding: 0 @padding-md;
+  }
+
+  .custom-list {
+    margin: @margin-sm;
+    text-align: left; // because nz-spin is centering the text
+
+    .list-item.current app-device-link {
+      font-weight: bold;
+    }
+  }
+
+  .filters {
+    padding: 0 @padding-lg;
+
+    nz-radio-group {
+      display: flex;
+
+      label {
+        flex: 1;
+        text-align: center;
+      }
+    }
+  }
+
+  .title {
+    flex: 1;
+    line-height: 1.2;
+  }
+
+  .timestamp {
+    margin-left: auto;
+    text-align: right;
+    line-height: 1.2;
+  }
+
+  .empty {
+    text-align: center;
+    padding: @padding-md;
+
+    font-size: 150%;
+    color: @text-color-secondary;
+  }
+}

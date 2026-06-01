@@ -1,0 +1,14 @@
+<div class="entries-container">
+  <h3>{{ listTitle }}</h3>
+  @if (emptyList) {
+    <div class="empty-list">
+      {{ emptyList }}
+    </div>
+  }
+  <ul class="list-group">
+    <ng-content select="[listItems]"></ng-content>
+  </ul>
+</div>
+<div class="new-entry-container">
+  <ng-content select="[entryForm]"></ng-content>
+</div>

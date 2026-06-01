@@ -1,0 +1,169 @@
+@import "theme";
+
+app-plant {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  & > .content {
+    flex: 1;
+
+    @media (min-width: @breakpoint-md) {
+      &:has(app-ts-metrics-page),
+      &:has(app-drilldown-page),
+      &:has(app-power-schedule-page) {
+        overflow: auto;
+      }
+    }
+  }
+
+  & > header {
+    flex: 0 0 auto;
+
+    padding: @padding-md @padding-lg;
+    padding-bottom: 0px;
+    background: white;
+
+    position: relative;
+
+    &::before {
+      display: block;
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-bottom: 1px solid @border-color-split;
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+
+    h1 {
+      margin: 0;
+      flex: 0 0 auto;
+      line-height: 1.2;
+    }
+
+    .spacer {
+      flex: 1 1 auto;
+    }
+
+    .flex-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      column-gap: @padding-sm;
+      row-gap: @margin-xss;
+      min-height: 38px; // the height of power limit marker if present
+    }
+
+    .page-title:last-child {
+      padding-bottom: @padding-md;
+    }
+
+    app-power-limit-schedule-indicator {
+      margin-left: auto;
+    }
+  }
+
+  .primary-tabset.ant-tabs > .ant-tabs-nav {
+    background: white;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ant-tabs-top > .ant-tabs-nav::before {
+    border-bottom: 1px solid @border-color-split;
+  }
+
+  // TODO: is this class used anywhere?
+  .tab-content {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .devices-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -5px;
+
+    nz-card {
+      margin: 5px;
+      width: 300px;
+    }
+  }
+
+  .title-container {
+    display: flex;
+    gap: @margin-xs;
+    align-items: baseline;
+  }
+
+  .devices-count-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: @padding-xs;
+
+    .devices-label {
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: @text-color-secondary;
+    }
+
+    .device-count-state {
+      display: flex;
+      align-items: center;
+      gap: @padding-xss;
+    }
+  }
+
+  .power-limit-tag {
+    color: white;
+    font-size: 10px;
+    background-color: @red-6;
+    line-height: 20px;
+    border-radius: 2px;
+    padding: 0 @padding-xs;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .ant-divider-vertical {
+    border-color: @border-color-base;
+  }
+
+  .nav-up {
+    display: none;
+    flex: 0 0 auto;
+  }
+
+  .nav-up {
+    display: block;
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    & > header {
+      padding: @padding-xs @padding-sm;
+      padding-bottom: 0px;
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+  }
+
+  .active-schedule-container {
+    display: flex;
+    column-gap: @margin-xss;
+    row-gap: @margin-xss;
+    flex-wrap: wrap;
+  }
+
+  .time-container {
+    margin-left: auto;
+  }
+}

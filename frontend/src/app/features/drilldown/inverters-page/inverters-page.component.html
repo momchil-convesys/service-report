@@ -1,0 +1,65 @@
+<div class="main-page" [class.conditionally-collapsed]="outlet.isActivated">
+  <div class="header">
+    <h2>
+      <ng-container i18n>Transformer station inverters</ng-container>&nbsp;
+      <!--  -->
+      @if (!(error$ | async) && !(loading$ | async)) {
+        <app-live-data-indicator
+          i18n-title
+          title="Data is updated live. No need to refresh the page."
+        ></app-live-data-indicator>
+      }
+    </h2>
+
+    <div class="right-align">
+      <ng-container i18n>View as&nbsp;</ng-container>
+      <nz-radio-group [(ngModel)]="selectedView" nzButtonStyle="solid">
+        <label nz-radio-button nzValue="table" i18n>Table</label>
+        <label nz-radio-button nzValue="grid" i18n>Grid</label>
+      </nz-radio-group>
+    </div>
+  </div>
+
+  @if (error$ | async; as error) {
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load data"
+      [nzDescription]="error.message"
+      nzShowIcon
+    ></nz-alert>
+  }
+
+  <!--  -->
+  <!-- @if (outlet.isActivated) {
+  <app-inverters-nav-list [metadata]="(metadata$ | async) || []"></app-inverters-nav-list>
+  } -->
+
+  <!--  -->
+
+  <!-- Main view / Table -->
+  @if (selectedView === "table") {
+    <div class="content">
+      <app-inverter-metrics-table
+        [metadata]="(metadata$ | async) || []"
+        [data]="(data$ | async) || []"
+        [loading]="!!(loading$ | async)"
+      ></app-inverter-metrics-table>
+    </div>
+  }
+
+  <!-- Main view / Grid -->
+  @else if (selectedView === "grid") {
+    <div class="content grid-view">
+      <app-inverters-grid-view
+        [metadata]="(metadata$ | async) || []"
+        [data]="(data$ | async) || []"
+        [loading]="!!(loading$ | async)"
+      ></app-inverters-grid-view>
+    </div>
+  }
+</div>
+
+<div class="detail-page" [class.conditionally-full-width]="outlet.isActivated">
+  <router-outlet #outlet="outlet"></router-outlet>
+</div>

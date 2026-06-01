@@ -1,0 +1,176 @@
+@import "theme";
+
+app-alarm-event-list-page {
+  display: block;
+  height: 100%;
+
+  display: flex;
+
+  .ant-divider {
+    border-color: @border-color-base;
+  }
+
+  .filters-block {
+    flex: 1 1 400px;
+    max-width: 400px;
+    border-right: 1px solid @border-color-base;
+
+    .filter-by-trigger {
+      // margin-left: -15px; // compensate for alert padding to align text
+      // margin-right: -15px;
+
+      margin-top: -@padding-sm;
+      margin-bottom: -@padding-sm;
+
+      .ant-alert-close-icon {
+        font-size: 20px;
+        line-height: 25px; // align with title
+      }
+    }
+  }
+
+  .list-block {
+    flex: 2 2 800px;
+    max-width: 800px;
+
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .header {
+      padding: @padding-md @padding-lg;
+
+      flex: 0 0 auto;
+      padding-bottom: @padding-md;
+      border-bottom: 1px solid @border-color-base;
+
+      &.unseen-events {
+        background: @gold-1;
+      }
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+
+      app-alarm-event-list {
+        padding: @padding-md @padding-lg;
+      }
+    }
+  }
+
+  .details-block {
+    flex: 1 1 700px;
+
+    overflow-y: auto;
+
+    border-left: 1px solid @border-color-base;
+  }
+
+  .ant-timeline-item-last > .ant-timeline-item-content {
+    min-height: 0;
+  }
+
+  .ant-collapse-content > .ant-collapse-content-box {
+    padding: 0;
+  }
+
+  .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    padding-left: 0;
+    padding-right: 0;
+    padding: 0;
+  }
+
+  .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box {
+    padding-top: 0;
+  }
+
+  .ant-checkbox-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .collapsed {
+    display: none;
+  }
+
+  .flex-row {
+    display: flex;
+    gap: @margin-xs;
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    margin-bottom: @margin-xs;
+
+    h1 {
+      margin-bottom: 0;
+    }
+  }
+
+  .unseen-events-action {
+    margin-left: auto;
+  }
+
+  .filters-button {
+    margin-bottom: @margin-sm;
+  }
+
+  .filters-button,
+  .filters-button.conditionally-visible {
+    display: none;
+  }
+
+  @media (max-width: @breakpoint-sm) {
+    .list-block {
+      .header {
+        padding: @padding-sm;
+      }
+
+      .content app-alarm-event-list {
+        padding: 0;
+      }
+
+      .ant-pagination-total-text {
+        display: block;
+        margin-bottom: @margin-xss;
+      }
+    }
+  }
+
+  @media (max-width: @breakpoint-md) {
+    .filters-block {
+      display: none;
+    }
+
+    .filters-button {
+      display: block;
+    }
+  }
+
+  @media (max-width: @breakpoint-lg) {
+    .conditionally-collapsed {
+      display: none;
+    }
+
+    .filters-button.conditionally-visible {
+      display: block;
+    }
+  }
+
+  @media (max-width: 1300px) {
+    .filters-block.conditionally-collapsed {
+      display: none;
+    }
+
+    .filters-button.conditionally-visible {
+      display: block;
+    }
+  }
+
+  // @media (min-width: 1301px) {
+  //   .filters-button.conditionally-visible {
+  //     display: none;
+  //   }
+  // }
+}

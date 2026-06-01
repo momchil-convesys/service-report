@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.angular/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local backups and generated diagnostics
+*_backup_*/
+tsc-trace.txt
+
+# Large vendor/device packages kept outside source control
+*.rar
+*.zip
+backend/cms-api-win-x64-*/
+backend/device-server-api-win-x64-*/

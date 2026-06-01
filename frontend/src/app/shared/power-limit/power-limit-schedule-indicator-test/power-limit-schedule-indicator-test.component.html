@@ -1,0 +1,84 @@
+<nz-card i18n-nzTitle nzTitle="Power limit icons">
+  <app-power-limit-icon [scheduledLimit]="false"></app-power-limit-icon>
+  <app-power-limit-icon [scheduledLimit]="true"></app-power-limit-icon>
+</nz-card>
+
+<br />
+
+<div class="flex-row">
+  <!-- 
+  ==============================================================================
+  Compliant
+ -->
+  <nz-card i18n-nzTitle nzTitle="Compliant active schedule">
+    <app-power-limit-schedule-indicator
+      [currentSchedule]="pwSchedule1"
+      [mode]="'icon-only'"
+    ></app-power-limit-schedule-indicator>
+
+    <br /><br />
+
+    <app-power-limit-schedule-indicator
+      [currentSchedule]="pwSchedule1"
+    ></app-power-limit-schedule-indicator>
+
+    <br /><br />
+
+    <app-power-limit-schedule-indicator
+      [currentSchedule]="pwSchedule1"
+      [mode]="'block'"
+    ></app-power-limit-schedule-indicator>
+  </nz-card>
+
+  <br />
+
+  <!-- 
+  ==============================================================================
+  Non-compliant
+ -->
+  <nz-card i18n-nzTitle nzTitle="Non-compliant active schedule">
+    <app-power-limit-schedule-indicator
+      [currentSchedule]="pwSchedule2"
+      [mode]="'icon-only'"
+    ></app-power-limit-schedule-indicator>
+
+    <br /><br />
+
+    <app-power-limit-schedule-indicator
+      [currentSchedule]="pwSchedule2"
+    ></app-power-limit-schedule-indicator>
+
+    <br /><br />
+
+    <app-power-limit-schedule-indicator
+      [currentSchedule]="pwSchedule2"
+      [mode]="'block'"
+    ></app-power-limit-schedule-indicator>
+  </nz-card>
+
+  <br />
+
+  <!--
+  ============================================================================== 
+  Upcoming
+ -->
+  <nz-card i18n-nzTitle nzTitle="Upcoming schedule">
+    <app-power-limit-schedule-indicator
+      [currentSchedule]="pwSchedule3"
+      [mode]="'icon-only'"
+    ></app-power-limit-schedule-indicator>
+
+    <br /><br />
+
+    <app-power-limit-schedule-indicator
+      [currentSchedule]="pwSchedule3"
+    ></app-power-limit-schedule-indicator>
+
+    <br /><br />
+
+    <app-power-limit-schedule-indicator
+      [currentSchedule]="pwSchedule3"
+      [mode]="'block'"
+    ></app-power-limit-schedule-indicator>
+  </nz-card>
+</div>

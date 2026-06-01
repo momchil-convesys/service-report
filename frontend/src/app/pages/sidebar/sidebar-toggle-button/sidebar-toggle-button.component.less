@@ -1,0 +1,17 @@
+@import "theme";
+
+app-sidebar-toggle-button {
+  .ant-btn {
+    padding: 4px 8px;
+  }
+
+  .nav-up-text {
+    display: none;
+  }
+
+  @media (max-width: @breakpoint-app-sidebar) {
+    .nav-up-text {
+      display: inline;
+    }
+  }
+}

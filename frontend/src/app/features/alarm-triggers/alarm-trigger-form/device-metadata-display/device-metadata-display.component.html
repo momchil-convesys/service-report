@@ -1,0 +1,9 @@
+@if ((request$ | async)?.isLoading) {
+  <span> Loading... </span>
+}
+
+@if ((request$ | async)?.data; as deviceMetadata) {
+  <span>
+    {{ deviceMetadata.displayString }}
+  </span>
+}

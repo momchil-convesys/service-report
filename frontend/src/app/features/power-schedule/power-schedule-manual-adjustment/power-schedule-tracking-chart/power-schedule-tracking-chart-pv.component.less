@@ -1,0 +1,13 @@
+@import "theme";
+
+app-power-schedule-tracking-chart-pv {
+  display: block;
+
+  & > div {
+    height: 140px;
+
+    @media (max-width: @breakpoint-sm) {
+      height: 200px;
+    }
+  }
+}

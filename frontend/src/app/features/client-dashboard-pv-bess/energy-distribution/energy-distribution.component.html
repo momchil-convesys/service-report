@@ -1,0 +1,113 @@
+@let energyDistributionData = energyDistributionData$ | async;
+@let energySummaryBoxData = convertToEnergySummaryBoxData(energyDistributionData);
+<nz-spin [nzSpinning]="loading$ | async">
+  @if (viewMode === "default") {
+    <div class="flex-row">
+      <app-energy-summary-box
+        [data]="energySummaryBoxData?.exportedMV"
+        [baseUnit]="'Wh'"
+        [title]="getTitle('export', 'MV')"
+        [icon]="'grid-icon'"
+        [arrowIcon]="'arrow-left'"
+      ></app-energy-summary-box>
+      <app-energy-summary-box
+        [data]="energySummaryBoxData?.pvProduction"
+        [baseUnit]="'Wh'"
+        [title]="'PV Production'"
+        [icon]="'pv-output'"
+        [arrowIcon]="undefined"
+      ></app-energy-summary-box>
+      <app-energy-summary-box
+        [data]="energySummaryBoxData?.discharged"
+        [baseUnit]="'Wh'"
+        [title]="'Discharged'"
+        [icon]="'batt-icon-default'"
+        [arrowIcon]="'arrow-right'"
+      ></app-energy-summary-box>
+      <div class="fake-row"></div>
+      <app-energy-summary-box
+        [data]="energySummaryBoxData?.importedMV"
+        [baseUnit]="'Wh'"
+        [title]="getTitle('import', 'MV')"
+        [icon]="'grid-icon'"
+        [arrowIcon]="'arrow-right'"
+      ></app-energy-summary-box>
+      <div class="description-section">
+        <div>Energy summary<br />for selected time range</div>
+        @if (energyDistributionData?.zonedUpdatedAt) {
+          <div class="separator"></div>
+          <div>
+            <div class="secondary-text">Updated</div>
+            <div>
+              {{ energyDistributionData?.zonedUpdatedAt | date: "HH:mm:ss" }}
+            </div>
+          </div>
+        }
+      </div>
+      <app-energy-summary-box
+        [data]="energySummaryBoxData?.charged"
+        [baseUnit]="'Wh'"
+        [title]="'Charged'"
+        [icon]="'batt-icon-charge'"
+        [arrowIcon]="'arrow-left'"
+      ></app-energy-summary-box>
+    </div>
+  } @else if (viewMode === "high-voltage") {
+    <div class="flex-row hv-header">
+      <div>Energy summary for selected time range</div>
+      @if (energyDistributionData?.zonedUpdatedAt) {
+        <div class="secondary-text">
+          Updated {{ energyDistributionData?.zonedUpdatedAt | date: "HH:mm:ss" }}
+        </div>
+      }
+    </div>
+    <div class="flex-row">
+      <app-energy-summary-box
+        [data]="energySummaryBoxData?.exportedMV"
+        [baseUnit]="'Wh'"
+        [title]="getTitle('export', 'MV')"
+        [icon]="'grid-icon'"
+        [arrowIcon]="'arrow-left'"
+      ></app-energy-summary-box>
+      <app-energy-summary-box
+        [data]="energySummaryBoxData?.exportedHV"
+        [baseUnit]="'Wh'"
+        [title]="getTitle('export', 'HV')"
+        [icon]="'grid-icon'"
+        [arrowIcon]="'arrow-left'"
+      ></app-energy-summary-box>
+      <app-energy-summary-box
+        [data]="energySummaryBoxData?.exportedEnergyLoss"
+        [baseUnit]="'Wh'"
+        [title]="'Exported Energy Loss'"
+        [icon]="undefined"
+        [arrowIcon]="undefined"
+        class="loss-box"
+      ></app-energy-summary-box>
+    </div>
+    <div class="flex-row">
+      <app-energy-summary-box
+        [data]="energySummaryBoxData?.importedMV"
+        [baseUnit]="'Wh'"
+        [title]="getTitle('import', 'MV')"
+        [icon]="'grid-icon'"
+        [arrowIcon]="'arrow-right'"
+      ></app-energy-summary-box>
+      <app-energy-summary-box
+        [data]="energySummaryBoxData?.importedHV"
+        [baseUnit]="'Wh'"
+        [title]="getTitle('import', 'HV')"
+        [icon]="'grid-icon'"
+        [arrowIcon]="'arrow-right'"
+      ></app-energy-summary-box>
+      <app-energy-summary-box
+        [data]="energySummaryBoxData?.importedEnergyLoss"
+        [baseUnit]="'Wh'"
+        [title]="'Imported Energy Loss'"
+        [icon]="undefined"
+        [arrowIcon]="undefined"
+        class="loss-box"
+      ></app-energy-summary-box>
+    </div>
+  }
+</nz-spin>

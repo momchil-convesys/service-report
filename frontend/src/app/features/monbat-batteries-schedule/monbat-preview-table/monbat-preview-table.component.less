@@ -1,0 +1,30 @@
+@import "theme";
+
+app-monbat-preview-table {
+  display: block;
+
+  .ant-table.ant-table-small .ant-table-tbody > tr > td,
+  .ant-table.ant-table-small .ant-table-thead > tr > th {
+    padding: 2px 8px;
+  }
+
+  .ant-table-tbody > tr.ant-table-row:hover > td {
+    background-color: @gray-4 !important;
+  }
+
+  @monbat-table-border-color: @gray-8;
+
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td {
+    border-right: 1px solid @monbat-table-border-color !important;
+    border-bottom: 1px solid @monbat-table-border-color !important;
+  }
+
+  .ant-table.ant-table-bordered > .ant-table-container {
+    border-left: 1px solid @monbat-table-border-color !important;
+  }
+
+  .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table {
+    border-top: 1px solid @monbat-table-border-color !important;
+  }
+}

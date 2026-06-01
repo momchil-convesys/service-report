@@ -1,0 +1,151 @@
+<h1>{{ axis?.options?.id || "No ID" }}</h1>
+
+@if (axis) {
+  <section>
+    <h2>Title</h2>
+    <div class="section-subtitle"></div>
+    <div class="block">
+      <p>
+        Text: <b>{{ axis.options.title?.text }}</b>
+        <br />
+        <input
+          nz-input
+          [ngModel]="axis.options.title?.text"
+          (ngModelChange)="onInputChange($event, 'title.text')"
+          type="text"
+        />
+        <button nz-button (click)="onInputChange(undefined, 'title.text')">Reset</button>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Min / Max</h2>
+    <div class="section-subtitle">
+      The minimum value of the axis. If undefined, the min value is automatically calculated.
+    </div>
+    <div class="block">
+      <p>
+        Axis MIN: <b>{{ axis.min }}</b>
+        <br />
+        Options MIN: <b>{{ axis.options.min }}</b>
+        <br />
+        <nz-input-number
+          [ngModel]="axis.options.min"
+          (ngModelChange)="onInputChange($event, 'min')"
+          nzPlaceHolder="Auto"
+        />
+        <button nz-button (click)="onInputChange(undefined, 'min')">Reset</button>
+      </p>
+
+      <p>
+        Axis MAX: <b>{{ axis.max }}</b>
+        <br />
+        Options MAX: <b>{{ axis.options.max }}</b>
+        <br />
+        <nz-input-number
+          [ngModel]="axis.options.max"
+          (ngModelChange)="onInputChange($event, 'max')"
+          nzPlaceHolder="Auto"
+        />
+        <button nz-button (click)="onInputChange(undefined, 'max')">Reset</button>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Soft Min / Soft Max</h2>
+    <div class="section-subtitle">
+      A soft minimum for the axis. If the series data minimum is greater than this, the axis will
+      stay at this minimum, but if the series data minimum is lower, the axis will flex to show all
+      data.
+    </div>
+    <div class="block">
+      <p>
+        Options Soft MIN: <b>{{ axis.options.softMin }}</b>
+        <br />
+        <nz-input-number
+          [ngModel]="axis.options.softMin"
+          (ngModelChange)="onInputChange($event, 'softMin')"
+          nzPlaceHolder="Auto"
+        />
+        <button nz-button (click)="onInputChange(undefined, 'softMin')">Reset</button>
+      </p>
+
+      <p>
+        Options Soft MAX: <b>{{ axis.options.softMax }}</b>
+        <br />
+        <nz-input-number
+          [ngModel]="axis.options.softMax"
+          (ngModelChange)="onInputChange($event, 'softMax')"
+          nzPlaceHolder="Auto"
+        />
+        <button nz-button (click)="onInputChange(undefined, 'softMax')">Reset</button>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tick amount</h2>
+    <div class="section-subtitle">
+      The amount of ticks to draw on the axis. This opens up for aligning the ticks of multiple
+      charts or panes within a chart.
+    </div>
+    <div class="block">
+      <p>
+        Tick amount: <b>{{ axis.options.tickAmount }}</b>
+        <br />
+        <nz-input-number
+          [ngModel]="axis.options.tickAmount"
+          (ngModelChange)="onInputChange($event, 'tickAmount')"
+          nzPlaceHolder="Auto"
+        />
+        <button nz-button (click)="onInputChange(undefined, 'tickAmount')">Reset</button>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Other options</h2>
+
+    <p>
+      Align ticks: {{ axis.options.alignTicks }}
+      <br />
+      <nz-switch
+        [ngModel]="axis.options.alignTicks"
+        (ngModelChange)="onInputChange($event, 'alignTicks')"
+      ></nz-switch>
+    </p>
+
+    <p>
+      Opposite: {{ axis.options.opposite }}
+      <br />
+      <nz-switch
+        [ngModel]="axis.options.opposite"
+        (ngModelChange)="onInputChange($event, 'opposite')"
+      ></nz-switch>
+    </p>
+
+    <p>
+      Reversed: {{ axis.options.reversed }}
+      <br />
+      <nz-switch
+        [ngModel]="axis.options.reversed"
+        (ngModelChange)="onInputChange($event, 'reversed')"
+      ></nz-switch>
+    </p>
+
+    <p>
+      Visible: {{ axis.options.visible }}
+      <br />
+      <nz-switch
+        [ngModel]="axis.options.visible"
+        (ngModelChange)="onInputChange($event, 'visible')"
+      ></nz-switch>
+    </p>
+  </section>
+
+  <section>
+    <p class="secondary-text">User options: {{ axis.userOptions | json }}</p>
+  </section>
+}

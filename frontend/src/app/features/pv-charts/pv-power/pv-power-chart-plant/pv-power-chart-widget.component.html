@@ -1,0 +1,41 @@
+<nz-card class="custom-card" nzBordered="true" nzSize="small">
+  <div class="card-header">
+    <div class="card-title">
+      <ng-container i18n>Active power history (1 min average)</ng-container>&nbsp;
+      <app-live-data-indicator></app-live-data-indicator>
+    </div>
+    <div class="card-extra">
+      <app-datetime-range-select
+        (modelChange)="onDatetimeRangeChange($event)"
+        [defaultOption]="'day'"
+        [showPredefinedOptions]="false"
+        [timeZone]="(timeZone$ | async) || undefined"
+      >
+      </app-datetime-range-select>
+      <app-highcharts-export-option
+        [chartComponent]="chartComponent"
+        [disabled]="(dataRequest$ | async)?.isLoading || !!(dataRequest$ | async)?.error || false"
+        [filename]="(dataRequest$ | async)?.data?.exportFileName"
+      ></app-highcharts-export-option>
+    </div>
+  </div>
+
+  @if ((dataRequest$ | async)?.error; as error) {
+    <div class="error-block">
+      <nz-alert
+        nzType="error"
+        i18n-nzMessage
+        nzMessage="Failed to load data"
+        [nzDescription]="error.message"
+        nzShowIcon
+      ></nz-alert>
+    </div>
+  }
+
+  <app-pv-power-chart
+    [data]="(dataRequest$ | async)?.data"
+    [loading]="(dataRequest$ | async)?.isLoading || false"
+    [context]="chartContext$ | async"
+    #chartComponent
+  ></app-pv-power-chart>
+</nz-card>

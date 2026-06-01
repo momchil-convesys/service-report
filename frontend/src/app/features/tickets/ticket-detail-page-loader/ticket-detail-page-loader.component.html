@@ -1,0 +1,13 @@
+@if (ticketRequest$ | async; as ticketRequest) {
+  @if (ticketRequest.isLoading) {
+    LOADING
+  }
+
+  @if (ticketRequest.error) {
+    ERROR: {{ ticketRequest.error }}
+  }
+
+  @if (ticketRequest.data !== undefined) {
+    <app-ticket-detail-page [ticket]="ticketRequest.data"></app-ticket-detail-page>
+  }
+}

@@ -1,0 +1,16 @@
+<ul nz-menu nzMode="inline" nzTheme="light" [nzInlineIndent]="28">
+  <li nz-menu-group nzTitle="Custom data views"></li>
+
+  @for (customDataView of customDataViews$ | async; track customDataView.id) {
+    <li nz-menu-item [routerLink]="customDataView.id" nzMatchRouter>
+      <span nz-icon nzType="appstore" nzTheme="outline"></span>
+      <span>{{ customDataView.name }}</span>
+    </li>
+  }
+</ul>
+
+<div class="actions-container">
+  <button nz-button nzBlock="true" (click)="onCreateNewDataView()" class="btn-create-new" i18n>
+    Create new data view
+  </button>
+</div>

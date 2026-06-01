@@ -1,0 +1,73 @@
+@import "theme";
+
+app-fault-counters {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  background-color: white;
+
+  .header {
+    flex: 0 0 auto;
+    padding: @padding-md @padding-lg @padding-sm @padding-lg;
+    border-bottom: 1px solid @border-color-base;
+  }
+
+  .content {
+    flex: 1 1 auto;
+
+    display: flex;
+    align-items: stretch;
+
+    overflow-y: auto;
+
+    .table {
+      flex: 1 1 600px;
+
+      padding: @padding-sm @padding-lg;
+      overflow-y: auto;
+
+      border-right: 1px solid @border-color-base;
+    }
+
+    .charts {
+      flex: 1 1 400px;
+
+      overflow-y: auto;
+
+      background-color: white;
+
+      & > * + * {
+        border-top: 1px solid @border-color-base;
+      }
+    }
+  }
+
+  .chart-options {
+    border-left: 1px solid @border-color-base;
+    padding: @padding-lg;
+    flex: 0 0 550px;
+
+    // width: 600px;
+    overflow-y: auto;
+
+    section {
+      margin: @margin-lg 0;
+    }
+
+    nz-select {
+      width: 100%;
+    }
+  }
+
+  .chart-container {
+    padding: @padding-md;
+    // margin: 1px;
+    background: white;
+  }
+
+  .empty-chart {
+    text-align: center;
+    padding-top: @padding-lg;
+  }
+}

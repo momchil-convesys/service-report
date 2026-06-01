@@ -1,0 +1,34 @@
+@import "theme";
+
+app-monbat-schedule-indicator {
+  display: block;
+
+  .schedule-icon {
+    font-size: 18px;
+    color: @green-7;
+  }
+
+  .mode-tag {
+    display: block;
+    font-size: 14px;
+
+    padding: @padding-xss @padding-md;
+
+    border: 1px solid @green-7;
+    border-radius: 16px;
+
+    .schedule-icon {
+      margin-right: @margin-xs;
+      font-size: 24px;
+    }
+
+    & > span {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .mode-icon {
+    text-align: center;
+  }
+}

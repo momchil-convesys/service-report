@@ -1,0 +1,68 @@
+<div class="filters-container">
+  <div class="filter-actions">
+    <h3 i18n>Visible charts</h3>
+
+    <!-- <button nz-button nzType="link" (click)="onSelectAll()">Select all</button> -->
+    <button i18n nz-button nzType="link" (click)="onDeselectAll()">Deselect all</button>
+  </div>
+
+  <!-- Use grouped parameters when shouldUseParameterGroupingByName is true -->
+  @if (shouldUseParameterGroupingByName) {
+    @for (groupedParameter of groupedParameters; track groupedParameter.name) {
+      <div class="filter-row" (click)="onFilterRowClick(groupedParameter.name, $event)">
+        <nz-switch nzSize="small" [ngModel]="isChartVisible(groupedParameter.name)"></nz-switch>
+        <div class="title">{{ groupedParameter.name }}</div>
+      </div>
+    }
+  }
+
+  <!-- Use original parameters when shouldUseParameterGroupingByName is false -->
+  @else {
+    @for (parameter of parameters; track parameter.id) {
+      <div class="filter-row" (click)="onFilterRowClick(parameter.id, $event)">
+        <nz-switch nzSize="small" [ngModel]="isChartVisible(parameter.id)"></nz-switch>
+        <div class="title">{{ parameter.name }}</div>
+      </div>
+    }
+  }
+</div>
+
+<div class="charts-container">
+  @if (visibleParameterIds.length === 0) {
+    <div i18n class="empty">Chose parameters to be displayed in a chart.</div>
+  }
+
+  <!-- Use grouped parameters when shouldUseParameterGroupingByName is true -->
+  @if (shouldUseParameterGroupingByName) {
+    @for (groupedParameter of groupedParameters; track groupedParameter.name) {
+      @if (isChartVisible(groupedParameter.name)) {
+        <div class="chart-container" @inOutAnimation>
+          <app-dm-chart-generic
+            [groupedParameter]="groupedParameter"
+            [data]="data"
+            [title]="groupedParameter.name"
+            [isLoading]="isLoading"
+            [unit]="groupedParameter.primaryParameter.unit || ''"
+          ></app-dm-chart-generic>
+        </div>
+      }
+    }
+  }
+
+  <!-- Use original parameters when shouldUseParameterGroupingByName is false -->
+  @else {
+    @for (parameter of parameters; track parameter.id) {
+      @if (isChartVisible(parameter.id)) {
+        <div class="chart-container" @inOutAnimation>
+          <app-dm-chart-generic
+            [parameterDefinitionId]="parameter.id || ''"
+            [data]="data"
+            [title]="parameter.name"
+            [isLoading]="isLoading"
+            [unit]="parameter.unit || ''"
+          ></app-dm-chart-generic>
+        </div>
+      }
+    }
+  }
+</div>

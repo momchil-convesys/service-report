@@ -1,0 +1,21 @@
+@switch (icon) {
+  @case ("arrow-left") {
+    <app-arrow-left [style.transform]="'scale(' + scaleFactor + ')'"></app-arrow-left>
+  }
+  @case ("arrow-right") {
+    <app-arrow-right [style.transform]="'scale(' + scaleFactor + ')'"></app-arrow-right>
+  }
+  @case ("batt-icon-charge") {
+    <app-batt-icon-charge [style.transform]="'scale(' + scaleFactor + ')'"></app-batt-icon-charge>
+  }
+  @case ("batt-icon-default") {
+    <app-batt-icon-default [style.transform]="'scale(' + scaleFactor + ')'"></app-batt-icon-default>
+  }
+  @case ("grid-icon") {
+    <app-grid-icon [style.transform]="'scale(' + scaleFactor + ')'"></app-grid-icon>
+  }
+  @case ("pv-output") {
+    <app-pv-output [style.transform]="'scale(' + scaleFactor + ')'"></app-pv-output>
+  }
+  @default {}
+}

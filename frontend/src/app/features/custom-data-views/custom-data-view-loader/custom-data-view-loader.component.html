@@ -1,0 +1,5 @@
+<app-custom-data-view
+  [dataViewConfig]="dataView$ | async"
+  (save)="onSave($event)"
+  (delete)="onDeleteDataView($event)"
+></app-custom-data-view>

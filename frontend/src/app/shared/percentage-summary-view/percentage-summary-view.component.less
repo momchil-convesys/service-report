@@ -1,0 +1,90 @@
+@import "theme";
+
+app-percentage-summary-view {
+  .title {
+    font-size: @font-size-lg;
+    margin-bottom: @margin-md;
+
+    b {
+      font-size: @font-size-lg + 4px;
+    }
+  }
+
+  .bar,
+  .values {
+    display: flex;
+    gap: 2px;
+  }
+
+  .bar {
+    margin: @margin-xss 0;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .bar-part {
+    height: 6px;
+  }
+
+  .value-item:nth-child(2):not(:last-child) {
+    text-align: center;
+  }
+
+  .value-item:last-child {
+    // margin-left: auto;
+    text-align: right;
+  }
+
+  .value-item {
+    line-height: 1.2;
+    flex: 1;
+
+    .text {
+      font-size: @font-size-base;
+      // font-weight: 600;
+    }
+
+    .percentage {
+      // font-size: 200%;
+      font-weight: bold;
+    }
+  }
+
+  .total-value {
+    font-size: 28px;
+  }
+
+  .title-with-icon {
+    display: flex;
+    align-items: center;
+    gap: @padding-sm;
+    justify-content: center;
+    margin-top: @margin-sm;
+
+    .icon-container {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+
+      height: 48px;
+
+      opacity: 0.8;
+
+      .title-icon {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        fill: currentColor;
+        display: block;
+      }
+
+      .arrow-icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        fill: currentColor;
+        display: block;
+      }
+    }
+  }
+}

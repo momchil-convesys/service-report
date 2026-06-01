@@ -1,0 +1,109 @@
+<nz-spin
+  [nzSpinning]="(es.errorStacksRequest$ | async)?.isLoading"
+  i18n-nzTip="@@loading"
+  nzTip="Loading..."
+>
+  @if (es.errorStacks$ | async; as items) {
+    <div class="summary-items">
+      <header>
+        <!-- <h2>Faults history ({{ es.totalCount }})</h2> -->
+        <h2 i18n>Faults history</h2>
+      </header>
+
+      <!-- FILTERS Block Start-->
+      <div class="filters-block">
+        <div class="timerange-control">
+          <app-datetime-range-filter
+            (rangeChange)="onTimeRangeChange($event)"
+            (predefinedRangeChange)="onPredefinedTimeRangeChange($event)"
+            [initialRange]="es.timeRange"
+            [rounded]="false"
+            [showTime]="true"
+            [nullButtonTitle]="currentFaultsOnly"
+            [timeZone]="es.timeZone"
+          ></app-datetime-range-filter>
+        </div>
+
+        <!-- <div class="switch-control">
+        <nz-switch
+          [ngModel]="es.showCurrentFaultsOnly"
+          (ngModelChange)="onFilterCurrentFaultsChange($event)"
+        ></nz-switch>
+        <label>Show current faults only</label>
+      </div> -->
+      </div>
+      <!-- FILTERS Block End -->
+
+      @if (items.length === 0) {
+        <nz-empty i18n-nzNotFoundContent nzNotFoundContent="No faults"></nz-empty>
+      }
+
+      <!-- Manually hide and show pagination block to avoid layout margins on empty block -->
+      @if (es.totalCount > es.pageSize) {
+        <p class="pagination-block">
+          <nz-pagination
+            [nzTotal]="es.totalCount"
+            [nzPageIndex]="es.pageIndex"
+            [nzPageSize]="es.pageSize"
+            (nzPageIndexChange)="onPageIndexChange($event)"
+            [nzSize]="'default'"
+            nzSimple="false"
+            nzHideOnSinglePage="true"
+            nzResponsive="true"
+          ></nz-pagination>
+        </p>
+      }
+
+      @for (item of items; track item.id) {
+        <div class="summary-item" [class.current]="item.isCurrent">
+          <div class="header">
+            <div class="title">
+              <app-device-link [deviceId]="item.deviceId"></app-device-link>
+              <br />
+              @if (item.isCurrent) {
+                <span i18n class="current-faults-indicator">(Current faults)</span>
+              }
+            </div>
+
+            <app-relative-timestamp [timestamp]="item.timestamp"></app-relative-timestamp>
+          </div>
+
+          <div class="content">
+            <app-device-current-errors
+              [currentFaults]="constructCurrentFaultsModel(item)"
+            ></app-device-current-errors>
+
+            @if (hasErrorStack(item.deviceId)) {
+              <a
+                i18n
+                class="action"
+                nz-button
+                nzType="default"
+                routerLink="{{ '../error-stacks/detail/' + item.deviceId + '/' + item.id }}"
+                routerLinkActive="is-active"
+                queryParamsHandling="merge"
+              >
+                View full stack
+              </a>
+            }
+          </div>
+        </div>
+      }
+
+      @if (es.totalCount > es.pageSize) {
+        <p class="pagination-block">
+          <nz-pagination
+            [nzTotal]="es.totalCount"
+            [nzPageIndex]="es.pageIndex"
+            [nzPageSize]="es.pageSize"
+            (nzPageIndexChange)="onPageIndexChange($event)"
+            [nzSize]="'default'"
+            nzSimple="false"
+            nzHideOnSinglePage="true"
+            nzResponsive="true"
+          ></nz-pagination>
+        </p>
+      }
+    </div>
+  }
+</nz-spin>

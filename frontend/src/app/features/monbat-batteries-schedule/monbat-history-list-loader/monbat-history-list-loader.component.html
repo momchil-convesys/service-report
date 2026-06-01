@@ -1,0 +1,31 @@
+@if ((schedulesRequest$ | async)?.error; as error) {
+  <nz-alert
+    nzType="error"
+    i18n-nzMessage
+    nzMessage="Request failed"
+    [nzDescription]="error.message || error.toString()"
+    nzShowIcon
+  ></nz-alert>
+}
+
+<nz-spin
+  [nzSpinning]="(schedulesRequest$ | async)?.isLoading"
+  i18n-nzTip="@@loading"
+  nzTip="Loading..."
+>
+  <app-monbat-history-list
+    [data]="(schedules$ | async) || []"
+    [loading]="(schedulesRequest$ | async)?.isLoading || false"
+  ></app-monbat-history-list>
+  <p class="pagination-block">
+    <nz-pagination
+      [nzTotal]="totalCount"
+      [nzPageIndex]="pageIndex"
+      [nzPageSize]="pageSize"
+      (nzPageIndexChange)="onPageIndexChange($event)"
+      [nzSize]="'small'"
+      nzSimple="false"
+      nzHideOnSinglePage="true"
+    ></nz-pagination>
+  </p>
+</nz-spin>

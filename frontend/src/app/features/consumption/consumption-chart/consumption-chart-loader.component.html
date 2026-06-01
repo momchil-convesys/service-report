@@ -1,0 +1,4 @@
+<app-consumption-chart
+  [data]="(data$ | async) || undefined"
+  [loading]="(dataRequest$ | async)?.isLoading || false"
+></app-consumption-chart>

@@ -1,0 +1,37 @@
+<!-- <nz-radio-group [ngModel]="radioValue$ | async" (ngModelChange)="onRadioChange($event)">
+  <label nz-radio-button nzValue="current-values" i18n>Current values</label>
+  <label nz-radio-button nzValue="daily-totals" i18n>Daily totals</label>
+  <label nz-radio-button nzValue="all-time-totals" i18n>All time totals</label>
+</nz-radio-group> -->
+
+<nz-tabs
+  [nzSize]="'small'"
+  [nzSelectedIndex]="nzSelectedIndex"
+  (nzSelectedIndexChange)="onSelectedTabIndexChange($event)"
+>
+  @for (radioOption of radioOptions; track radioOption.value) {
+    <nz-tab [nzTitle]="radioOption.label" i18n-nzTitle></nz-tab>
+  }
+</nz-tabs>
+
+<div class="content">
+  @if ((pmLiveData$ | async)?.error; as error) {
+    <nz-alert
+      nzType="error"
+      i18n-nzMessage
+      nzMessage="Failed to load data"
+      [nzDescription]="error.message"
+      nzShowIcon
+    ></nz-alert>
+  }
+
+  @if ((pmLiveData$ | async)?.isLoading) {
+    <nz-spin i18n-nzTip="@@loading" nzTip="Loading..." nzSize="large"> </nz-spin>
+  }
+
+  <app-epm-live-data
+    [data]="(pmLiveData$ | async)?.data"
+    [activeTab]="radioValue$ | async"
+    [metadata]="metadata"
+  ></app-epm-live-data>
+</div>

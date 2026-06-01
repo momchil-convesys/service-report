@@ -1,0 +1,40 @@
+<button
+  nz-button
+  nzSize="small"
+  nzType="link"
+  nz-popover
+  [nzPopoverTitle]="titleTemplate"
+  [nzPopoverContent]="contentTemplate"
+  nzPopoverOverlayClassName="app-long-term-extreme-link-popover"
+  [disabled]="false"
+>
+  <app-value-display
+    [value]="extremePoint !== null ? extremePoint.value : null"
+    [unit]="celsiusDegreeSymbol"
+    [format]="'1.1-1'"
+  ></app-value-display>
+</button>
+
+<ng-template #titleTemplate>
+  <div style="text-align: center; width: 100%">
+    <span class="subtle-title"> {{ labelForUptimeExtreme[extremeType] }} </span>
+  </div>
+</ng-template>
+
+<ng-template #contentTemplate>
+  <div style="text-align: center">
+    @if (extremePoint === null) {
+      <ng-container i18n>No data</ng-container>
+    }
+    @if (extremePoint !== null) {
+      <div style="margin-bottom: 8px">
+        {{ extremePoint.timestamp | relativeDate: "d MMMM y" }}
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        {{ extremePoint.timestamp | date: "HH:mm:ss" }}
+      </div>
+      <button nz-button nzBlock="true" nzType="primary" (click)="onGoToRecord(extremePoint)" i18n>
+        Go to record
+      </button>
+    }
+  </div>
+</ng-template>

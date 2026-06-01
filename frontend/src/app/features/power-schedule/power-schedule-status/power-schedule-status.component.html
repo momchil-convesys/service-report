@@ -1,0 +1,11 @@
+@if (schedule) {
+  @if (positionInTime(schedule); as positionInTime) {
+    <span class="{{ schedule.status }} {{ positionInTime }}">
+      @if (schedule.status === "enabled" && positionInTime === "present") {
+        <ng-container i18n="@@scheduleCurrent">current</ng-container>
+      } @else {
+        {{ powerScheduleStatusLabels[schedule.status] }}
+      }
+    </span>
+  }
+}

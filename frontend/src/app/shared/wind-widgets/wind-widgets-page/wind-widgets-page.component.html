@@ -1,0 +1,207 @@
+<div class="wind-widgets-container">
+  <nz-typography>
+    <h1>Wind Direction Testing</h1>
+    <p>Enter a wind direction degree value to test both 8 and 16 direction models.</p>
+  </nz-typography>
+
+  <nz-card class="input-card">
+    <div class="input-section">
+      <label for="wind-degree-input">Wind Direction Degree (°):</label>
+      <nz-input-number
+        id="wind-degree-input"
+        [formControl]="windDirectionControl"
+        [nzMin]="0"
+        [nzMax]="360"
+        [nzStep]="1"
+        [nzPlaceHolder]="'Enter degree (0-360)'"
+        class="degree-input"
+      >
+      </nz-input-number>
+    </div>
+  </nz-card>
+
+  <!-- Compass Visualizations -->
+  <nz-row [nzGutter]="16" class="compass-section">
+    <!-- 16 Direction Compass -->
+    <nz-col [nzSpan]="12">
+      <nz-card title="16 Direction Compass" class="compass-card">
+        <div class="compass-container">
+          <div class="compass-rose compass-16">
+            <div class="compass-center">
+              <div
+                class="compass-arrow"
+                [style.transform]="'rotate(' + windDirectionControl.value + 'deg)'"
+              ></div>
+            </div>
+            <div class="compass-directions">
+              @for (direction16 of WIND_DIRECTIONS_16; track direction16.code; let i = $index) {
+                <div
+                  class="compass-direction"
+                  [class.active]="isActiveDirection16(direction16)"
+                  [style.--angle]="direction16.degree + 'deg'"
+                >
+                  <span class="direction-label">{{ direction16.code }}</span>
+                  <span class="direction-name">{{ direction16.direction }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </nz-card>
+    </nz-col>
+
+    <!-- 8 Direction Compass -->
+    <nz-col [nzSpan]="12">
+      <nz-card title="8 Direction Compass" class="compass-card">
+        <div class="compass-container">
+          <div class="compass-rose compass-8">
+            <div class="compass-center">
+              <div
+                class="compass-arrow"
+                [style.transform]="'rotate(' + windDirectionControl.value + 'deg)'"
+              ></div>
+            </div>
+            <div class="compass-directions">
+              @for (direction8 of WIND_DIRECTIONS_8; track direction8.code; let i = $index) {
+                <div
+                  class="compass-direction"
+                  [class.active]="isActiveDirection8(direction8)"
+                  [style.--angle]="direction8.degree + 'deg'"
+                >
+                  <span class="direction-label">{{ direction8.code }}</span>
+                  <span class="direction-name">{{ direction8.direction }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+
+  <nz-row [nzGutter]="16" class="results-section">
+    <!-- 16 Direction Model Results -->
+    <nz-col [nzSpan]="12">
+      <nz-card title="16 Direction Model" class="result-card">
+        <div class="result-content">
+          <div class="result-item">
+            <strong>Direction:</strong>
+            <nz-tag [nzColor]="windDirection16 ? 'blue' : 'default'">
+              {{ getDirectionDisplay(windDirection16) }}
+            </nz-tag>
+          </div>
+
+          @if (windDirection16) {
+            <div class="result-item">
+              <strong>Code:</strong>
+              <nz-tag>{{ windDirection16.code }}</nz-tag>
+            </div>
+          }
+
+          @if (windDirection16) {
+            <div class="result-item">
+              <strong>Degree:</strong>
+              <nz-tag>{{ windDirection16.degree }}°</nz-tag>
+            </div>
+          }
+
+          @if (windDirection16) {
+            <div class="result-item">
+              <strong>Degree Range:</strong>
+              <nz-tag>{{ getDegreeRange(windDirection16) }}</nz-tag>
+            </div>
+          }
+        </div>
+      </nz-card>
+    </nz-col>
+
+    <!-- 8 Direction Model Results -->
+    <nz-col [nzSpan]="12">
+      <nz-card title="8 Direction Model" class="result-card">
+        <div class="result-content">
+          <div class="result-item">
+            <strong>Direction:</strong>
+            <nz-tag [nzColor]="windDirection8 ? 'green' : 'default'">
+              {{ getDirectionDisplay(windDirection8) }}
+            </nz-tag>
+          </div>
+
+          @if (windDirection8) {
+            <div class="result-item">
+              <strong>Code:</strong>
+              <nz-tag>{{ windDirection8.code }}</nz-tag>
+            </div>
+          }
+
+          @if (windDirection8) {
+            <div class="result-item">
+              <strong>Degree:</strong>
+              <nz-tag>{{ windDirection8.degree }}°</nz-tag>
+            </div>
+          }
+
+          @if (windDirection8?.degreeRange) {
+            <div class="result-item">
+              <strong>Degree Range:</strong>
+              <nz-tag>{{ getDegreeRange(windDirection8) }}</nz-tag>
+            </div>
+          }
+        </div>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+
+  <!-- Reference Tables -->
+  <nz-row [nzGutter]="16" class="reference-section">
+    <nz-col [nzSpan]="12">
+      <nz-card title="16 Direction Reference" class="reference-card">
+        <div class="reference-table">
+          <div class="table-header">
+            <span class="header-direction">Direction</span>
+            <span class="header-code">Code</span>
+            <span class="header-degree">Degree</span>
+            <span class="header-range">Range</span>
+          </div>
+          @for (direction of WIND_DIRECTIONS_16; track direction.code) {
+            <div class="table-row">
+              <span class="cell-direction">{{ direction.direction }}</span>
+              <span class="cell-code">{{ direction.code }}</span>
+              <span class="cell-degree">{{ direction.degree }}°</span>
+              <span class="cell-range"
+                >{{ direction.degreeRange[0] }}° - {{ direction.degreeRange[1] }}°</span
+              >
+            </div>
+          }
+        </div>
+      </nz-card>
+    </nz-col>
+
+    <nz-col [nzSpan]="12">
+      <nz-card title="8 Direction Reference" class="reference-card">
+        <div class="reference-table">
+          <div class="table-header">
+            <span class="header-direction">Direction</span>
+            <span class="header-code">Code</span>
+            <span class="header-degree">Degree</span>
+            <span class="header-range">Range</span>
+          </div>
+          @for (direction of WIND_DIRECTIONS_8; track direction.code) {
+            <div class="table-row">
+              <span class="cell-direction">{{ direction.direction }}</span>
+              <span class="cell-code">{{ direction.code }}</span>
+              <span class="cell-degree">{{ direction.degree }}°</span>
+              @if (direction.degreeRange) {
+                <span class="cell-range">
+                  {{ direction.degreeRange[0] }}° - {{ direction.degreeRange[1] }}°
+                </span>
+              }
+              @if (!direction.degreeRange) {
+                <span class="cell-range">N/A</span>
+              }
+            </div>
+          }
+        </div>
+      </nz-card>
+    </nz-col>
+  </nz-row>
+</div>

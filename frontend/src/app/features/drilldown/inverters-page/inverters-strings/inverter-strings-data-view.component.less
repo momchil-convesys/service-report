@@ -1,0 +1,25 @@
+@import "theme";
+
+app-inverter-strings-data-view {
+  table.pv-data-view {
+    width: auto;
+
+    border-collapse: collapse;
+    border: 1px solid @border-color-split;
+
+    .pv-data-cell {
+      width: 60px;
+
+      border-collapse: collapse;
+      border: 1px solid @border-color-split;
+
+      padding: 0 @padding-xs;
+    }
+
+    .pv-data-cell.voltage,
+    .pv-data-cell.el-current {
+      text-align: right;
+      width: 100px;
+    }
+  }
+}

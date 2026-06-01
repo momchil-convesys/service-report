@@ -1,0 +1,45 @@
+<nz-table
+  #basicTable
+  [nzData]="data?.parsedScheduleTable || []"
+  [nzFrontPagination]="false"
+  nzSize="small"
+  nzBordered="true"
+  nzTableLayout="auto"
+  [nzScroll]="{
+    x: 'auto',
+  }"
+>
+  <thead>
+    <tr>
+      @for (headerCell of data?.scheduleTableColumns; track $index) {
+        <th
+          [style.background-color]="colorForCellAtIndex($index)"
+          [style.font-weight]="'bold'"
+          [style.text-align]="'center'"
+          [nzLeft]="$index < 2 ? true : false"
+          [nzWidth]="$index < 2 ? '80px' : null"
+        >
+          {{ headerCell.title }}
+        </th>
+      }
+    </tr>
+  </thead>
+
+  <tbody>
+    @for (row of basicTable.data; track $index) {
+      <tr>
+        <!-- Row -->
+        @for (cell of row; track $index) {
+          <td
+            [style.background-color]="colorForCellAtIndex($index)"
+            [style.font-weight]="$index < 2 ? 'bold' : 'normal'"
+            [nzLeft]="$index < 2 ? true : false"
+            [style.text-align]="$index < 2 ? 'center' : cellAlignmentForCellValue(cell)"
+          >
+            {{ cell }}
+          </td>
+        }
+      </tr>
+    }
+  </tbody>
+</nz-table>

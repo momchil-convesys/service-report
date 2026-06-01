@@ -1,0 +1,48 @@
+<h2>{{ taskGroup.taskNodeDefinition.name }}</h2>
+
+<form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="onSubmit(form)">
+  <nz-form-item>
+    <nz-form-label>Status</nz-form-label>
+    <nz-form-control>
+      <nz-radio-group nzSize="default" formControlName="status" [nzDisabled]="!taskGroup.enabled">
+        @for (option of statusOptions; track option.value) {
+          <label nz-radio-button [nzValue]="option.value" [class]="option.className">
+            {{ option.label }}
+          </label>
+        }
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  @if (!taskGroup.enabled) {
+    <p class="disabled-block">
+      <!-- <span nz-icon nzType="stop" nzTheme="outline" class="icon"></span>
+      <br /> -->
+      <span class="text">
+        This task group cannot be started yet. Previous tasks must be resolved and approved first!
+      </span>
+    </p>
+  }
+
+  <nz-form-item>
+    <nz-form-label>Assignee</nz-form-label>
+    <nz-form-control>
+      <nz-select
+        formControlName="assignedTo"
+        nzPlaceHolder="Not assigned"
+        nzAllowClear="true"
+        style="max-width: 400px"
+      >
+        @for (user of allUsers; track user.id) {
+          <nz-option [nzValue]="user.id" [nzLabel]="userDisplayStringById(user.id)"></nz-option>
+        }
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" type="submit">Save</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

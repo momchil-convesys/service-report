@@ -1,0 +1,55 @@
+@import "theme";
+
+app-hybrid-inverter-overview-page {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: @panel-spacing;
+
+  .side-by-side-charts {
+    display: flex;
+    flex-wrap: wrap;
+
+    & > :first-child {
+      flex: 1 1 300px;
+      max-width: 400px;
+    }
+
+    & > :last-child {
+      flex: 2 2 400px;
+    }
+  }
+
+  & > .flex-row {
+    display: flex;
+    gap: @panel-spacing;
+
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+
+    app-device-current-errors-widget {
+      flex: 1 1 auto;
+
+      nz-card {
+        height: 100%;
+      }
+    }
+
+    app-monbat-flow-chart-widget {
+      flex: 1 1 auto;
+    }
+  }
+
+  .chart-host {
+    position: relative; /* anchor for absolute child */
+  }
+
+  .chart-export-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 3; /* above chart canvas */
+    pointer-events: auto; /* keep it clickable */
+  }
+}

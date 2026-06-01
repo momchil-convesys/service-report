@@ -1,0 +1,13 @@
+<app-long-term-extreme-link
+  [extremePoint]="min"
+  [extremeType]="'min'"
+  (goToExtreme)="onGoToRecord($event)"
+></app-long-term-extreme-link>
+
+<span class="divider">/</span>
+
+<app-long-term-extreme-link
+  [extremePoint]="max"
+  [extremeType]="'max'"
+  (goToExtreme)="onGoToRecord($event)"
+></app-long-term-extreme-link>

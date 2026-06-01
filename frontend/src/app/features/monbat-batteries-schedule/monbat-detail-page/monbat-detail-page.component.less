@@ -1,0 +1,83 @@
+@import "theme";
+
+app-monbat-detail-page {
+  .schedule-container {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 20px;
+
+    text-align: left; // because nz-spin changes it to center
+  }
+
+  .left-pane {
+    flex: 1 1 400px;
+    min-width: 300px;
+  }
+
+  .right-pane {
+    flex: 2 2 600px;
+    min-width: 300px;
+    overflow: hidden;
+  }
+
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @margin-sm;
+
+    word-break: break-word;
+
+    .title {
+      flex: 1 1 350px;
+
+      h2 {
+        margin-bottom: @margin-xss;
+      }
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .actions {
+      margin-left: auto;
+    }
+  }
+
+  app-monbat-status {
+    font-size: 120%;
+  }
+
+  nz-spin {
+    min-height: 100px;
+  }
+
+  .ant-divider-horizontal {
+    margin: @margin-md 0;
+  }
+
+  .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+
+    align-items: center;
+
+    margin-bottom: @margin-sm;
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  .ant-collapse-content > .ant-collapse-content-box,
+  .ant-collapse-ghost > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box {
+    padding: 0;
+    margin-bottom: @margin-sm;
+  }
+
+  nz-alert {
+    margin-bottom: @margin-sm;
+  }
+}

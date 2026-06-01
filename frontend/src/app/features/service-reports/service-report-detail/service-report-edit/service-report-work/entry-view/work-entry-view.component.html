@@ -1,0 +1,23 @@
+<div class="item-header">
+  <div class="title">{{ entry.workName }}</div>
+</div>
+
+<div class="item-content text-muted small">
+  <div class="duration">
+    <div class="time">
+      {{ timeWorkStart | date: "dd/MM/yyyy HH:mm" }}
+      –
+      {{ sameDate ? (timeWorkEnd | date: "HH:mm") : (timeWorkEnd | date: "dd/MM/yyyy HH:mm") }}
+
+      <!-- {{ timeWorkStart | date: 'mediumDate' }}
+      {{ timeWorkStart | date: 'HH:mm' }}
+      –
+      {{ sameDate ? '' : (timeWorkEnd | date: 'mediumDate') }}
+      {{ timeWorkEnd | date: 'HH:mm' }} -->
+    </div>
+  </div>
+
+  @for (person of entry.personsWorkParticipated; track person) {
+    <div><i nz-icon nzType="user" nzTheme="outline"></i>&nbsp;{{ person }}</div>
+  }
+</div>

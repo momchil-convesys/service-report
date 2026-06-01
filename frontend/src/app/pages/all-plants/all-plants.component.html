@@ -1,0 +1,70 @@
+<h1>All plants</h1>
+
+<nz-table #plantsTable [nzData]="(plants$ | async) || []" nzBordered="true">
+  <thead>
+    <tr>
+      <th nzWidth="40"></th>
+
+      <th>Name</th>
+      <th>Type</th>
+      <th>Country</th>
+      <th>Devices</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (plant of plantsTable.data; track plant.id) {
+      <tr>
+        <td [nzExpand]="true"></td>
+
+        <td>{{ plant.name }}</td>
+        <td>{{ plant.type }}</td>
+        <td>{{ plant.country }}</td>
+        <td>{{ plant.deviceIds.length }} devices</td>
+      </tr>
+      <tr [nzExpand]="true">
+        <!-- <nz-table
+          #devicesTable
+          [nzData]="plant.devices"
+          [nzShowPagination]="false"
+          nzSize="small"
+          nzBordered="false"
+          nzTableLayout="auto"
+        >
+          <tbody>
+            <tr *ngFor="let device of devicesTable.data">
+              <td>
+                {{ device.name }}
+              </td>
+              <td>
+                <app-device-current-errors
+                  *ngIf="device.currentFaultsSubject | async as currentFaults"
+                  [currentFaults]="currentFaults"
+                ></app-device-current-errors>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table> -->
+      </tr>
+    }
+  </tbody>
+</nz-table>
+
+<h2>Current faults</h2>
+@for (plant of plants$ | async; track plant.id) {
+  @for (device of plant.devices; track device.id) {
+    @if (device.currentFaultsSubject | async; as currentFaults) {
+      <nz-card class="custom-card" nzBordered="true" nzSize="small">
+        <div class="card-header">
+          <app-device-link
+            [deviceId]="device.id"
+            [deviceLink]="true"
+            [devicePath]="true"
+          ></app-device-link>
+        </div>
+        <div class="card-title">
+          <app-device-current-errors [currentFaults]="currentFaults"></app-device-current-errors>
+        </div>
+      </nz-card>
+    }
+  }
+}

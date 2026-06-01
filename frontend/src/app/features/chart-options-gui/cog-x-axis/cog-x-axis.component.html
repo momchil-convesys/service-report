@@ -1,0 +1,43 @@
+<h1>{{ axis?.options?.id || "No ID" }}</h1>
+
+@if (axis) {
+  <section>
+    <h2>Title</h2>
+    <div class="section-subtitle"></div>
+    <div class="block">
+      <p>
+        Text: <b>{{ axisOptions?.title?.text }}</b>
+        <br />
+        <input
+          nz-input
+          [ngModel]="axisOptions?.title?.text"
+          (ngModelChange)="onInputChange($event, 'title.text')"
+          type="text"
+        />
+        <button nz-button (click)="onInputChange(undefined, 'title.text')">Reset</button>
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <p>
+      Visible: {{ axisOptions?.visible }}
+      <br />
+      <nz-switch
+        [ngModel]="axisOptions?.visible"
+        (ngModelChange)="onInputChange($event, 'visible')"
+      ></nz-switch>
+    </p>
+  </section>
+
+  <section>
+    <p>
+      Enable crosshair: {{ axisOptions?.crosshair }}
+      <br />
+      <nz-switch
+        [ngModel]="axisOptions?.crosshair"
+        (ngModelChange)="onInputChange($event, 'crosshair')"
+      ></nz-switch>
+    </p>
+  </section>
+}
