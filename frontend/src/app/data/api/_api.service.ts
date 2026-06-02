@@ -30,7 +30,7 @@ import {
 } from '../adapters';
 import { ConsumptionWithIntegrationPeriodAdapter } from '../adapters/_consupmtion.adapter';
 import { WTCombinedChartDataAdapter, WTDataAdapter } from '../adapters/_wt-data.adapter';
-import { DeviceMetadataDTO, PlantDTO, User_DTO } from '../dtos';
+import { DeviceMetadataDTO, User_DTO } from '../dtos';
 import {
   ConsumptionWithIntegrationPeriod,
   Device,
@@ -83,59 +83,6 @@ const mockDeviceMetadataDTOs: DeviceMetadataDTO[] = [
     deviceLimits: {
       powerLimitSettingMin: 0,
       powerLimitSettingMax: 1000,
-    },
-  },
-];
-
-const mockPlantDTOs: PlantDTO[] = [
-  {
-    id: 'mock-plant-1',
-    name: 'Demo Solar Plant',
-    type: 'solar',
-    country: 'BG',
-    timeZone: 'Europe/Sofia',
-    deviceIds: ['mock-inverter-1', 'mock-inverter-2'],
-    devices: [
-      {
-        id: 'mock-inverter-1',
-        name: 'Inverter 1',
-        plantId: 'mock-plant-1',
-        state: 'on',
-        intermediateStateCode: null,
-        deviceMetadataId: 'mock-inverter-metadata',
-        type: 'solar',
-        currentFaults: null,
-        serialNumber: 'INV-001',
-        powerLimit: null,
-        deviceSpecificMetadata: {},
-      },
-      {
-        id: 'mock-inverter-2',
-        name: 'Inverter 2',
-        plantId: 'mock-plant-1',
-        state: 'wrn',
-        intermediateStateCode: null,
-        deviceMetadataId: 'mock-inverter-metadata',
-        type: 'solar',
-        currentFaults: null,
-        serialNumber: 'INV-002',
-        powerLimit: null,
-        deviceSpecificMetadata: {},
-      },
-    ],
-    relatedClients: [],
-    activePowerLimitSchedule: null,
-    activeBESSSchedule: null,
-    plantSpecificMetadata: {
-      hasPowerMeter: false,
-      hasExtendedPlantMetrics: true,
-      powerLimitTargetCoefficient: 1,
-      powerLimitType: 'energy',
-      scheduleIntegrationPeriodMinutes: 60,
-      hasTsWithInverters: true,
-      hasOnSiteSetup: false,
-      thisSetup: null,
-      hasFaultsTab: true,
     },
   },
 ];
@@ -206,13 +153,6 @@ export class ApiService {
   // Plants and devices
 
   fetchPlants(): Observable<DataRequest<Plant[]>> {
-    if (KEYCLOAK_DISABLED) {
-      return of({
-        isLoading: false,
-        data: mockPlantDTOs.map((dto) => PlantAdapter.dtoToModel(dto)),
-      });
-    }
-
     return this._fetchList(`/plants?_embed=devices`, PlantAdapter);
 
     // const firstValue = of({

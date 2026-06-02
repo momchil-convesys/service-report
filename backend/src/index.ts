@@ -6,6 +6,7 @@ import { config } from './config';
 import authRoutes from './routes/auth.routes';
 import reportsRoutes from './routes/reports.routes';
 import devicesRoutes from './routes/devices.routes';
+import plantsRoutes from './routes/plants.routes';
 import serviceReportsCmsRoutes from './routes/service-reports-cms.routes';
 import { errorHandler, notFound } from './middleware/error.middleware';
 
@@ -35,6 +36,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 // API Routes
 app.use('/api', authRoutes);
+app.use('/api/plants', plantsRoutes);
 app.use('/api/devices', devicesRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/service-reports', serviceReportsCmsRoutes);

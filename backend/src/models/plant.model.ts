@@ -1,0 +1,230 @@
+import { query } from '../config/database';
+import { initializeServiceReportDatabase } from '../database/service-report.schema';
+import { AppUser } from '../services/auth.service';
+
+interface PlantRow {
+  id: string;
+  name: string;
+  type: string;
+  country: string | null;
+  installed_power_mwp: string | null;
+}
+
+interface DeviceRow {
+  id: string;
+  plant_id: string;
+  name: string;
+  type: string;
+  serial_number: string | null;
+  installed_power_kw: string | null;
+}
+
+export interface DeviceDto {
+  id: string;
+  name: string;
+  plantId: string;
+  state: string;
+  intermediateStateCode: number | null;
+  deviceMetadataId: string;
+  type: string;
+  currentFaults: null;
+  serialNumber: string;
+  powerLimit: null;
+  deviceSpecificMetadata: Record<string, never>;
+}
+
+export interface PlantDto {
+  id: string;
+  name: string;
+  type: string;
+  country: string | null;
+  timeZone: string;
+  deviceIds: string[];
+  devices: DeviceDto[];
+  relatedClients: unknown[];
+  activePowerLimitSchedule: null;
+  activeBESSSchedule: null;
+  plantSpecificMetadata: {
+    hasPowerMeter: boolean;
+    hasExtendedPlantMetrics: boolean;
+    powerLimitTargetCoefficient: number;
+    powerLimitType: 'energy';
+    scheduleIntegrationPeriodMinutes: number;
+    hasTsWithInverters: boolean;
+    hasOnSiteSetup: boolean;
+    thisSetup: null;
+    hasFaultsTab: boolean;
+  };
+}
+
+export class PlantModel {
+  static async findForUser(user: AppUser): Promise<PlantDto[]> {
+    await initializeServiceReportDatabase();
+    await this.ensureDefaultPlants();
+
+    const params: unknown[] = [];
+    const where: string[] = [];
+
+    // TODO: replace allow-all with persisted plant permissions when user/role management is added.
+    const allowAllPlants = true;
+    if (!allowAllPlants && user.role !== 'superuser') {
+      if (user.relatedPlantIds.length === 0) {
+        return [];
+      }
+
+      params.push(user.relatedPlantIds);
+      where.push(`id = ANY($${params.length}::text[])`);
+    }
+
+    const plantsResult = await query(
+      `
+        SELECT id, name, type, country, installed_power_mwp
+        FROM cms_plants
+        ${where.length ? `WHERE ${where.join(' AND ')}` : ''}
+        ORDER BY name ASC
+      `,
+      params,
+    );
+
+    const plants = plantsResult.rows as PlantRow[];
+    if (plants.length === 0) {
+      return [];
+    }
+
+    const plantIds = plants.map((plant) => plant.id);
+    const devicesResult = await query(
+      `
+        SELECT id, plant_id, name, type, serial_number, installed_power_kw
+        FROM cms_devices
+        WHERE plant_id = ANY($1::text[])
+        ORDER BY plant_id ASC, name ASC
+      `,
+      [plantIds],
+    );
+
+    const devicesByPlantId = (devicesResult.rows as DeviceRow[]).reduce<Record<string, DeviceDto[]>>(
+      (acc, device) => {
+        const plantDevices = acc[device.plant_id] || [];
+        plantDevices.push(this.deviceRowToDto(device));
+        acc[device.plant_id] = plantDevices;
+        return acc;
+      },
+      {},
+    );
+
+    return plants.map((plant) => this.plantRowToDto(plant, devicesByPlantId[plant.id] || []));
+  }
+
+  static async findByIdForUser(plantId: string, user: AppUser): Promise<PlantDto | null> {
+    const plants = await this.findForUser(user);
+    return plants.find((plant) => plant.id === plantId) || null;
+  }
+
+  private static plantRowToDto(plant: PlantRow, devices: DeviceDto[]): PlantDto {
+    const plantType = this.mapKnownType(plant.type);
+
+    return {
+      id: plant.id,
+      name: plant.name,
+      type: plantType,
+      country: plant.country || null,
+      timeZone: 'Europe/Sofia',
+      deviceIds: devices.map((device) => device.id),
+      devices,
+      relatedClients: [],
+      activePowerLimitSchedule: null,
+      activeBESSSchedule: null,
+      plantSpecificMetadata: {
+        hasPowerMeter: false,
+        hasExtendedPlantMetrics: plantType === 'solar',
+        powerLimitTargetCoefficient: 1,
+        powerLimitType: 'energy',
+        scheduleIntegrationPeriodMinutes: 60,
+        hasTsWithInverters: plantType === 'solar',
+        hasOnSiteSetup: false,
+        thisSetup: null,
+        hasFaultsTab: true,
+      },
+    };
+  }
+
+  private static deviceRowToDto(device: DeviceRow): DeviceDto {
+    const deviceType = this.mapKnownType(device.type);
+
+    return {
+      id: device.id,
+      name: device.name,
+      plantId: device.plant_id,
+      state: 'on',
+      intermediateStateCode: null,
+      deviceMetadataId: 'mock-inverter-metadata',
+      type: deviceType,
+      currentFaults: null,
+      serialNumber: device.serial_number || '',
+      powerLimit: null,
+      deviceSpecificMetadata: {},
+    };
+  }
+
+  private static mapKnownType(type: string): string {
+    switch (type) {
+      case 'solar':
+      case 'battery':
+      case 'wind':
+      case 'pump':
+        return type;
+      case 'bess':
+      case 'battery_system':
+        return 'battery';
+      case 'inverter':
+      case 'solar_panel':
+      case 'charge_controller':
+        return 'solar';
+      default:
+        return 'solar';
+    }
+  }
+
+  private static async ensureDefaultPlants(): Promise<void> {
+    await query(`
+      INSERT INTO cms_plants (id, name, type, country, installed_power_mwp)
+      VALUES
+        ('mock-plant-1', 'Demo Plant 1', 'solar', 'BG', '1.2'),
+        ('demo-plant-2', 'Demo Plant 2', 'battery', 'BG', NULL),
+        ('demo-plant-3', 'Demo Plant 3', 'wind', 'BG', '2.4')
+      ON CONFLICT (id) DO UPDATE
+      SET
+        name = EXCLUDED.name,
+        type = EXCLUDED.type,
+        country = EXCLUDED.country,
+        installed_power_mwp = EXCLUDED.installed_power_mwp,
+        updated_at = now();
+
+      INSERT INTO cms_devices (id, plant_id, name, type, serial_number, installed_power_kw)
+      VALUES
+        ('mock-inverter-1', 'mock-plant-1', 'Inverter 1', 'inverter', 'P1-INV-001', '250'),
+        ('mock-inverter-2', 'mock-plant-1', 'Inverter 2', 'inverter', 'P1-INV-002', '250'),
+        ('mock-inverter-3', 'mock-plant-1', 'Inverter 3', 'inverter', 'P1-INV-003', '250'),
+        ('mock-inverter-4', 'mock-plant-1', 'Inverter 4', 'inverter', 'P1-INV-004', '250'),
+        ('mock-inverter-5', 'mock-plant-1', 'Inverter 5', 'inverter', 'P1-INV-005', '250'),
+        ('demo-plant-2-inverter-1', 'demo-plant-2', 'Inverter 1', 'inverter', 'P2-INV-001', '250'),
+        ('demo-plant-2-inverter-2', 'demo-plant-2', 'Inverter 2', 'inverter', 'P2-INV-002', '250'),
+        ('demo-plant-2-inverter-3', 'demo-plant-2', 'Inverter 3', 'inverter', 'P2-INV-003', '250'),
+        ('demo-plant-2-inverter-4', 'demo-plant-2', 'Inverter 4', 'inverter', 'P2-INV-004', '250'),
+        ('demo-plant-2-inverter-5', 'demo-plant-2', 'Inverter 5', 'inverter', 'P2-INV-005', '250'),
+        ('demo-plant-3-inverter-1', 'demo-plant-3', 'Inverter 1', 'inverter', 'P3-INV-001', '250'),
+        ('demo-plant-3-inverter-2', 'demo-plant-3', 'Inverter 2', 'inverter', 'P3-INV-002', '250'),
+        ('demo-plant-3-inverter-3', 'demo-plant-3', 'Inverter 3', 'inverter', 'P3-INV-003', '250'),
+        ('demo-plant-3-inverter-4', 'demo-plant-3', 'Inverter 4', 'inverter', 'P3-INV-004', '250'),
+        ('demo-plant-3-inverter-5', 'demo-plant-3', 'Inverter 5', 'inverter', 'P3-INV-005', '250')
+      ON CONFLICT (id) DO UPDATE
+      SET
+        plant_id = EXCLUDED.plant_id,
+        name = EXCLUDED.name,
+        type = EXCLUDED.type,
+        serial_number = EXCLUDED.serial_number,
+        installed_power_kw = EXCLUDED.installed_power_kw,
+        updated_at = now();
+    `);
+  }
+}
