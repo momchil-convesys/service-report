@@ -69,7 +69,10 @@ export class WorkEntryFormValue {
       timeWorkEnd: {
         timestamp: endTime.toISOString(),
       },
-      personsWorkParticipated: formValue.personsWorkParticipated.split(',').map((p) => p.trim()),
+      personsWorkParticipated: formValue.personsWorkParticipated
+        .split(',')
+        .map((p) => p.trim())
+        .filter((p) => p.length > 0),
     };
   }
 }

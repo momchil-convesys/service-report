@@ -50,6 +50,9 @@ export abstract class EntryFormComponent<T> implements OnInit, OnDestroy {
 
   onSubmit() {
     if (this.entryForm) {
+      this.entryForm.updateValueAndValidity();
+      this.entryForm.markAllAsTouched();
+
       if (this.entryForm.valid) {
         this.submitForm.emit(this.entryForm.getRawValue());
         this.entryForm.reset(this.entryFormInitialValue);

@@ -241,18 +241,26 @@
   <hr />
   <div class="footer">
     <div>
-      <button nz-button nzType="primary" [disabled]="entryForm.invalid" (click)="onSubmit()">
+      <button
+        nz-button
+        nzType="primary"
+        type="button"
+        [disabled]="entryForm.invalid"
+        (click)="onSubmit()"
+      >
         {{ entryData ? "Save" : "Add record" }}
       </button>
     </div>
     @if (entryData || entryForm.dirty) {
       <div>
-        <button nz-button nzType="default" (click)="onReset()">Cancel</button>
+        <button nz-button nzType="default" type="button" (click)="onReset()">Cancel</button>
       </div>
     }
     @if (entryData) {
       <div>
-        <button nz-button nzType="default" nzDanger (click)="onDelete()">Delete record</button>
+        <button nz-button nzType="default" nzDanger type="button" (click)="onDelete()">
+          Delete record
+        </button>
       </div>
     }
   </div>

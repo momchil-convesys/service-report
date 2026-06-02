@@ -83,7 +83,10 @@ export class TravellingEntryFormValue {
         location: formValue.destination.location,
         timestamp: destinationTime.toISOString(),
       },
-      personsParticipated: formValue.personsParticipated.split(',').map((p) => p.trim()),
+      personsParticipated: formValue.personsParticipated
+        .split(',')
+        .map((p) => p.trim())
+        .filter((p) => p.length > 0),
       duration: formValue.duration.hours * 60 + formValue.duration.minutes,
     };
   }
