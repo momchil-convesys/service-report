@@ -114,6 +114,44 @@ app-root {
     & > li > a.active {
       background-color: @primary-10;
     }
+
+    .admin-navigation {
+      position: relative;
+
+      ul {
+        display: none;
+        position: absolute;
+        top: @top-header-height;
+        left: 0;
+        min-width: 180px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        background: @primary-header-background;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+      }
+
+      &:hover ul,
+      &:focus-within ul {
+        display: block;
+      }
+
+      ul a {
+        display: block;
+        color: white;
+        padding: 0 @padding-md;
+        line-height: 40px;
+        white-space: nowrap;
+      }
+
+      ul a:hover {
+        background-color: @primary-9;
+      }
+
+      ul a.active {
+        background-color: @primary-10;
+      }
+    }
   }
 
   @media (max-width: @breakpoint-lg) {
@@ -155,6 +193,21 @@ app-root {
 
       & > li > a.active {
         background-color: @primary-10;
+      }
+
+      .admin-navigation {
+        ul {
+          display: block;
+          position: static;
+          min-width: 0;
+          box-shadow: none;
+          padding-left: @padding-md;
+        }
+
+        ul a {
+          line-height: 3;
+          white-space: normal;
+        }
       }
     }
 

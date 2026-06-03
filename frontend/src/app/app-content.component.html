@@ -24,23 +24,30 @@
       </li>
 
       @if (isCurrentUserAuthorizedToAccessAdminAssets()) {
-        <li>
-          <a
-            routerLink="/admin/assets"
-            routerLinkActive="active"
-            (click)="onHideNavigationMenu()"
-            i18n
-            >Plants & devices</a
+        <li class="admin-navigation">
+          <a routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }" routerLink="/admin/assets" i18n
+            >Admin</a
           >
-        </li>
-        <li>
-          <a
-            routerLink="/admin/clients"
-            routerLinkActive="active"
-            (click)="onHideNavigationMenu()"
-            i18n
-            >Clients</a
-          >
+          <ul>
+            <li>
+              <a
+                routerLink="/admin/assets"
+                routerLinkActive="active"
+                (click)="onHideNavigationMenu()"
+                i18n
+                >Plants & devices</a
+              >
+            </li>
+            <li>
+              <a
+                routerLink="/admin/clients"
+                routerLinkActive="active"
+                (click)="onHideNavigationMenu()"
+                i18n
+                >Clients</a
+              >
+            </li>
+          </ul>
         </li>
       }
 
