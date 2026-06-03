@@ -1,0 +1,142 @@
+<section class="admin-assets-page">
+  <header class="page-header">
+    <div>
+      <h1>Plants and devices</h1>
+    </div>
+    <a nz-button routerLink="/service-reports/mock-plant-1">Service reports</a>
+  </header>
+
+  @if (errorMessage) {
+    <nz-alert nzType="error" [nzMessage]="errorMessage" nzShowIcon></nz-alert>
+  }
+  @if (successMessage) {
+    <nz-alert nzType="success" [nzMessage]="successMessage" nzShowIcon></nz-alert>
+  }
+
+  <div class="forms-grid">
+    <form nz-form #plantForm="ngForm" (ngSubmit)="createPlant(plantForm)" class="asset-form">
+      <h2>Add plant</h2>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="plant-id">ID</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="plant-id" name="id" required pattern="[a-zA-Z0-9_-]+" [(ngModel)]="plantModel.id" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="plant-name">Name</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="plant-name" name="name" required [(ngModel)]="plantModel.name" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="plant-type">Type</nz-form-label>
+        <nz-form-control>
+          <nz-select id="plant-type" name="type" required [(ngModel)]="plantModel.type">
+            @for (type of plantTypes; track type) {
+              <nz-option [nzValue]="type" [nzLabel]="type"></nz-option>
+            }
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="plant-country">Country</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="plant-country" name="country" [(ngModel)]="plantModel.country" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="plant-power">Power MWp</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="plant-power" name="installedPowerMwp" [(ngModel)]="plantModel.installedPowerMwp" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <button nz-button nzType="primary" [disabled]="plantForm.invalid" [nzLoading]="isSavingPlant">Add plant</button>
+    </form>
+
+    <form nz-form #deviceForm="ngForm" (ngSubmit)="createDevice(deviceForm)" class="asset-form">
+      <h2>Add device</h2>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="device-plant">Plant</nz-form-label>
+        <nz-form-control>
+          <nz-select id="device-plant" name="plantId" required [(ngModel)]="deviceModel.plantId">
+            @for (plant of (plants$ | async) || []; track plant.id) {
+              <nz-option [nzValue]="plant.id" [nzLabel]="plant.name"></nz-option>
+            }
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="device-id">ID</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="device-id" name="id" required pattern="[a-zA-Z0-9_-]+" [(ngModel)]="deviceModel.id" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="device-name">Name</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="device-name" name="name" required [(ngModel)]="deviceModel.name" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="device-type">Type</nz-form-label>
+        <nz-form-control>
+          <nz-select id="device-type" name="type" required [(ngModel)]="deviceModel.type">
+            @for (type of deviceTypes; track type) {
+              <nz-option [nzValue]="type" [nzLabel]="type"></nz-option>
+            }
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="device-serial">Serial</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="device-serial" name="serialNumber" [(ngModel)]="deviceModel.serialNumber" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="device-power">Power kW</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="device-power" name="installedPowerKw" [(ngModel)]="deviceModel.installedPowerKw" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <button nz-button nzType="primary" [disabled]="deviceForm.invalid" [nzLoading]="isSavingDevice">Add device</button>
+    </form>
+  </div>
+
+  <section class="plants-list">
+    <h2>Current plants</h2>
+    <nz-table #plantsTable [nzData]="(plants$ | async) || []" [nzPageSize]="10">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Devices</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (plant of plantsTable.data; track plant.id) {
+          <tr>
+            <td>{{ plant.id }}</td>
+            <td>{{ plant.name }}</td>
+            <td>{{ plant.type }}</td>
+            <td>{{ plant.devices.length }}</td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </section>
+</section>

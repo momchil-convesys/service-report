@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { environment } from '../environments/environment';
 import { CustomPreloadingStrategy } from './app-custom-preload-strategy';
 import { loginGuard } from './auth/auth.guard';
+import { permissionGuard } from './auth/auth.guard';
+import { AccessControlPermission } from './constants';
 import { NotAuthorizedComponent } from './pages/not-authorized/not-authorized.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 
@@ -23,6 +25,15 @@ const routes: Routes = [
           ),
         canActivate: [loginGuard],
         canActivateChild: [loginGuard],
+      },
+      {
+        path: 'admin/assets',
+        loadComponent: () =>
+          import('./pages/admin-assets/admin-assets.component').then(
+            (m) => m.AdminAssetsComponent,
+          ),
+        canActivate: [loginGuard, permissionGuard],
+        data: { permissions: [AccessControlPermission.Admin_Manage] },
       },
       { path: '', pathMatch: 'full', redirectTo: '/service-reports/mock-plant-1' },
       { path: '404', component: NotFoundComponent },

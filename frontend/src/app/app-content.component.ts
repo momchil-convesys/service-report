@@ -87,6 +87,10 @@ export class AppContentComponent {
     ]);
   }
 
+  isCurrentUserAuthorizedToAccessAdminAssets(): boolean {
+    return this.usersService.hasCurrentUserPermission(AccessControlPermission.Admin_Manage);
+  }
+
   getUserNameFromKeycloak() {
     try {
       return this.keycloak.profile?.username;

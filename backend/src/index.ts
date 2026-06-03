@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { config } from './config';
 import authRoutes from './routes/auth.routes';
+import adminRoutes from './routes/admin.routes';
 import reportsRoutes from './routes/reports.routes';
 import devicesRoutes from './routes/devices.routes';
 import plantsRoutes from './routes/plants.routes';
@@ -36,6 +37,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 // API Routes
 app.use('/api', authRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/plants', plantsRoutes);
 app.use('/api/devices', devicesRoutes);
 app.use('/api/reports', reportsRoutes);

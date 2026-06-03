@@ -23,6 +23,18 @@
         >
       </li>
 
+      @if (isCurrentUserAuthorizedToAccessAdminAssets()) {
+        <li>
+          <a
+            routerLink="/admin/assets"
+            routerLinkActive="active"
+            (click)="onHideNavigationMenu()"
+            i18n
+            >Plants & devices</a
+          >
+        </li>
+      }
+
       @if (isLocalized) {
         <li
           nz-tooltip

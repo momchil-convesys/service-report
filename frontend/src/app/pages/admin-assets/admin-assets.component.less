@@ -1,0 +1,69 @@
+@import "theme";
+
+.admin-assets-page {
+  padding: @padding-lg;
+  max-width: 1180px;
+  margin: 0 auto;
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @margin-md;
+    margin-bottom: @margin-lg;
+  }
+
+  h1,
+  h2 {
+    margin: 0;
+  }
+
+  .ant-alert {
+    margin-bottom: @margin-md;
+  }
+
+  .forms-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: @margin-lg;
+    align-items: start;
+    margin-bottom: @margin-lg;
+  }
+
+  .asset-form {
+    border: 1px solid @border-color-base;
+    border-radius: 4px;
+    padding: @padding-md;
+    background: @component-background;
+
+    h2 {
+      margin-bottom: @margin-md;
+      font-size: 18px;
+    }
+
+    button {
+      margin-top: @margin-sm;
+    }
+  }
+
+  .plants-list {
+    h2 {
+      margin-bottom: @margin-md;
+      font-size: 18px;
+    }
+  }
+
+  @media (max-width: @breakpoint-md) {
+    padding: @padding-sm;
+
+    .page-header,
+    .forms-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .page-header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+}

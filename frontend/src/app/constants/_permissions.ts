@@ -22,6 +22,8 @@ export enum AccessControlPermission {
   ServiceReports_Manage = 'service-reports:manage', // create, edit, delete (could be separated if needed)
   ServiceReports_Delete = 'service-reports:delete',
 
+  Admin_Manage = 'admin:manage',
+
   ReactivePower_View = 'reactive-power:view',
 
   ExtendedPlantMetrics_View = 'extended-plant-metrics:view',
