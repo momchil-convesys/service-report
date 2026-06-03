@@ -7,9 +7,9 @@
 <!-- <pre>reportService.title:  {{ reportService.title }}</pre>
 -->
 
-@if (!reportService.editMode && reportService.reportId) {
+@if (!reportService.editMode && activeReportId) {
   <app-service-report-form
-    [reportId]="reportService.reportId"
+    [reportId]="activeReportId"
     [pdfObject]="reportService.pdfObject"
   ></app-service-report-form>
 } @else {

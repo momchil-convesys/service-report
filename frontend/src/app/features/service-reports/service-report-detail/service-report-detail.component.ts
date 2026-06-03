@@ -1,6 +1,17 @@
 import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subject, combineLatest, map, merge, of, shareReplay, switchMap } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  merge,
+  of,
+  shareReplay,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 import { DataRequest } from '../../../constants';
 
 import { ReportData } from '../_data/models/_service-report-list';
@@ -27,6 +38,7 @@ export class ServiceReportDetailComponent implements OnDestroy {
   updatedReportDataRequest$ = new Subject<DataRequest<ReportData>>();
   saveSuccess$: Subject<boolean> = new Subject();
   isLoading = false;
+  activeReportId: string | null = null;
 
   private _destroy$ = new Subject<void>();
   constructor(
@@ -35,23 +47,50 @@ export class ServiceReportDetailComponent implements OnDestroy {
     private api: ServiceReportsApiService,
     private activatedRoute: ActivatedRoute,
   ) {
-    const queryParams$ = combineLatest([
-      this.activatedRoute.paramMap,
-      this.activatedRoute.parent?.paramMap || of(null),
-    ]).pipe(
-      map(
-        ([params, parentParams]) =>
-          <QueryParams>{
-            reportId: params.get('reportId'),
-            plantId: params.get('plantId') || parentParams?.get('plantId'),
-            deviceId: params.get('deviceId') || parentParams?.get('deviceId'),
-          },
-      ),
+    const routeParams$ = combineLatest(
+      this.activatedRoute.pathFromRoot.map((route) => route.paramMap),
+    ).pipe(
+      map((paramMaps) => {
+        const findParam = (key: string): string | null => {
+          for (let index = paramMaps.length - 1; index >= 0; index -= 1) {
+            const value = paramMaps[index].get(key);
+            if (value) {
+              return value;
+            }
+          }
+
+          return null;
+        };
+
+        return <QueryParams>{
+          reportId: findParam('reportId'),
+          plantId: findParam('plantId'),
+          deviceId: findParam('deviceId'),
+        };
+      }),
+      shareReplay(1),
     );
+
+    routeParams$
+      .pipe(
+        map((params) => params.reportId),
+        distinctUntilChanged(),
+        takeUntil(this._destroy$),
+      )
+      .subscribe((reportId) => {
+        this.activeReportId = reportId;
+        this.reportService.reportId = reportId;
+
+        if (reportId) {
+          this.reportService.reloadServiceReportPreview(
+            this.api.composeServiceReportsPreviewUrl(reportId),
+          );
+        }
+      });
 
     this.selectedReportDataRequest$ = merge(
       this.updatedReportDataRequest$,
-      queryParams$.pipe(
+      routeParams$.pipe(
         switchMap((params: QueryParams) => {
           if (params.reportId) {
             return this.api.fetchServiceReport(params.reportId);
