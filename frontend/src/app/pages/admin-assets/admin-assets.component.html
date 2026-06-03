@@ -114,6 +114,37 @@
 
       <button nz-button nzType="primary" [disabled]="deviceForm.invalid" [nzLoading]="isSavingDevice">Add device</button>
     </form>
+
+    <form nz-form #clientForm="ngForm" (ngSubmit)="assignClient(clientForm)" class="asset-form">
+      <h2>Assign client</h2>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="client-plant">Plant</nz-form-label>
+        <nz-form-control>
+          <nz-select id="client-plant" name="plantId" required [(ngModel)]="clientModel.plantId">
+            @for (plant of (plants$ | async) || []; track plant.id) {
+              <nz-option [nzValue]="plant.id" [nzLabel]="plant.name"></nz-option>
+            }
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="client-name">Client</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="client-name" name="clientName" required [(ngModel)]="clientModel.clientName" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="client-address">Address</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="client-address" name="clientAddress" [(ngModel)]="clientModel.clientAddress" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <button nz-button nzType="primary" [disabled]="clientForm.invalid" [nzLoading]="isSavingClient">Assign client</button>
+    </form>
   </div>
 
   <section class="plants-list">

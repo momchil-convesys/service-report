@@ -31,6 +31,12 @@ interface DeviceFormModel {
   installedPowerKw: string;
 }
 
+interface ClientFormModel {
+  plantId: string;
+  clientName: string;
+  clientAddress: string;
+}
+
 @Component({
   selector: 'app-admin-assets',
   standalone: true,
@@ -53,6 +59,7 @@ export class AdminAssetsComponent {
   plants$: Observable<Plant[]>;
   isSavingPlant = false;
   isSavingDevice = false;
+  isSavingClient = false;
   errorMessage = '';
   successMessage = '';
   searchText = '';
@@ -72,6 +79,12 @@ export class AdminAssetsComponent {
     type: 'inverter',
     serialNumber: '',
     installedPowerKw: '',
+  };
+
+  clientModel: ClientFormModel = {
+    plantId: '',
+    clientName: '',
+    clientAddress: '',
   };
 
   readonly plantTypes = ['solar', 'battery', 'wind', 'pump', 'other'];
@@ -133,6 +146,30 @@ export class AdminAssetsComponent {
       });
   }
 
+  assignClient(form: NgForm): void {
+    if (form.invalid) {
+      return;
+    }
+
+    this.isSavingClient = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.http
+      .post(`${this.api.baseUrl}/admin/plant-clients`, this.clientModel)
+      .pipe(finalize(() => (this.isSavingClient = false)))
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Client assigned to plant.';
+          this.resetClientForm(form);
+          window.location.reload();
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.error || 'Failed to assign client.';
+        },
+      });
+  }
+
   filterPlants(plants: Plant[]): Plant[] {
     const query = this.searchText.trim().toLowerCase();
     if (!query) {
@@ -165,4 +202,7 @@ export class AdminAssetsComponent {
     });
   }
 
+  private resetClientForm(form: NgForm): void {
+    form.resetForm({});
+  }
 }
