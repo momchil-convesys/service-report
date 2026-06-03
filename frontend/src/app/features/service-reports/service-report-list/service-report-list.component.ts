@@ -2,7 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, map, shareReplay, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -78,7 +87,11 @@ export class ServiceReportListComponent {
     private route: ActivatedRoute,
   ) {
     this.plant$ = pageRouting.getPlantRequestFromQueryParams();
-    this.reports$ = combineLatest([this.route.paramMap, this.route.queryParamMap]).pipe(
+    this.reports$ = combineLatest([
+      this.route.paramMap,
+      this.route.queryParamMap,
+      this.serviceReportsGlobalService.reportsListRefresh$.pipe(startWith(undefined)),
+    ]).pipe(
       map(
         ([params, queryParams]) =>
           <QueryParams>{

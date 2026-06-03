@@ -207,16 +207,21 @@ export class ReportService {
       this.api.updateReport('/service-reports/update', this.reportData).subscribe(
         (_res) => {
           this.saveSuccess$.next(true);
+          this.serviceReportsGlobalService.refreshReportsList();
           const plantId = `/${this.reportData.genericObj['plantId']}`;
           const deviceId = `/${this.reportData.genericObj['deviceId']}`;
+          const statusReport = this.reportData.genericObj['statusReport'];
           // let currentUrl = this.router.url;
           // console.log('currentUrl create', currentUrl);
           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
             this.router.navigate(
               [
-                `/service-reports${plantId}${deviceId}/detail/${this.reportId}/${this.reportData.genericObj['statusReport']}`,
+                `/service-reports${plantId}${deviceId}/detail/${this.reportId}/${statusReport}`,
               ],
-              { queryParamsHandling: 'merge' },
+              {
+                queryParams: { reportStatusList: statusReport, pageIndex: 1 },
+                queryParamsHandling: 'merge',
+              },
             );
           });
           // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
@@ -234,8 +239,10 @@ export class ReportService {
             console.log('createReport create', createReport.data.id);
 
             this.saveSuccess$.next(true);
+            this.serviceReportsGlobalService.refreshReportsList();
             const plantId = `/${this.reportData.genericObj['plantId']}`;
             const deviceId = `/${this.reportData.genericObj['deviceId']}`;
+            const statusReport = this.reportData.genericObj['statusReport'];
             console.log('plantId create', plantId);
             console.log('deviceId create', deviceId);
             console.log('this.reportData create', this.reportData);
@@ -247,9 +254,12 @@ export class ReportService {
             this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
               this.router.navigate(
                 [
-                  `/service-reports${plantId}${deviceId}/detail/${createReport.data.id}/${this.reportData.genericObj['statusReport']}`,
+                  `/service-reports${plantId}${deviceId}/detail/${createReport.data.id}/${statusReport}`,
                 ],
-                { queryParamsHandling: 'merge' },
+                {
+                  queryParams: { reportStatusList: statusReport, pageIndex: 1 },
+                  queryParamsHandling: 'merge',
+                },
               );
             });
           }
