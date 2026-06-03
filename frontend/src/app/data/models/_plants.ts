@@ -45,6 +45,11 @@ export interface Plant {
 
   deviceIds: string[];
   devices: Device[];
+  relatedClients?: {
+    id: string;
+    name: string;
+    address: string;
+  }[];
 
   activePowerLimitSchedule$: BehaviorSubject<null | ActivePowerLimitSchedule>;
   activeBESSSchedule$: BehaviorSubject<null | ActivePowerLimitSchedule>;

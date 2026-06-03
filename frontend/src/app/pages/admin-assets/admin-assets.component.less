@@ -24,7 +24,7 @@
 
   .forms-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: @margin-lg;
     align-items: start;
     margin-bottom: @margin-lg;
@@ -47,9 +47,20 @@
   }
 
   .plants-list {
-    h2 {
+    .list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: @margin-md;
       margin-bottom: @margin-md;
+    }
+
+    h2 {
       font-size: 18px;
+    }
+
+    .search-input {
+      max-width: 320px;
     }
   }
 
@@ -61,9 +72,14 @@
       grid-template-columns: 1fr;
     }
 
-    .page-header {
+    .page-header,
+    .plants-list .list-header {
       align-items: flex-start;
       flex-direction: column;
+    }
+
+    .plants-list .search-input {
+      max-width: none;
     }
   }
 }

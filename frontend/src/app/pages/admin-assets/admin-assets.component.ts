@@ -20,6 +20,8 @@ interface PlantFormModel {
   type: string;
   country: string;
   installedPowerMwp: string;
+  clientName: string;
+  clientAddress: string;
 }
 
 interface DeviceFormModel {
@@ -29,6 +31,12 @@ interface DeviceFormModel {
   type: string;
   serialNumber: string;
   installedPowerKw: string;
+}
+
+interface ClientFormModel {
+  plantId: string;
+  clientName: string;
+  clientAddress: string;
 }
 
 @Component({
@@ -53,8 +61,10 @@ export class AdminAssetsComponent {
   plants$: Observable<Plant[]>;
   isSavingPlant = false;
   isSavingDevice = false;
+  isSavingClient = false;
   errorMessage = '';
   successMessage = '';
+  searchText = '';
 
   plantModel: PlantFormModel = {
     id: '',
@@ -62,6 +72,8 @@ export class AdminAssetsComponent {
     type: 'solar',
     country: 'BG',
     installedPowerMwp: '',
+    clientName: '',
+    clientAddress: '',
   };
 
   deviceModel: DeviceFormModel = {
@@ -71,6 +83,12 @@ export class AdminAssetsComponent {
     type: 'inverter',
     serialNumber: '',
     installedPowerKw: '',
+  };
+
+  clientModel: ClientFormModel = {
+    plantId: '',
+    clientName: '',
+    clientAddress: '',
   };
 
   readonly plantTypes = ['solar', 'battery', 'wind', 'pump', 'other'];
@@ -132,6 +150,49 @@ export class AdminAssetsComponent {
       });
   }
 
+  addClientToPlant(form: NgForm): void {
+    if (form.invalid) {
+      return;
+    }
+
+    this.isSavingClient = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.http
+      .post(`${this.api.baseUrl}/admin/plant-clients`, this.clientModel)
+      .pipe(finalize(() => (this.isSavingClient = false)))
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Client added to plant.';
+          this.resetClientForm(form);
+          window.location.reload();
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.error || 'Failed to add client to plant.';
+        },
+      });
+  }
+
+  filterPlants(plants: Plant[]): Plant[] {
+    const query = this.searchText.trim().toLowerCase();
+    if (!query) {
+      return plants;
+    }
+
+    return plants.filter((plant) => {
+      const clientText = (plant.relatedClients || [])
+        .map((client) => `${client.name} ${client.address}`)
+        .join(' ');
+      const deviceText = plant.devices
+        .map((device) => `${device.id} ${device.name}`)
+        .join(' ');
+      const haystack = `${plant.id} ${plant.name} ${plant.type} ${clientText} ${deviceText}`.toLowerCase();
+
+      return haystack.includes(query);
+    });
+  }
+
   private resetPlantForm(form: NgForm): void {
     form.resetForm({
       type: 'solar',
@@ -143,5 +204,9 @@ export class AdminAssetsComponent {
     form.resetForm({
       type: 'inverter',
     });
+  }
+
+  private resetClientForm(form: NgForm): void {
+    form.resetForm({});
   }
 }

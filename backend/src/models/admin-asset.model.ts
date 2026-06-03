@@ -7,6 +7,8 @@ export interface AdminPlantInput {
   type: string;
   country?: string | null;
   installedPowerMwp?: string | null;
+  clientName?: string | null;
+  clientAddress?: string | null;
 }
 
 export interface AdminDeviceInput {
@@ -16,6 +18,12 @@ export interface AdminDeviceInput {
   type: string;
   serialNumber?: string | null;
   installedPowerKw?: string | null;
+}
+
+export interface AdminPlantClientInput {
+  plantId: string;
+  clientName: string;
+  clientAddress?: string | null;
 }
 
 export class AdminAssetModel {
@@ -39,6 +47,14 @@ export class AdminAssetModel {
         input.installedPowerMwp || null,
       ],
     );
+
+    if (input.clientName?.trim()) {
+      await this.addClientToPlant({
+        plantId: input.id,
+        clientName: input.clientName,
+        clientAddress: input.clientAddress || '',
+      });
+    }
 
     return result.rows[0];
   }
@@ -67,5 +83,47 @@ export class AdminAssetModel {
     );
 
     return result.rows[0];
+  }
+
+  static async addClientToPlant(input: AdminPlantClientInput): Promise<{
+    id: string;
+    name: string;
+    address: string;
+    plantId: string;
+  }> {
+    await initializeServiceReportDatabase();
+
+    const clientId = this.slugify(input.clientName);
+    const clientResult = await query(
+      `INSERT INTO cms_clients (id, name, address)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (id) DO UPDATE SET
+         name = EXCLUDED.name,
+         address = EXCLUDED.address,
+         updated_at = now()
+       RETURNING id, name, address`,
+      [clientId, input.clientName, input.clientAddress || ''],
+    );
+
+    await query(
+      `INSERT INTO cms_plant_clients (plant_id, client_id)
+       VALUES ($1, $2)
+       ON CONFLICT DO NOTHING`,
+      [input.plantId, clientId],
+    );
+
+    return {
+      ...clientResult.rows[0],
+      plantId: input.plantId,
+    };
+  }
+
+  private static slugify(value: string): string {
+    return value
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 80);
   }
 }

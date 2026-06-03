@@ -9,5 +9,6 @@ router.use(requirePermission('admin:manage'));
 
 router.post('/plants', AdminAssetsController.createPlant);
 router.post('/devices', AdminAssetsController.createDevice);
+router.post('/plant-clients', AdminAssetsController.addClientToPlant);
 
 export default router;

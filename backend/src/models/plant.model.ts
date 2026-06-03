@@ -19,6 +19,19 @@ interface DeviceRow {
   installed_power_kw: string | null;
 }
 
+interface ClientRow {
+  plant_id: string;
+  id: string;
+  name: string;
+  address: string;
+}
+
+export interface RelatedClientDto {
+  id: string;
+  name: string;
+  address: string;
+}
+
 export interface DeviceDto {
   id: string;
   name: string;
@@ -41,7 +54,7 @@ export interface PlantDto {
   timeZone: string;
   deviceIds: string[];
   devices: DeviceDto[];
-  relatedClients: unknown[];
+  relatedClients: RelatedClientDto[];
   activePowerLimitSchedule: null;
   activeBESSSchedule: null;
   plantSpecificMetadata: {
@@ -112,7 +125,38 @@ export class PlantModel {
       {},
     );
 
-    return plants.map((plant) => this.plantRowToDto(plant, devicesByPlantId[plant.id] || []));
+    const clientsResult = await query(
+      `
+        SELECT pc.plant_id, c.id, c.name, c.address
+        FROM cms_plant_clients pc
+        JOIN cms_clients c ON c.id = pc.client_id
+        WHERE pc.plant_id = ANY($1::text[])
+        ORDER BY c.name ASC
+      `,
+      [plantIds],
+    );
+
+    const clientsByPlantId = (clientsResult.rows as ClientRow[]).reduce<Record<string, RelatedClientDto[]>>(
+      (acc, client) => {
+        const plantClients = acc[client.plant_id] || [];
+        plantClients.push({
+          id: client.id,
+          name: client.name,
+          address: client.address,
+        });
+        acc[client.plant_id] = plantClients;
+        return acc;
+      },
+      {},
+    );
+
+    return plants.map((plant) =>
+      this.plantRowToDto(
+        plant,
+        devicesByPlantId[plant.id] || [],
+        clientsByPlantId[plant.id] || [],
+      ),
+    );
   }
 
   static async findByIdForUser(plantId: string, user: AppUser): Promise<PlantDto | null> {
@@ -120,7 +164,11 @@ export class PlantModel {
     return plants.find((plant) => plant.id === plantId) || null;
   }
 
-  private static plantRowToDto(plant: PlantRow, devices: DeviceDto[]): PlantDto {
+  private static plantRowToDto(
+    plant: PlantRow,
+    devices: DeviceDto[],
+    relatedClients: RelatedClientDto[],
+  ): PlantDto {
     const plantType = this.mapKnownType(plant.type);
 
     return {
@@ -131,7 +179,7 @@ export class PlantModel {
       timeZone: 'Europe/Sofia',
       deviceIds: devices.map((device) => device.id),
       devices,
-      relatedClients: [],
+      relatedClients,
       activePowerLimitSchedule: null,
       activeBESSSchedule: null,
       plantSpecificMetadata: {

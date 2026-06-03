@@ -8,7 +8,7 @@ function isValidId(value: unknown): value is string {
 export class AdminAssetsController {
   static async createPlant(req: Request, res: Response): Promise<void> {
     try {
-      const { id, name, type, country, installedPowerMwp } = req.body || {};
+      const { id, name, type, country, installedPowerMwp, clientName, clientAddress } = req.body || {};
 
       if (!isValidId(id) || typeof name !== 'string' || !name.trim() || typeof type !== 'string' || !type.trim()) {
         res.status(400).json({ error: 'Plant id, name, and type are required.' });
@@ -21,6 +21,8 @@ export class AdminAssetsController {
         type: type.trim(),
         country: typeof country === 'string' ? country.trim() : '',
         installedPowerMwp: typeof installedPowerMwp === 'string' ? installedPowerMwp.trim() : null,
+        clientName: typeof clientName === 'string' ? clientName.trim() : null,
+        clientAddress: typeof clientAddress === 'string' ? clientAddress.trim() : null,
       });
 
       res.status(201).json(plant);
@@ -74,6 +76,33 @@ export class AdminAssetsController {
 
       console.error('Create admin device error:', error);
       res.status(500).json({ error: 'Failed to create device.' });
+    }
+  }
+
+  static async addClientToPlant(req: Request, res: Response): Promise<void> {
+    try {
+      const { plantId, clientName, clientAddress } = req.body || {};
+
+      if (!isValidId(plantId) || typeof clientName !== 'string' || !clientName.trim()) {
+        res.status(400).json({ error: 'Plant id and client name are required.' });
+        return;
+      }
+
+      const client = await AdminAssetModel.addClientToPlant({
+        plantId: plantId.trim(),
+        clientName: clientName.trim(),
+        clientAddress: typeof clientAddress === 'string' ? clientAddress.trim() : '',
+      });
+
+      res.status(201).json(client);
+    } catch (error: any) {
+      if (error?.code === '23503') {
+        res.status(400).json({ error: 'Plant id does not exist.' });
+        return;
+      }
+
+      console.error('Add admin plant client error:', error);
+      res.status(500).json({ error: 'Failed to add client to plant.' });
     }
   }
 }
