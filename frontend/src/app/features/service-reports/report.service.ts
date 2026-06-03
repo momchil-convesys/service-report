@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import Keycloak from 'keycloak-js';
 import { PDFSource } from 'ng2-pdf-viewer';
-import { Subject, combineLatest, of } from 'rxjs';
+import { Subject, combineLatest } from 'rxjs';
 import { checkAuthToken } from '../../auth/keycloak-token-update';
 import { ReportData } from './_data/models/_service-report-list';
 import { ServiceReportsApiService } from './_data/service-reports-api.service';
@@ -92,17 +92,14 @@ export class ReportService {
     );
 
     ///
-    combineLatest([
-      this.activatedRoute.paramMap,
-      this.activatedRoute.parent?.paramMap || of(null),
-      this.activatedRoute.queryParamMap,
-    ]).subscribe(([params, parentParams, queryParams]) => {
+    combineLatest([this.activatedRoute.paramMap, this.activatedRoute.queryParamMap]).subscribe(
+      ([params, queryParams]) => {
         //console.log('params ', params);
         // console.log('queryParams ', queryParams);
-        this.statusReport = params.get('statusReport') || parentParams?.get('statusReport');
+        this.statusReport = params.get('statusReport');
         // console.log('this.statusReport ', this.statusReport);
         this.reportStatusList = queryParams.get('reportStatusList');
-        this.reportId = params.get('reportId') || parentParams?.get('reportId');
+        this.reportId = params.get('reportId');
         const url = this.router.routerState.snapshot.url;
         if (this.reportId) {
           const pdfUrl = this.api.composeServiceReportsPreviewUrl(this.reportId);
@@ -122,7 +119,8 @@ export class ReportService {
         }
         this.manageTitle();
         this.initPageHeader();
-      });
+      },
+    );
   }
   ngOnDestroy(): void {
     this._destroy$.next();
