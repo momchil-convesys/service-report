@@ -12,7 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import Keycloak from 'keycloak-js';
 import { PDFSource } from 'ng2-pdf-viewer';
 import { Subject, combineLatest } from 'rxjs';
-import { checkAuthToken } from '../../auth/keycloak-token-update';
+import { LocalAuthService } from '../../auth/local-auth.service';
 import { ReportData } from './_data/models/_service-report-list';
 import { ServiceReportsApiService } from './_data/service-reports-api.service';
 import { ServiceReportsGlobalService } from './_data/service-reports-global.service';
@@ -59,6 +59,7 @@ export class ReportService {
   constructor(
     private serviceReportsGlobalService: ServiceReportsGlobalService,
     private keycloak: Keycloak,
+    private localAuth: LocalAuthService,
     private api: ServiceReportsApiService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -360,11 +361,10 @@ export class ReportService {
   }
 
   reloadServiceReportPreview(pdfUrl: string) {
-    checkAuthToken(this.keycloak).then((token) => {
-      this.pdfObject = {
-        url: pdfUrl,
-        httpHeaders: { Authorization: `Bearer ${token}` },
-      };
-    });
+    const token = this.localAuth.token;
+    this.pdfObject = {
+      url: pdfUrl,
+      httpHeaders: token ? { Authorization: `Bearer ${token}` } : undefined,
+    };
   }
 }
