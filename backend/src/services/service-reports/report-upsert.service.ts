@@ -1,4 +1,5 @@
-import { ServiceReportCmsModel, ServiceReportDto } from '../../models/service-report-cms.model';
+import { ServiceReportDto } from '../../models/service-report-cms.model';
+import { ServiceReportPostgresStore } from './service-report-postgres.store';
 
 export interface CreatedReportViewModel {
   id: number;
@@ -11,7 +12,7 @@ export interface ReportUpsertResult<T = undefined> {
 }
 
 export class ReportUpsertService {
-  static createReport(report: ServiceReportDto): ReportUpsertResult<CreatedReportViewModel> {
+  static async createReport(report: ServiceReportDto): Promise<ReportUpsertResult<CreatedReportViewModel>> {
     if (!report.deviceId) {
       return { statusCode: 422 };
     }
@@ -20,7 +21,7 @@ export class ReportUpsertService {
       return { statusCode: 422 };
     }
 
-    const created = ServiceReportCmsModel.create(report);
+    const created = await ServiceReportPostgresStore.create(report);
 
     return {
       statusCode: 201,
@@ -31,8 +32,8 @@ export class ReportUpsertService {
     };
   }
 
-  static updateReport(report: ServiceReportDto): ReportUpsertResult {
-    if (!report.id || !ServiceReportCmsModel.getById(String(report.id))) {
+  static async updateReport(report: ServiceReportDto): Promise<ReportUpsertResult> {
+    if (!report.id || !(await ServiceReportPostgresStore.getById(String(report.id)))) {
       return { statusCode: 404 };
     }
 
@@ -40,7 +41,7 @@ export class ReportUpsertService {
       return { statusCode: 422 };
     }
 
-    ServiceReportCmsModel.update(report);
+    await ServiceReportPostgresStore.update(report);
     return { statusCode: 200 };
   }
 

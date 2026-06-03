@@ -1,10 +1,11 @@
 import {
   InverterSchemaDto,
-  ServiceReportCmsModel,
   ServiceReportDto,
   ServiceReportListItem,
 } from '../../models/service-report-cms.model';
+import { ServiceReportCmsModel } from '../../models/service-report-cms.model';
 import { ServiceReportPdfExporterService } from './service-report-pdf-exporter.service';
+import { ServiceReportPostgresStore } from './service-report-postgres.store';
 
 export interface FilteredReportsSummaryListModel {
   reports: ServiceReportListItem[];
@@ -21,7 +22,7 @@ export class ReportTemplateService {
     page?: string,
     limit?: number,
     type?: string,
-  ): FilteredReportsSummaryListModel {
+  ): Promise<FilteredReportsSummaryListModel> {
     return this.getReportSummaries(undefined, undefined, sort, order, page, limit, type);
   }
 
@@ -32,7 +33,7 @@ export class ReportTemplateService {
     page?: string,
     limit?: number,
     type?: string,
-  ): FilteredReportsSummaryListModel {
+  ): Promise<FilteredReportsSummaryListModel> {
     return this.getReportSummaries(plantId, undefined, sort, order, page, limit, type);
   }
 
@@ -44,27 +45,28 @@ export class ReportTemplateService {
     page?: string,
     limit?: number,
     type?: string,
-  ): FilteredReportsSummaryListModel {
+  ): Promise<FilteredReportsSummaryListModel> {
     return this.getReportSummaries(plantId, deviceId, sort, order, page, limit, type);
   }
 
-  static viewReport(reportId: string): ServiceReportDto | undefined {
-    return ServiceReportCmsModel.getById(reportId);
+  static async viewReport(reportId: string): Promise<ServiceReportDto | undefined> {
+    return ServiceReportPostgresStore.getById(reportId);
   }
 
   static async getReportPdf(reportId: string): Promise<Buffer | undefined> {
-    const report = this.viewReport(reportId);
+    const report = await this.viewReport(reportId);
     return report ? ServiceReportPdfExporterService.exportReport(report) : undefined;
   }
 
-  static getSchemaFile(schemaId: string): Buffer | undefined {
-    const schema = ServiceReportCmsModel.getSchemas().find((item) => String(item.id) === String(schemaId));
-    const svg = schema ? ServiceReportCmsModel.getSchemaSvg(schemaId) : undefined;
+  static async getSchemaFile(schemaId: string): Promise<Buffer | undefined> {
+    const schemas = await ServiceReportPostgresStore.getSchemas();
+    const schema = schemas.find((item) => String(item.id) === String(schemaId));
+    const svg = schema ? await ServiceReportPostgresStore.getSchemaSvg(schemaId) : undefined;
     return svg ? Buffer.from(svg, 'utf8') : undefined;
   }
 
-  static loadAllSchemas(): InverterSchemaDto[] {
-    return ServiceReportCmsModel.getSchemas();
+  static loadAllSchemas(): Promise<InverterSchemaDto[]> {
+    return ServiceReportPostgresStore.getSchemas();
   }
 
   static loadReportTemplate(plantId?: string, deviceId?: string): ServiceReportDto | undefined {
@@ -75,7 +77,7 @@ export class ReportTemplateService {
     return ServiceReportCmsModel.createTemplate(plantId || 'mock-plant-1', deviceId);
   }
 
-  private static getReportSummaries(
+  private static async getReportSummaries(
     plantId?: string,
     deviceId?: string,
     sort?: string,
@@ -83,9 +85,9 @@ export class ReportTemplateService {
     page?: string,
     limit?: number,
     type?: string,
-  ): FilteredReportsSummaryListModel {
+  ): Promise<FilteredReportsSummaryListModel> {
     const reportType = this.parseReportType(type);
-    const allReports = ServiceReportCmsModel.findReports(plantId, deviceId, reportType);
+    const allReports = await ServiceReportPostgresStore.findReports(plantId, deviceId, reportType);
     const sortedReports = this.sortReports(allReports, this.parseSortType(sort), this.parseSortOrder(order));
     const reports = this.getReportsForPage(sortedReports, page, limit);
 

@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
-import { ServiceReportCmsModel, ServiceReportDto } from '../models/service-report-cms.model';
+import { ServiceReportDto } from '../models/service-report-cms.model';
 import { ReportTemplateService } from '../services/service-reports/report-template.service';
 import { ReportUpsertService } from '../services/service-reports/report-upsert.service';
+import { ServiceReportPostgresStore } from '../services/service-reports/service-report-postgres.store';
 
 export class ServiceReportCmsController {
-  static list(req: Request, res: Response): void {
+  static async list(req: Request, res: Response): Promise<void> {
     const { plantId, deviceId } = req.params;
     const sort = typeof req.query._sort === 'string' ? req.query._sort : undefined;
     const order = typeof req.query._order === 'string' ? req.query._order : undefined;
@@ -18,7 +19,8 @@ export class ServiceReportCmsController {
         ? ReportTemplateService.getReportsByPlantId(plantId, sort, order, page, limit, type)
         : ReportTemplateService.getAll(sort, order, page, limit, type);
 
-    const reports = ServiceReportCmsController.filterReportsForUser(req, result.reports);
+    const resolved = await result;
+    const reports = ServiceReportCmsController.filterReportsForUser(req, resolved.reports);
 
     res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
     res.setHeader('X-Total-Count', reports.length.toString());
@@ -38,9 +40,9 @@ export class ServiceReportCmsController {
     res.json(template);
   }
 
-  static getByQuery(req: Request, res: Response): void {
+  static async getByQuery(req: Request, res: Response): Promise<void> {
     const reportId = typeof req.query.reportId === 'string' ? req.query.reportId : '';
-    const report = ReportTemplateService.viewReport(reportId);
+    const report = await ReportTemplateService.viewReport(reportId);
 
     if (!report) {
       res.status(404).json({ error: 'Report not found' });
@@ -55,9 +57,9 @@ export class ServiceReportCmsController {
     res.json(report);
   }
 
-  static create(req: Request, res: Response): void {
+  static async create(req: Request, res: Response): Promise<void> {
     const body = req.body as ServiceReportDto;
-    const result = ReportUpsertService.createReport({
+    const result = await ReportUpsertService.createReport({
       ...body,
       userId: req.user?.id === 'superuser' ? 2 : 1,
       user: req.user
@@ -79,9 +81,9 @@ export class ServiceReportCmsController {
     res.status(201).json(result.model);
   }
 
-  static update(req: Request, res: Response): void {
+  static async update(req: Request, res: Response): Promise<void> {
     const body = req.body as ServiceReportDto;
-    const existing = body.id ? ReportTemplateService.viewReport(String(body.id)) : undefined;
+    const existing = body.id ? await ReportTemplateService.viewReport(String(body.id)) : undefined;
 
     if (!existing) {
       res.sendStatus(404);
@@ -93,7 +95,7 @@ export class ServiceReportCmsController {
       return;
     }
 
-    const result = ReportUpsertService.updateReport(body);
+    const result = await ReportUpsertService.updateReport(body);
 
     if (result.statusCode !== 200) {
       res.sendStatus(result.statusCode);
@@ -104,7 +106,7 @@ export class ServiceReportCmsController {
   }
 
   static async preview(req: Request, res: Response): Promise<void> {
-    const report = ReportTemplateService.viewReport(req.params.reportId);
+    const report = await ReportTemplateService.viewReport(req.params.reportId);
 
     if (!report) {
       res.status(404).json({ error: 'Report not found' });
@@ -129,7 +131,7 @@ export class ServiceReportCmsController {
   }
 
   static async download(req: Request, res: Response): Promise<void> {
-    const report = ReportTemplateService.viewReport(req.params.reportId);
+    const report = await ReportTemplateService.viewReport(req.params.reportId);
 
     if (!report) {
       res.status(404).json({ error: 'Report not found' });
@@ -154,12 +156,12 @@ export class ServiceReportCmsController {
     });
   }
 
-  static schemas(req: Request, res: Response): void {
-    res.json(ReportTemplateService.loadAllSchemas());
+  static async schemas(req: Request, res: Response): Promise<void> {
+    res.json(await ReportTemplateService.loadAllSchemas());
   }
 
-  static schemaDownload(req: Request, res: Response): void {
-    const svg = ReportTemplateService.getSchemaFile(req.params.schemaId);
+  static async schemaDownload(req: Request, res: Response): Promise<void> {
+    const svg = await ReportTemplateService.getSchemaFile(req.params.schemaId);
 
     if (!svg) {
       res.status(404).json({ error: 'Schema not found' });
@@ -170,8 +172,8 @@ export class ServiceReportCmsController {
     res.send(svg);
   }
 
-  static schemaDownloadBase64(req: Request, res: Response): void {
-    const svg = ReportTemplateService.getSchemaFile(req.params.schemaId);
+  static async schemaDownloadBase64(req: Request, res: Response): Promise<void> {
+    const svg = await ReportTemplateService.getSchemaFile(req.params.schemaId);
 
     if (!svg) {
       res.status(404).json({ error: 'Schema not found' });
@@ -184,8 +186,8 @@ export class ServiceReportCmsController {
     });
   }
 
-  static softDelete(req: Request, res: Response): void {
-    const deleted = ServiceReportCmsModel.softDelete(req.params.reportId);
+  static async softDelete(req: Request, res: Response): Promise<void> {
+    const deleted = await ServiceReportPostgresStore.softDelete(req.params.reportId);
 
     if (!deleted) {
       res.status(404).json({ error: 'Report not found' });

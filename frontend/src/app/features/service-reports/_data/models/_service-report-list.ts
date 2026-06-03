@@ -3,12 +3,12 @@ import { TravellingEntry } from '../../service-report-detail/service-report-edit
 import { WorkEntry } from '../../service-report-detail/service-report-edit/service-report-work/models';
 
 export interface ServiceRreportListData {
-  deviceId: number;
+  deviceId: string;
   deviceName: string;
   deviceSerial: string;
   endDate: string;
   id: number;
-  plantId: number;
+  plantId: string;
   plantName: string;
   serviceEngineer: string;
   startDate: string;

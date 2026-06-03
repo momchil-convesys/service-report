@@ -58,9 +58,13 @@ export async function initializeServiceReportDatabase(): Promise<void> {
       start_date TIMESTAMPTZ,
       end_date TIMESTAMPTZ,
       payload JSONB NOT NULL,
+      deleted_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
+
+    ALTER TABLE cms_service_reports
+      ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;
 
     CREATE INDEX IF NOT EXISTS idx_cms_service_reports_plant ON cms_service_reports(plant_id);
     CREATE INDEX IF NOT EXISTS idx_cms_service_reports_device ON cms_service_reports(device_id);

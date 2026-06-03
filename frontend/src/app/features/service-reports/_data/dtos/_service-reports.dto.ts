@@ -3,13 +3,13 @@ export interface ServiceReportListDto {
   draft: any[];
 }
 export interface ServiceReportDto {
-  id: string;
+  id?: number | string;
   plant: any;
   device: any;
   reportId: string;
-  materials: [];
-  travelling: [];
-  works: [];
+  materials: any[];
+  travelling: any[];
+  works: any[];
   plantId: string;
   installedPowerMwp: string;
   country: string;
@@ -30,13 +30,14 @@ export interface ServiceReportDto {
   [key: string]: any; // other props
 }
 export interface ServiceRreportSaveDto {
-  id: string;
+  id?: number | string;
   statusReport: string;
   plantId: string;
   deviceId: string;
   typeActivity: any;
   complaintNumber: string;
-  materials: [];
-  travelling: [];
-  works: [];
+  otherEquipment?: string | null;
+  materials: any[];
+  travelling: any[];
+  works: any[];
 }

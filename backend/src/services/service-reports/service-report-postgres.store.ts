@@ -36,6 +36,8 @@ function toListItem(report: ServiceReportDto): ServiceReportListItem {
     serviceEngineer: report.user ? `${report.user.firstName} ${report.user.lastName}` : 'Local Dev User',
     statusRepair: String(report.statusRepair || 'Finished'),
     statusReport: report.statusReport,
+    userId: typeof report.userId === 'number' ? report.userId : undefined,
+    deletedAt: report.deletedAt || null,
   };
 }
 
@@ -83,8 +85,10 @@ export class ServiceReportPostgresStore {
       where.push(`status_report = $${params.length}`);
     }
 
+    where.push('deleted_at IS NULL');
+
     const result = await query(
-      `SELECT payload FROM cms_service_reports ${where.length ? `WHERE ${where.join(' AND ')}` : ''} ORDER BY id DESC`,
+      `SELECT payload FROM cms_service_reports WHERE ${where.join(' AND ')} ORDER BY id DESC`,
       params,
     );
 
@@ -96,7 +100,9 @@ export class ServiceReportPostgresStore {
       return ServiceReportCmsModel.getById(reportId);
     }
 
-    const result = await query('SELECT payload FROM cms_service_reports WHERE id = $1', [Number(reportId)]);
+    const result = await query('SELECT payload FROM cms_service_reports WHERE id = $1 AND deleted_at IS NULL', [
+      Number(reportId),
+    ]);
     return result.rows[0]?.payload as ServiceReportDto | undefined;
   }
 
@@ -151,6 +157,7 @@ export class ServiceReportPostgresStore {
            start_date = $8,
            end_date = $9,
            payload = $10::jsonb,
+           deleted_at = NULL,
            updated_at = now()
        WHERE id = $1
        RETURNING payload`,
@@ -169,6 +176,25 @@ export class ServiceReportPostgresStore {
     );
 
     return result.rows[0]?.payload as ServiceReportDto | undefined;
+  }
+
+  static async softDelete(reportId: string): Promise<boolean> {
+    if (!(await this.initialize())) {
+      return ServiceReportCmsModel.softDelete(reportId);
+    }
+
+    const deletedAt = new Date().toISOString();
+    const result = await query(
+      `UPDATE cms_service_reports
+       SET deleted_at = $2::timestamptz,
+           payload = jsonb_set(payload, '{deletedAt}', to_jsonb($3::text), true),
+           updated_at = now()
+       WHERE id = $1 AND deleted_at IS NULL
+       RETURNING id`,
+      [Number(reportId), deletedAt, deletedAt],
+    );
+
+    return (result.rowCount || 0) > 0;
   }
 
   static async getSchemas(): Promise<InverterSchemaDto[]> {
@@ -252,7 +278,18 @@ export class ServiceReportPostgresStore {
       `INSERT INTO cms_service_reports
         (id, plant_id, device_id, user_id, client_id, status_report, complaint_number, start_date, end_date, payload)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb)
-       ON CONFLICT (id) DO UPDATE SET payload = EXCLUDED.payload`,
+       ON CONFLICT (id) DO UPDATE SET
+         plant_id = EXCLUDED.plant_id,
+         device_id = EXCLUDED.device_id,
+         user_id = EXCLUDED.user_id,
+         client_id = EXCLUDED.client_id,
+         status_report = EXCLUDED.status_report,
+         complaint_number = EXCLUDED.complaint_number,
+         start_date = EXCLUDED.start_date,
+         end_date = EXCLUDED.end_date,
+         payload = EXCLUDED.payload,
+         deleted_at = NULL,
+         updated_at = now()`,
       [
         report.id,
         report.plantId,

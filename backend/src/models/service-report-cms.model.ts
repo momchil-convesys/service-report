@@ -78,32 +78,51 @@ const relatedClients = [
   },
 ];
 
+function createPlantDevices(plantId: string, serialPrefix: string): StrippedDevice[] {
+  return Array.from({ length: 5 }, (_, index) => {
+    const ordinal = index + 1;
+    const deviceId = plantId === 'mock-plant-1' ? `mock-inverter-${ordinal}` : `${plantId}-inverter-${ordinal}`;
+
+    return {
+      id: deviceId,
+      name: `Inverter ${ordinal}`,
+      type: 'inverter',
+      serialNumber: `${serialPrefix}-INV-${String(ordinal).padStart(3, '0')}`,
+      installedPowerKw: '250',
+      plantId,
+    };
+  });
+}
+
 const devices: StrippedDevice[] = [
-  {
-    id: 'mock-inverter-1',
-    name: 'Inverter 1',
-    type: 'S500',
-    serialNumber: 'INV-001',
-    installedPowerKw: '500',
-    plantId: 'mock-plant-1',
-  },
-  {
-    id: 'mock-inverter-2',
-    name: 'Inverter 2',
-    type: 'S500',
-    serialNumber: 'INV-002',
-    installedPowerKw: '500',
-    plantId: 'mock-plant-1',
-  },
+  ...createPlantDevices('mock-plant-1', 'P1'),
+  ...createPlantDevices('demo-plant-2', 'P2'),
+  ...createPlantDevices('demo-plant-3', 'P3'),
 ];
 
 const userPlants: StrippedPlant[] = [
   {
     id: 'mock-plant-1',
-    name: 'Demo Solar Plant',
+    name: 'Demo Plant 1',
     type: 'solar',
-    country: 'Bulgaria',
-    devices,
+    country: 'BG',
+    devices: devices.filter((device) => device.plantId === 'mock-plant-1'),
+    relatedClients,
+  },
+  {
+    id: 'demo-plant-2',
+    name: 'Demo Plant 2',
+    type: 'battery',
+    country: 'BG',
+    devices: devices.filter((device) => device.plantId === 'demo-plant-2'),
+    relatedClients,
+  },
+  {
+    id: 'demo-plant-3',
+    name: 'Demo Plant 3',
+    type: 'wind',
+    country: 'BG',
+    devices: devices.filter((device) => device.plantId === 'demo-plant-3'),
     relatedClients,
   },
 ];
@@ -126,13 +145,17 @@ function findPlant(plantId?: string): StrippedPlant {
   return userPlants.find((plant) => plant.id === plantId) || userPlants[0];
 }
 
-function findDevice(deviceId?: string): StrippedDevice {
-  return devices.find((device) => device.id === deviceId) || devices[0];
+function findDevice(deviceId?: string, plantId?: string): StrippedDevice {
+  return (
+    devices.find((device) => device.id === deviceId) ||
+    devices.find((device) => device.plantId === plantId) ||
+    devices[0]
+  );
 }
 
 function createReport(id: number, statusReport: ReportStatus): ServiceReportDto {
   const plant = findPlant('mock-plant-1');
-  const device = findDevice('mock-inverter-1');
+  const device = findDevice('mock-inverter-1', plant.id);
 
   return {
     id,
@@ -156,7 +179,7 @@ function createReport(id: number, statusReport: ReportStatus): ServiceReportDto 
           timestamp: '2026-05-26T09:00:00',
         },
         destination: {
-          location: 'Demo Solar Plant',
+          location: plant.name,
           timestamp: '2026-05-26T10:15:00',
         },
         duration: 75,
@@ -181,12 +204,14 @@ function createReport(id: number, statusReport: ReportStatus): ServiceReportDto 
     materials: [],
     userPlants,
     userClient,
-    plantName: 'Demo Solar Plant',
-    country: 'Bulgaria',
-    inverterType: 'S500',
-    inverterSerialNumber: 'INV-001',
+    plantName: plant.name,
+    country: plant.country,
+    inverterType: device.type,
+    inverterSerialNumber: device.serialNumber,
+    deviceSerialNumber: device.serialNumber,
     warrantyStatus: 'Yes',
-    installedPowerMwp: '1.0',
+    installedPowerMwp: '1.2',
+    installedPowerKw: device.installedPowerKw,
     contractNumber: 'CN-DEMO-001',
   };
 }
@@ -231,7 +256,7 @@ export class ServiceReportCmsModel {
 
   static createTemplate(plantId: string, deviceId?: string): ServiceReportDto {
     const plant = findPlant(plantId);
-    const device = findDevice(deviceId);
+    const device = findDevice(deviceId, plant.id);
 
     return {
       ...createReport(0, 'Draft'),
@@ -245,6 +270,14 @@ export class ServiceReportCmsModel {
       travelling: [],
       works: [],
       materials: [],
+      userPlants,
+      userClient,
+      plantName: plant.name,
+      country: plant.country,
+      inverterType: device.type,
+      inverterSerialNumber: device.serialNumber,
+      deviceSerialNumber: device.serialNumber,
+      installedPowerKw: device.installedPowerKw,
     };
   }
 
@@ -302,9 +335,9 @@ export class ServiceReportCmsModel {
       ...report,
       statusReport: report.statusReport || 'Draft',
       plantId: report.plantId || 'mock-plant-1',
-      deviceId: report.deviceId || 'mock-inverter-1',
       plant: findPlant(report.plantId),
-      device: findDevice(report.deviceId),
+      deviceId: report.deviceId || findDevice(undefined, report.plantId).id,
+      device: findDevice(report.deviceId, report.plantId),
       userId: report.userId || user.id,
       user: report.user || user,
       selectedRelatedClientId: report.selectedRelatedClientId || userClient.id,
@@ -323,8 +356,8 @@ export class ServiceReportCmsModel {
       plantId: report.plantId,
       plantName: findPlant(report.plantId).name,
       deviceId: report.deviceId,
-      deviceName: findDevice(report.deviceId).name,
-      deviceSerial: findDevice(report.deviceId).serialNumber,
+      deviceName: findDevice(report.deviceId, report.plantId).name,
+      deviceSerial: findDevice(report.deviceId, report.plantId).serialNumber,
       startDate: '2026-05-26T10:30:00',
       endDate: '2026-05-26T13:30:00',
       serviceEngineer: 'Local Dev User',
