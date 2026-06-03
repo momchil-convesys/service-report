@@ -46,7 +46,10 @@
     }
   }
 
-  .plants-list {
+  .plants-list,
+  .clients-list {
+    margin-top: @margin-lg;
+
     .list-header {
       display: flex;
       align-items: center;
@@ -57,6 +60,7 @@
 
     h2 {
       font-size: 18px;
+      margin-bottom: @margin-md;
     }
 
     .search-input {
@@ -73,12 +77,14 @@
     }
 
     .page-header,
-    .plants-list .list-header {
+    .plants-list .list-header,
+    .clients-list .list-header {
       align-items: flex-start;
       flex-direction: column;
     }
 
-    .plants-list .search-input {
+    .plants-list .search-input,
+    .clients-list .search-input {
       max-width: none;
     }
   }

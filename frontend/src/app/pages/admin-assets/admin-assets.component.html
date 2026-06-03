@@ -56,6 +56,20 @@
         </nz-form-control>
       </nz-form-item>
 
+      <nz-form-item>
+        <nz-form-label nzFor="plant-client">Client</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="plant-client" name="clientName" [(ngModel)]="plantModel.clientName" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="plant-client-address">Client address</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="plant-client-address" name="clientAddress" [(ngModel)]="plantModel.clientAddress" />
+        </nz-form-control>
+      </nz-form-item>
+
       <button nz-button nzType="primary" [disabled]="plantForm.invalid" [nzLoading]="isSavingPlant">Add plant</button>
     </form>
 
@@ -180,6 +194,34 @@
               }
             </td>
             <td>{{ plant.devices.length }}</td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </section>
+
+  <section class="clients-list">
+    <h2>Current clients</h2>
+    <nz-table #clientsTable [nzData]="(clients$ | async) || []" [nzPageSize]="10">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Assigned plants</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (client of clientsTable.data; track client.id) {
+          <tr>
+            <td>{{ client.id }}</td>
+            <td>{{ client.name }}</td>
+            <td>{{ client.address }}</td>
+            <td>
+              @for (plant of client.plants; track plant.id) {
+                <div>{{ plant.name }}</div>
+              }
+            </td>
           </tr>
         }
       </tbody>

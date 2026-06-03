@@ -9,10 +9,9 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { finalize, map, Observable } from 'rxjs';
+import { BehaviorSubject, finalize, Observable, shareReplay, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../../data/api';
 import { Plant } from '../../data/models';
-import { PlantsService } from '../../data/services/plants.service';
 
 interface PlantFormModel {
   id: string;
@@ -20,6 +19,8 @@ interface PlantFormModel {
   type: string;
   country: string;
   installedPowerMwp: string;
+  clientName: string;
+  clientAddress: string;
 }
 
 interface DeviceFormModel {
@@ -35,6 +36,13 @@ interface ClientFormModel {
   plantId: string;
   clientName: string;
   clientAddress: string;
+}
+
+interface AdminClient {
+  id: string;
+  name: string;
+  address: string;
+  plants: { id: string; name: string }[];
 }
 
 @Component({
@@ -57,6 +65,7 @@ interface ClientFormModel {
 })
 export class AdminAssetsComponent {
   plants$: Observable<Plant[]>;
+  clients$: Observable<AdminClient[]>;
   isSavingPlant = false;
   isSavingDevice = false;
   isSavingClient = false;
@@ -70,6 +79,8 @@ export class AdminAssetsComponent {
     type: 'solar',
     country: 'BG',
     installedPowerMwp: '',
+    clientName: '',
+    clientAddress: '',
   };
 
   deviceModel: DeviceFormModel = {
@@ -89,13 +100,22 @@ export class AdminAssetsComponent {
 
   readonly plantTypes = ['solar', 'battery', 'wind', 'pump', 'other'];
   readonly deviceTypes = ['inverter', 'battery', 'meter', 'sensor', 'gateway', 'other'];
+  private readonly refresh$ = new BehaviorSubject<void>(undefined);
 
   constructor(
     private http: HttpClient,
     private api: ApiService,
-    private plantsService: PlantsService,
   ) {
-    this.plants$ = this.plantsService.getPlants().pipe(map((request) => request.data || []));
+    this.plants$ = this.refresh$.pipe(
+      startWith(undefined),
+      switchMap(() => this.http.get<Plant[]>(`${this.api.baseUrl}/plants`)),
+      shareReplay(1),
+    );
+    this.clients$ = this.refresh$.pipe(
+      startWith(undefined),
+      switchMap(() => this.http.get<AdminClient[]>(`${this.api.baseUrl}/admin/clients`)),
+      shareReplay(1),
+    );
   }
 
   createPlant(form: NgForm): void {
@@ -114,7 +134,7 @@ export class AdminAssetsComponent {
         next: () => {
           this.successMessage = 'Plant created.';
           this.resetPlantForm(form);
-          window.location.reload();
+          this.refresh$.next();
         },
         error: (error) => {
           this.errorMessage = error?.error?.error || 'Failed to create plant.';
@@ -138,7 +158,7 @@ export class AdminAssetsComponent {
         next: () => {
           this.successMessage = 'Device created.';
           this.resetDeviceForm(form);
-          window.location.reload();
+          this.refresh$.next();
         },
         error: (error) => {
           this.errorMessage = error?.error?.error || 'Failed to create device.';
@@ -162,7 +182,7 @@ export class AdminAssetsComponent {
         next: () => {
           this.successMessage = 'Client assigned to plant.';
           this.resetClientForm(form);
-          window.location.reload();
+          this.refresh$.next();
         },
         error: (error) => {
           this.errorMessage = error?.error?.error || 'Failed to assign client.';
