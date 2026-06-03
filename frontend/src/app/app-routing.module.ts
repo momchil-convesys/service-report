@@ -35,6 +35,15 @@ const routes: Routes = [
         canActivate: [loginGuard, permissionGuard],
         data: { permissions: [AccessControlPermission.Admin_Manage] },
       },
+      {
+        path: 'admin/clients',
+        loadComponent: () =>
+          import('./pages/admin-clients/admin-clients.component').then(
+            (m) => m.AdminClientsComponent,
+          ),
+        canActivate: [loginGuard, permissionGuard],
+        data: { permissions: [AccessControlPermission.Admin_Manage] },
+      },
       { path: '', pathMatch: 'full', redirectTo: '/service-reports/mock-plant-1' },
       { path: '404', component: NotFoundComponent },
       { path: '403', component: NotAuthorizedComponent },

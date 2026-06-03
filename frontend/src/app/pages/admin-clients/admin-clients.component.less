@@ -1,11 +1,12 @@
 @import "theme";
 
-.admin-assets-page {
+.admin-clients-page {
   padding: @padding-lg;
-  max-width: 1180px;
+  max-width: 980px;
   margin: 0 auto;
 
-  .page-header {
+  .page-header,
+  .list-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -22,39 +23,20 @@
     margin-bottom: @margin-md;
   }
 
-  .forms-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: @margin-lg;
-    align-items: start;
-    margin-bottom: @margin-lg;
-  }
-
-  .asset-form {
+  .client-form {
     border: 1px solid @border-color-base;
     border-radius: 4px;
     padding: @padding-md;
     background: @component-background;
+    margin-bottom: @margin-lg;
 
     h2 {
       margin-bottom: @margin-md;
       font-size: 18px;
     }
-
-    button {
-      margin-top: @margin-sm;
-    }
   }
 
-  .plants-list {
-    .list-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: @margin-md;
-      margin-bottom: @margin-md;
-    }
-
+  .clients-list {
     h2 {
       font-size: 18px;
     }
@@ -68,17 +50,12 @@
     padding: @padding-sm;
 
     .page-header,
-    .forms-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .page-header,
-    .plants-list .list-header {
+    .list-header {
       align-items: flex-start;
       flex-direction: column;
     }
 
-    .plants-list .search-input {
+    .clients-list .search-input {
       max-width: none;
     }
   }

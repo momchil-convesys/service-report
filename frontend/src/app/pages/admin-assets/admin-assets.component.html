@@ -56,20 +56,6 @@
         </nz-form-control>
       </nz-form-item>
 
-      <nz-form-item>
-        <nz-form-label nzFor="plant-client-name">Client</nz-form-label>
-        <nz-form-control>
-          <input nz-input id="plant-client-name" name="clientName" [(ngModel)]="plantModel.clientName" />
-        </nz-form-control>
-      </nz-form-item>
-
-      <nz-form-item>
-        <nz-form-label nzFor="plant-client-address">Client address</nz-form-label>
-        <nz-form-control>
-          <input nz-input id="plant-client-address" name="clientAddress" [(ngModel)]="plantModel.clientAddress" />
-        </nz-form-control>
-      </nz-form-item>
-
       <button nz-button nzType="primary" [disabled]="plantForm.invalid" [nzLoading]="isSavingPlant">Add plant</button>
     </form>
 
@@ -127,37 +113,6 @@
       </nz-form-item>
 
       <button nz-button nzType="primary" [disabled]="deviceForm.invalid" [nzLoading]="isSavingDevice">Add device</button>
-    </form>
-
-    <form nz-form #clientForm="ngForm" (ngSubmit)="addClientToPlant(clientForm)" class="asset-form">
-      <h2>Add client to plant</h2>
-
-      <nz-form-item>
-        <nz-form-label nzRequired nzFor="client-plant">Plant</nz-form-label>
-        <nz-form-control>
-          <nz-select id="client-plant" name="plantId" required [(ngModel)]="clientModel.plantId">
-            @for (plant of (plants$ | async) || []; track plant.id) {
-              <nz-option [nzValue]="plant.id" [nzLabel]="plant.name"></nz-option>
-            }
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-
-      <nz-form-item>
-        <nz-form-label nzRequired nzFor="client-name">Client</nz-form-label>
-        <nz-form-control>
-          <input nz-input id="client-name" name="clientName" required [(ngModel)]="clientModel.clientName" />
-        </nz-form-control>
-      </nz-form-item>
-
-      <nz-form-item>
-        <nz-form-label nzFor="client-address">Address</nz-form-label>
-        <nz-form-control>
-          <input nz-input id="client-address" name="clientAddress" [(ngModel)]="clientModel.clientAddress" />
-        </nz-form-control>
-      </nz-form-item>
-
-      <button nz-button nzType="primary" [disabled]="clientForm.invalid" [nzLoading]="isSavingClient">Add client</button>
     </form>
   </div>
 

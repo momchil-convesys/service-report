@@ -6,6 +6,15 @@ function isValidId(value: unknown): value is string {
 }
 
 export class AdminAssetsController {
+  static async listClients(req: Request, res: Response): Promise<void> {
+    try {
+      res.json(await AdminAssetModel.findClients());
+    } catch (error) {
+      console.error('List admin clients error:', error);
+      res.status(500).json({ error: 'Failed to fetch clients.' });
+    }
+  }
+
   static async createPlant(req: Request, res: Response): Promise<void> {
     try {
       const { id, name, type, country, installedPowerMwp, clientName, clientAddress } = req.body || {};
