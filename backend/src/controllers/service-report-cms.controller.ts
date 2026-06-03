@@ -95,7 +95,14 @@ export class ServiceReportCmsController {
       return;
     }
 
-    const result = await ReportUpsertService.updateReport(body);
+    const result = await ReportUpsertService.updateReport({
+      ...existing,
+      ...body,
+      userId: existing.userId,
+      user: existing.user,
+      userPlants: body.userPlants || existing.userPlants,
+      userClient: body.userClient || existing.userClient,
+    });
 
     if (result.statusCode !== 200) {
       res.sendStatus(result.statusCode);
