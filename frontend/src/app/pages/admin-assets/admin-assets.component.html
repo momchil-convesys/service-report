@@ -147,70 +147,76 @@
     </form>
   </div>
 
-  <section class="plants-list">
-    <div class="list-header">
-      <h2>Current plants</h2>
-      <input
-        nz-input
-        class="search-input"
-        name="searchText"
-        placeholder="Search plant, device, or client"
-        [(ngModel)]="searchText"
-      />
-    </div>
-    <nz-table #plantsTable [nzData]="filterPlants((plants$ | async) || [])" [nzPageSize]="10">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Clients</th>
-          <th>Devices</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (plant of plantsTable.data; track plant.id) {
-          <tr>
-            <td>{{ plant.id }}</td>
-            <td>{{ plant.name }}</td>
-            <td>{{ plant.type }}</td>
-            <td>
-              @for (client of plant.relatedClients || []; track client.id) {
-                <div>{{ client.name }}</div>
-              }
-            </td>
-            <td>{{ plant.devices.length }}</td>
-          </tr>
-        }
-      </tbody>
-    </nz-table>
-  </section>
+  <nz-tabs class="asset-tabs" [nzAnimated]="false">
+    <nz-tab nzTitle="Plants">
+      <section class="plants-list">
+        <div class="list-header">
+          <h2>Current plants</h2>
+          <input
+            nz-input
+            class="search-input"
+            name="searchText"
+            placeholder="Search plant, device, or client"
+            [(ngModel)]="searchText"
+          />
+        </div>
+        <nz-table #plantsTable [nzData]="filterPlants((plants$ | async) || [])" [nzPageSize]="10">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Clients</th>
+              <th>Devices</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (plant of plantsTable.data; track plant.id) {
+              <tr>
+                <td>{{ plant.id }}</td>
+                <td>{{ plant.name }}</td>
+                <td>{{ plant.type }}</td>
+                <td>
+                  @for (client of plant.relatedClients || []; track client.id) {
+                    <div>{{ client.name }}</div>
+                  }
+                </td>
+                <td>{{ plant.devices.length }}</td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
+      </section>
+    </nz-tab>
 
-  <section class="clients-list">
-    <h2>Current clients</h2>
-    <nz-table #clientsTable [nzData]="(clients$ | async) || []" [nzPageSize]="10">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Address</th>
-          <th>Assigned plants</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (client of clientsTable.data; track client.id) {
-          <tr>
-            <td>{{ client.id }}</td>
-            <td>{{ client.name }}</td>
-            <td>{{ client.address }}</td>
-            <td>
-              @for (plant of client.plants; track plant.id) {
-                <div>{{ plant.name }}</div>
-              }
-            </td>
-          </tr>
-        }
-      </tbody>
-    </nz-table>
-  </section>
+    <nz-tab nzTitle="Clients">
+      <section class="clients-list">
+        <h2>Current clients</h2>
+        <nz-table #clientsTable [nzData]="(clients$ | async) || []" [nzPageSize]="10">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Assigned plants</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (client of clientsTable.data; track client.id) {
+              <tr>
+                <td>{{ client.id }}</td>
+                <td>{{ client.name }}</td>
+                <td>{{ client.address }}</td>
+                <td>
+                  @for (plant of client.plants; track plant.id) {
+                    <div>{{ plant.name }}</div>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
+      </section>
+    </nz-tab>
+  </nz-tabs>
 </section>

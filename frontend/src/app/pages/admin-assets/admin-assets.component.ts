@@ -8,6 +8,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { BehaviorSubject, finalize, Observable, shareReplay, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../../data/api';
@@ -55,6 +56,7 @@ interface AdminClient {
     NzFormModule,
     NzInputModule,
     NzSelectModule,
+    NzTabsModule,
     NzTableModule,
   ],
   templateUrl: './admin-assets.component.html',
