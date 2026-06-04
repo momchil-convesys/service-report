@@ -7,8 +7,7 @@ export interface AdminPlantInput {
   type: string;
   country?: string | null;
   installedPowerMwp?: string | null;
-  clientName?: string | null;
-  clientAddress?: string | null;
+  clientId?: string | null;
 }
 
 export interface AdminDeviceInput {
@@ -22,6 +21,12 @@ export interface AdminDeviceInput {
 
 export interface AdminPlantClientInput {
   plantId: string;
+  clientId?: string | null;
+  clientName?: string | null;
+  clientAddress?: string | null;
+}
+
+export interface AdminClientInput {
   clientName: string;
   clientAddress?: string | null;
 }
@@ -80,13 +85,31 @@ export class AdminAssetModel {
       ],
     );
 
-    if (input.clientName?.trim()) {
-      await this.addClientToPlant({
-        plantId: input.id,
-        clientName: input.clientName,
-        clientAddress: input.clientAddress || '',
-      });
+    if (input.clientId?.trim()) {
+      await this.linkClientToPlant(input.id, input.clientId.trim());
     }
+
+    return result.rows[0];
+  }
+
+  static async createClient(input: AdminClientInput): Promise<{
+    id: string;
+    name: string;
+    address: string;
+  }> {
+    await initializeServiceReportDatabase();
+
+    const clientId = this.slugify(input.clientName);
+    const result = await query(
+      `INSERT INTO cms_clients (id, name, address)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (id) DO UPDATE SET
+         name = EXCLUDED.name,
+         address = EXCLUDED.address,
+         updated_at = now()
+       RETURNING id, name, address`,
+      [clientId, input.clientName, input.clientAddress || ''],
+    );
 
     return result.rows[0];
   }
@@ -125,29 +148,31 @@ export class AdminAssetModel {
   }> {
     await initializeServiceReportDatabase();
 
-    const clientId = this.slugify(input.clientName);
-    const clientResult = await query(
-      `INSERT INTO cms_clients (id, name, address)
-       VALUES ($1, $2, $3)
-       ON CONFLICT (id) DO UPDATE SET
-         name = EXCLUDED.name,
-         address = EXCLUDED.address,
-         updated_at = now()
-       RETURNING id, name, address`,
-      [clientId, input.clientName, input.clientAddress || ''],
-    );
+    const clientResult = input.clientId
+      ? await query(`SELECT id, name, address FROM cms_clients WHERE id = $1`, [input.clientId])
+      : { rows: [await this.createClient({ clientName: input.clientName || '', clientAddress: input.clientAddress })] };
 
-    await query(
-      `INSERT INTO cms_plant_clients (plant_id, client_id)
-       VALUES ($1, $2)
-       ON CONFLICT DO NOTHING`,
-      [input.plantId, clientId],
-    );
+    if (!clientResult.rows[0]) {
+      throw Object.assign(new Error('Client id does not exist.'), { code: '23503' });
+    }
+
+    const clientId = clientResult.rows[0].id;
+
+    await this.linkClientToPlant(input.plantId, clientId);
 
     return {
       ...clientResult.rows[0],
       plantId: input.plantId,
     };
+  }
+
+  private static async linkClientToPlant(plantId: string, clientId: string): Promise<void> {
+    await query(
+      `INSERT INTO cms_plant_clients (plant_id, client_id)
+       VALUES ($1, $2)
+       ON CONFLICT DO NOTHING`,
+      [plantId, clientId],
+    );
   }
 
   private static slugify(value: string): string {

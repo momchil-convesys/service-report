@@ -19,8 +19,7 @@ interface PlantFormModel {
   type: string;
   country: string;
   installedPowerMwp: string;
-  clientName: string;
-  clientAddress: string;
+  clientId: string;
 }
 
 interface DeviceFormModel {
@@ -33,7 +32,6 @@ interface DeviceFormModel {
 }
 
 interface ClientFormModel {
-  plantId: string;
   clientName: string;
   clientAddress: string;
 }
@@ -79,8 +77,7 @@ export class AdminAssetsComponent {
     type: 'solar',
     country: 'BG',
     installedPowerMwp: '',
-    clientName: '',
-    clientAddress: '',
+    clientId: '',
   };
 
   deviceModel: DeviceFormModel = {
@@ -93,7 +90,6 @@ export class AdminAssetsComponent {
   };
 
   clientModel: ClientFormModel = {
-    plantId: '',
     clientName: '',
     clientAddress: '',
   };
@@ -166,7 +162,7 @@ export class AdminAssetsComponent {
       });
   }
 
-  assignClient(form: NgForm): void {
+  createClient(form: NgForm): void {
     if (form.invalid) {
       return;
     }
@@ -176,16 +172,16 @@ export class AdminAssetsComponent {
     this.successMessage = '';
 
     this.http
-      .post(`${this.api.baseUrl}/admin/plant-clients`, this.clientModel)
+      .post(`${this.api.baseUrl}/admin/clients`, this.clientModel)
       .pipe(finalize(() => (this.isSavingClient = false)))
       .subscribe({
         next: () => {
-          this.successMessage = 'Client assigned to plant.';
+          this.successMessage = 'Client created.';
           this.resetClientForm(form);
           this.refresh$.next();
         },
         error: (error) => {
-          this.errorMessage = error?.error?.error || 'Failed to assign client.';
+          this.errorMessage = error?.error?.error || 'Failed to create client.';
         },
       });
   }
@@ -213,6 +209,7 @@ export class AdminAssetsComponent {
     form.resetForm({
       type: 'solar',
       country: 'BG',
+      clientId: '',
     });
   }
 

@@ -17,7 +17,7 @@ export class AdminAssetsController {
 
   static async createPlant(req: Request, res: Response): Promise<void> {
     try {
-      const { id, name, type, country, installedPowerMwp, clientName, clientAddress } = req.body || {};
+      const { id, name, type, country, installedPowerMwp, clientId } = req.body || {};
 
       if (!isValidId(id) || typeof name !== 'string' || !name.trim() || typeof type !== 'string' || !type.trim()) {
         res.status(400).json({ error: 'Plant id, name, and type are required.' });
@@ -30,8 +30,7 @@ export class AdminAssetsController {
         type: type.trim(),
         country: typeof country === 'string' ? country.trim() : '',
         installedPowerMwp: typeof installedPowerMwp === 'string' ? installedPowerMwp.trim() : null,
-        clientName: typeof clientName === 'string' ? clientName.trim() : null,
-        clientAddress: typeof clientAddress === 'string' ? clientAddress.trim() : null,
+        clientId: typeof clientId === 'string' ? clientId.trim() : null,
       });
 
       res.status(201).json(plant);
@@ -41,8 +40,34 @@ export class AdminAssetsController {
         return;
       }
 
+      if (error?.code === '23503') {
+        res.status(400).json({ error: 'Client id does not exist.' });
+        return;
+      }
+
       console.error('Create admin plant error:', error);
       res.status(500).json({ error: 'Failed to create plant.' });
+    }
+  }
+
+  static async createClient(req: Request, res: Response): Promise<void> {
+    try {
+      const { clientName, clientAddress } = req.body || {};
+
+      if (typeof clientName !== 'string' || !clientName.trim()) {
+        res.status(400).json({ error: 'Client name is required.' });
+        return;
+      }
+
+      const client = await AdminAssetModel.createClient({
+        clientName: clientName.trim(),
+        clientAddress: typeof clientAddress === 'string' ? clientAddress.trim() : '',
+      });
+
+      res.status(201).json(client);
+    } catch (error) {
+      console.error('Create admin client error:', error);
+      res.status(500).json({ error: 'Failed to create client.' });
     }
   }
 
@@ -90,16 +115,21 @@ export class AdminAssetsController {
 
   static async addClientToPlant(req: Request, res: Response): Promise<void> {
     try {
-      const { plantId, clientName, clientAddress } = req.body || {};
+      const { plantId, clientId, clientName, clientAddress } = req.body || {};
 
-      if (!isValidId(plantId) || typeof clientName !== 'string' || !clientName.trim()) {
-        res.status(400).json({ error: 'Plant id and client name are required.' });
+      if (
+        !isValidId(plantId) ||
+        ((typeof clientId !== 'string' || !clientId.trim()) &&
+          (typeof clientName !== 'string' || !clientName.trim()))
+      ) {
+        res.status(400).json({ error: 'Plant id and client are required.' });
         return;
       }
 
       const client = await AdminAssetModel.addClientToPlant({
         plantId: plantId.trim(),
-        clientName: clientName.trim(),
+        clientId: typeof clientId === 'string' ? clientId.trim() : null,
+        clientName: typeof clientName === 'string' ? clientName.trim() : null,
         clientAddress: typeof clientAddress === 'string' ? clientAddress.trim() : '',
       });
 
