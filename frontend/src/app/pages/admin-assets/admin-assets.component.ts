@@ -18,7 +18,6 @@ import { Plant } from '../../data/models';
 import { PlantsService } from '../../data/services/plants.service';
 
 interface PlantFormModel {
-  id: string;
   name: string;
   type: string;
   country: string;
@@ -27,7 +26,6 @@ interface PlantFormModel {
 }
 
 interface DeviceFormModel {
-  id: string;
   plantId: string;
   name: string;
   type: string;
@@ -81,7 +79,6 @@ export class AdminAssetsComponent {
   searchText = '';
 
   plantModel: PlantFormModel = {
-    id: '',
     name: '',
     type: 'solar',
     country: 'BG',
@@ -90,7 +87,6 @@ export class AdminAssetsComponent {
   };
 
   deviceModel: DeviceFormModel = {
-    id: '',
     plantId: '',
     name: '',
     type: 'inverter',

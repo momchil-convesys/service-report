@@ -19,13 +19,19 @@ export class AdminAssetsController {
     try {
       const { id, name, type, country, installedPowerMwp, clientId } = req.body || {};
 
-      if (!isValidId(id) || typeof name !== 'string' || !name.trim() || typeof type !== 'string' || !type.trim()) {
-        res.status(400).json({ error: 'Plant id, name, and type are required.' });
+      if (
+        (id !== undefined && id !== null && !isValidId(id)) ||
+        typeof name !== 'string' ||
+        !name.trim() ||
+        typeof type !== 'string' ||
+        !type.trim()
+      ) {
+        res.status(400).json({ error: 'Plant name and type are required.' });
         return;
       }
 
       const plant = await AdminAssetModel.createPlant({
-        id: id.trim(),
+        id: typeof id === 'string' ? id.trim() : null,
         name: name.trim(),
         type: type.trim(),
         country: typeof country === 'string' ? country.trim() : '',
@@ -76,19 +82,19 @@ export class AdminAssetsController {
       const { id, plantId, name, type, serialNumber, installedPowerKw } = req.body || {};
 
       if (
-        !isValidId(id) ||
+        (id !== undefined && id !== null && !isValidId(id)) ||
         !isValidId(plantId) ||
         typeof name !== 'string' ||
         !name.trim() ||
         typeof type !== 'string' ||
         !type.trim()
       ) {
-        res.status(400).json({ error: 'Device id, plant id, name, and type are required.' });
+        res.status(400).json({ error: 'Device plant, name, and type are required.' });
         return;
       }
 
       const device = await AdminAssetModel.createDevice({
-        id: id.trim(),
+        id: typeof id === 'string' ? id.trim() : null,
         plantId: plantId.trim(),
         name: name.trim(),
         type: type.trim(),

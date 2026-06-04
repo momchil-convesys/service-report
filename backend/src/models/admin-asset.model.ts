@@ -2,7 +2,7 @@ import { query } from '../config/database';
 import { initializeServiceReportDatabase } from '../database/service-report.schema';
 
 export interface AdminPlantInput {
-  id: string;
+  id?: string | null;
   name: string;
   type: string;
   country?: string | null;
@@ -11,7 +11,7 @@ export interface AdminPlantInput {
 }
 
 export interface AdminDeviceInput {
-  id: string;
+  id?: string | null;
   plantId: string;
   name: string;
   type: string;
@@ -68,6 +68,7 @@ export class AdminAssetModel {
   static async createPlant(input: AdminPlantInput): Promise<AdminPlantInput> {
     await initializeServiceReportDatabase();
 
+    const plantId = input.id?.trim() || await this.createUniqueId('cms_plants', input.name);
     const result = await query(
       `INSERT INTO cms_plants (id, name, type, country, installed_power_mwp)
        VALUES ($1, $2, $3, $4, $5)
@@ -86,7 +87,7 @@ export class AdminAssetModel {
          country,
          installed_power_mwp AS "installedPowerMwp"`,
       [
-        input.id,
+        plantId,
         input.name,
         input.type,
         input.country || '',
@@ -99,7 +100,7 @@ export class AdminAssetModel {
     }
 
     if (input.clientId?.trim()) {
-      await this.linkClientToPlant(input.id, input.clientId.trim());
+      await this.linkClientToPlant(plantId, input.clientId.trim());
     }
 
     return result.rows[0];
@@ -140,6 +141,10 @@ export class AdminAssetModel {
       throw Object.assign(new Error('Plant id does not exist.'), { code: '23503' });
     }
 
+    const deviceId = input.id?.trim() || await this.createUniqueId(
+      'cms_devices',
+      `${input.plantId}-${input.name}`,
+    );
     const result = await query(
       `INSERT INTO cms_devices (id, plant_id, name, type, serial_number, installed_power_kw)
        VALUES ($1, $2, $3, $4, $5, $6)
@@ -151,7 +156,7 @@ export class AdminAssetModel {
          serial_number AS "serialNumber",
          installed_power_kw AS "installedPowerKw"`,
       [
-        input.id,
+        deviceId,
         input.plantId,
         input.name,
         input.type,
@@ -236,11 +241,32 @@ export class AdminAssetModel {
   }
 
   private static slugify(value: string): string {
-    return value
+    const slug = value
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
       .slice(0, 80);
+
+    return slug || 'item';
+  }
+
+  private static async createUniqueId(tableName: 'cms_plants' | 'cms_devices', source: string): Promise<string> {
+    const baseId = this.slugify(source);
+    let candidate = baseId;
+    let suffix = 2;
+
+    while (await this.idExists(tableName, candidate)) {
+      const suffixText = `-${suffix}`;
+      candidate = `${baseId.slice(0, 80 - suffixText.length)}${suffixText}`;
+      suffix += 1;
+    }
+
+    return candidate;
+  }
+
+  private static async idExists(tableName: 'cms_plants' | 'cms_devices', id: string): Promise<boolean> {
+    const result = await query(`SELECT 1 FROM ${tableName} WHERE id = $1 LIMIT 1`, [id]);
+    return Boolean(result.rows[0]);
   }
 }
