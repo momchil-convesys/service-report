@@ -10,6 +10,7 @@ router.use(requirePermission('admin:manage'));
 router.post('/plants', AdminAssetsController.createPlant);
 router.delete('/plants/:plantId', AdminAssetsController.deletePlant);
 router.post('/devices', AdminAssetsController.createDevice);
+router.delete('/devices/:deviceId', AdminAssetsController.deleteDevice);
 router.get('/clients', AdminAssetsController.listClients);
 router.post('/clients', AdminAssetsController.createClient);
 router.delete('/clients/:clientId', AdminAssetsController.deleteClient);

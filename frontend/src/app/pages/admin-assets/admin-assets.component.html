@@ -146,7 +146,8 @@
             [(ngModel)]="searchText"
           />
         </div>
-        <nz-table #plantsTable [nzData]="filterPlants((plants$ | async) || [])" [nzPageSize]="10">
+        @let plants = (plants$ | async) || [];
+        <nz-table #plantsTable [nzData]="filterPlants(plants)" [nzPageSize]="10">
           <thead>
             <tr>
               <th>ID</th>
@@ -159,7 +160,11 @@
           </thead>
           <tbody>
             @for (plant of plantsTable.data; track plant.id) {
-              <tr>
+              <tr
+                class="selectable-row"
+                [class.selected-row]="selectedPlantId === plant.id"
+                (click)="selectPlant(plant)"
+              >
                 <td>{{ plant.id }}</td>
                 <td>{{ plant.name }}</td>
                 <td>{{ plant.type }}</td>
@@ -169,7 +174,7 @@
                   }
                 </td>
                 <td>{{ plant.devices.length }}</td>
-                <td class="actions-column">
+                <td class="actions-column" (click)="$event.stopPropagation()">
                   <button
                     nz-button
                     nzType="text"
@@ -189,6 +194,54 @@
             }
           </tbody>
         </nz-table>
+
+        @if (getSelectedPlant(plants); as selectedPlant) {
+          <section class="devices-list">
+            <div class="list-header">
+              <h2>Devices for {{ selectedPlant.name }}</h2>
+            </div>
+            <nz-table
+              #devicesTable
+              [nzData]="getDevicesForSelectedPlant(plants)"
+              [nzPageSize]="10"
+              [nzFrontPagination]="false"
+            >
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th class="actions-column"></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (device of devicesTable.data; track device.id) {
+                  <tr>
+                    <td>{{ device.id }}</td>
+                    <td>{{ device.name }}</td>
+                    <td>{{ device.type }}</td>
+                    <td class="actions-column">
+                      <button
+                        nz-button
+                        nzType="text"
+                        nzDanger
+                        nzShape="circle"
+                        nz-popconfirm
+                        nzPopconfirmTitle="Delete this device?"
+                        nzPopconfirmPlacement="left"
+                        [nzLoading]="deletingDeviceId === device.id"
+                        (nzOnConfirm)="deleteDevice(device.id)"
+                        aria-label="Delete device"
+                      >
+                        <span nz-icon nzType="delete"></span>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          </section>
+        }
       </section>
     </nz-tab>
 

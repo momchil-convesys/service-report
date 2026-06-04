@@ -110,6 +110,7 @@ export class PlantModel {
         SELECT id, plant_id, name, type, serial_number, installed_power_kw
         FROM cms_devices
         WHERE plant_id = ANY($1::text[])
+          AND deleted_at IS NULL
         ORDER BY plant_id ASC, name ASC
       `,
       [plantIds],

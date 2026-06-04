@@ -163,6 +163,28 @@ export class AdminAssetsController {
     }
   }
 
+  static async deleteDevice(req: Request, res: Response): Promise<void> {
+    try {
+      const { deviceId } = req.params;
+
+      if (!isValidId(deviceId)) {
+        res.status(400).json({ error: 'Device id is required.' });
+        return;
+      }
+
+      const deleted = await AdminAssetModel.softDeleteDevice(deviceId.trim());
+      if (!deleted) {
+        res.status(404).json({ error: 'Device not found.' });
+        return;
+      }
+
+      res.json({ message: 'Device deleted.' });
+    } catch (error) {
+      console.error('Delete admin device error:', error);
+      res.status(500).json({ error: 'Failed to delete device.' });
+    }
+  }
+
   static async addClientToPlant(req: Request, res: Response): Promise<void> {
     try {
       const { plantId, clientId, clientName, clientAddress } = req.body || {};

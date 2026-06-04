@@ -14,7 +14,7 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { BehaviorSubject, finalize, map, Observable, shareReplay, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../../data/api';
-import { Plant } from '../../data/models';
+import { Device, Plant } from '../../data/models';
 import { PlantsService } from '../../data/services/plants.service';
 
 interface PlantFormModel {
@@ -74,6 +74,8 @@ export class AdminAssetsComponent {
   isSavingClient = false;
   deletingPlantId = '';
   deletingClientId = '';
+  deletingDeviceId = '';
+  selectedPlantId = '';
   errorMessage = '';
   successMessage = '';
   searchText = '';
@@ -201,6 +203,9 @@ export class AdminAssetsComponent {
       .subscribe({
         next: () => {
           this.successMessage = 'Plant deleted.';
+          if (this.selectedPlantId === plantId) {
+            this.selectedPlantId = '';
+          }
           this.plantsService.refreshPlants();
           this.refresh$.next();
         },
@@ -228,6 +233,39 @@ export class AdminAssetsComponent {
           this.errorMessage = error?.error?.error || 'Failed to delete client.';
         },
       });
+  }
+
+  deleteDevice(deviceId: string): void {
+    this.deletingDeviceId = deviceId;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.http
+      .delete(`${this.api.baseUrl}/admin/devices/${encodeURIComponent(deviceId)}`)
+      .pipe(finalize(() => (this.deletingDeviceId = '')))
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Device deleted.';
+          this.plantsService.refreshPlants();
+          this.refresh$.next();
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.error || 'Failed to delete device.';
+        },
+      });
+  }
+
+  selectPlant(plant: Plant): void {
+    this.selectedPlantId = plant.id;
+    this.deviceModel.plantId = plant.id;
+  }
+
+  getSelectedPlant(plants: Plant[]): Plant | undefined {
+    return plants.find((plant) => plant.id === this.selectedPlantId);
+  }
+
+  getDevicesForSelectedPlant(plants: Plant[]): Device[] {
+    return this.getSelectedPlant(plants)?.devices || [];
   }
 
   filterPlants(plants: Plant[]): Plant[] {
@@ -260,6 +298,7 @@ export class AdminAssetsComponent {
   private resetDeviceForm(form: NgForm): void {
     form.resetForm({
       type: 'inverter',
+      plantId: this.selectedPlantId || '',
     });
   }
 

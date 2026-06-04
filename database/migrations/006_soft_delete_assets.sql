@@ -3,3 +3,6 @@ ALTER TABLE cms_clients
 
 ALTER TABLE cms_plants
   ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;
+
+ALTER TABLE cms_devices
+  ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;

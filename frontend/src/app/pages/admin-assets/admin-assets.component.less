@@ -51,7 +51,8 @@
   }
 
   .plants-list,
-  .clients-list {
+  .clients-list,
+  .devices-list {
     margin-top: @margin-md;
 
     .list-header {
@@ -74,6 +75,14 @@
     .actions-column {
       width: 48px;
       text-align: center;
+    }
+
+    .selectable-row {
+      cursor: pointer;
+    }
+
+    .selected-row td {
+      background: @background-color-light;
     }
   }
 

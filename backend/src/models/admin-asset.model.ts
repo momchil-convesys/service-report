@@ -240,6 +240,20 @@ export class AdminAssetModel {
     return (result.rowCount || 0) > 0;
   }
 
+  static async softDeleteDevice(deviceId: string): Promise<boolean> {
+    await initializeServiceReportDatabase();
+
+    const result = await query(
+      `UPDATE cms_devices
+       SET deleted_at = now(), updated_at = now()
+       WHERE id = $1 AND deleted_at IS NULL
+       RETURNING id`,
+      [deviceId],
+    );
+
+    return (result.rowCount || 0) > 0;
+  }
+
   private static slugify(value: string): string {
     const slug = value
       .trim()
