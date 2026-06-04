@@ -76,7 +76,7 @@ export class PlantModel {
     await this.ensureDefaultPlants();
 
     const params: unknown[] = [];
-    const where: string[] = [];
+    const where: string[] = ['p.deleted_at IS NULL'];
 
     // TODO: replace allow-all with persisted plant permissions when user/role management is added.
     const allowAllPlants = true;
@@ -86,14 +86,14 @@ export class PlantModel {
       }
 
       params.push(user.relatedPlantIds);
-      where.push(`id = ANY($${params.length}::text[])`);
+      where.push(`p.id = ANY($${params.length}::text[])`);
     }
 
     const plantsResult = await query(
       `
-        SELECT id, name, type, country, installed_power_mwp
-        FROM cms_plants
-        ${where.length ? `WHERE ${where.join(' AND ')}` : ''}
+        SELECT p.id, p.name, p.type, p.country, p.installed_power_mwp
+        FROM cms_plants p
+        WHERE ${where.join(' AND ')}
         ORDER BY name ASC
       `,
       params,
@@ -131,6 +131,7 @@ export class PlantModel {
         FROM cms_plant_clients pc
         JOIN cms_clients c ON c.id = pc.client_id
         WHERE pc.plant_id = ANY($1::text[])
+          AND c.deleted_at IS NULL
         ORDER BY c.name ASC
       `,
       [plantIds],

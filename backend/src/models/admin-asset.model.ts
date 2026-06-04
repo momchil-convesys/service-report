@@ -56,7 +56,8 @@ export class AdminAssetModel {
          ) AS plants
        FROM cms_clients c
        LEFT JOIN cms_plant_clients pc ON pc.client_id = c.id
-       LEFT JOIN cms_plants p ON p.id = pc.plant_id
+       LEFT JOIN cms_plants p ON p.id = pc.plant_id AND p.deleted_at IS NULL
+       WHERE c.deleted_at IS NULL
        GROUP BY c.id, c.name, c.address
        ORDER BY c.name ASC`,
     );
@@ -70,6 +71,14 @@ export class AdminAssetModel {
     const result = await query(
       `INSERT INTO cms_plants (id, name, type, country, installed_power_mwp)
        VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (id) DO UPDATE SET
+         name = EXCLUDED.name,
+         type = EXCLUDED.type,
+         country = EXCLUDED.country,
+         installed_power_mwp = EXCLUDED.installed_power_mwp,
+         deleted_at = NULL,
+         updated_at = now()
+       WHERE cms_plants.deleted_at IS NOT NULL
        RETURNING
          id,
          name,
@@ -84,6 +93,10 @@ export class AdminAssetModel {
         input.installedPowerMwp || null,
       ],
     );
+
+    if (!result.rows[0]) {
+      throw Object.assign(new Error('Plant id already exists.'), { code: '23505' });
+    }
 
     if (input.clientId?.trim()) {
       await this.linkClientToPlant(input.id, input.clientId.trim());
@@ -106,6 +119,7 @@ export class AdminAssetModel {
        ON CONFLICT (id) DO UPDATE SET
          name = EXCLUDED.name,
          address = EXCLUDED.address,
+         deleted_at = NULL,
          updated_at = now()
        RETURNING id, name, address`,
       [clientId, input.clientName, input.clientAddress || ''],
@@ -116,6 +130,15 @@ export class AdminAssetModel {
 
   static async createDevice(input: AdminDeviceInput): Promise<AdminDeviceInput> {
     await initializeServiceReportDatabase();
+
+    const plantResult = await query(
+      `SELECT id FROM cms_plants WHERE id = $1 AND deleted_at IS NULL`,
+      [input.plantId],
+    );
+
+    if (!plantResult.rows[0]) {
+      throw Object.assign(new Error('Plant id does not exist.'), { code: '23503' });
+    }
 
     const result = await query(
       `INSERT INTO cms_devices (id, plant_id, name, type, serial_number, installed_power_kw)
@@ -149,7 +172,7 @@ export class AdminAssetModel {
     await initializeServiceReportDatabase();
 
     const clientResult = input.clientId
-      ? await query(`SELECT id, name, address FROM cms_clients WHERE id = $1`, [input.clientId])
+      ? await query(`SELECT id, name, address FROM cms_clients WHERE id = $1 AND deleted_at IS NULL`, [input.clientId])
       : { rows: [await this.createClient({ clientName: input.clientName || '', clientAddress: input.clientAddress })] };
 
     if (!clientResult.rows[0]) {
@@ -167,12 +190,49 @@ export class AdminAssetModel {
   }
 
   private static async linkClientToPlant(plantId: string, clientId: string): Promise<void> {
+    const plantResult = await query(
+      `SELECT id FROM cms_plants WHERE id = $1 AND deleted_at IS NULL`,
+      [plantId],
+    );
+
+    if (!plantResult.rows[0]) {
+      throw Object.assign(new Error('Plant id does not exist.'), { code: '23503' });
+    }
+
     await query(
       `INSERT INTO cms_plant_clients (plant_id, client_id)
        VALUES ($1, $2)
        ON CONFLICT DO NOTHING`,
       [plantId, clientId],
     );
+  }
+
+  static async softDeletePlant(plantId: string): Promise<boolean> {
+    await initializeServiceReportDatabase();
+
+    const result = await query(
+      `UPDATE cms_plants
+       SET deleted_at = now(), updated_at = now()
+       WHERE id = $1 AND deleted_at IS NULL
+       RETURNING id`,
+      [plantId],
+    );
+
+    return (result.rowCount || 0) > 0;
+  }
+
+  static async softDeleteClient(clientId: string): Promise<boolean> {
+    await initializeServiceReportDatabase();
+
+    const result = await query(
+      `UPDATE cms_clients
+       SET deleted_at = now(), updated_at = now()
+       WHERE id = $1 AND deleted_at IS NULL
+       RETURNING id`,
+      [clientId],
+    );
+
+    return (result.rowCount || 0) > 0;
   }
 
   private static slugify(value: string): string {

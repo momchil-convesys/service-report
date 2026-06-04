@@ -113,6 +113,50 @@ export class AdminAssetsController {
     }
   }
 
+  static async deletePlant(req: Request, res: Response): Promise<void> {
+    try {
+      const { plantId } = req.params;
+
+      if (!isValidId(plantId)) {
+        res.status(400).json({ error: 'Plant id is required.' });
+        return;
+      }
+
+      const deleted = await AdminAssetModel.softDeletePlant(plantId.trim());
+      if (!deleted) {
+        res.status(404).json({ error: 'Plant not found.' });
+        return;
+      }
+
+      res.json({ message: 'Plant deleted.' });
+    } catch (error) {
+      console.error('Delete admin plant error:', error);
+      res.status(500).json({ error: 'Failed to delete plant.' });
+    }
+  }
+
+  static async deleteClient(req: Request, res: Response): Promise<void> {
+    try {
+      const { clientId } = req.params;
+
+      if (!isValidId(clientId)) {
+        res.status(400).json({ error: 'Client id is required.' });
+        return;
+      }
+
+      const deleted = await AdminAssetModel.softDeleteClient(clientId.trim());
+      if (!deleted) {
+        res.status(404).json({ error: 'Client not found.' });
+        return;
+      }
+
+      res.json({ message: 'Client deleted.' });
+    } catch (error) {
+      console.error('Delete admin client error:', error);
+      res.status(500).json({ error: 'Failed to delete client.' });
+    }
+  }
+
   static async addClientToPlant(req: Request, res: Response): Promise<void> {
     try {
       const { plantId, clientId, clientName, clientAddress } = req.body || {};

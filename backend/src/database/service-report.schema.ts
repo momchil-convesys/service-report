@@ -16,6 +16,7 @@ export async function initializeServiceReportDatabase(): Promise<void> {
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       address TEXT NOT NULL DEFAULT '',
+      deleted_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
@@ -26,6 +27,7 @@ export async function initializeServiceReportDatabase(): Promise<void> {
       type TEXT NOT NULL DEFAULT '',
       country TEXT NOT NULL DEFAULT '',
       installed_power_mwp TEXT,
+      deleted_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
@@ -64,6 +66,12 @@ export async function initializeServiceReportDatabase(): Promise<void> {
     );
 
     ALTER TABLE cms_service_reports
+      ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;
+
+    ALTER TABLE cms_clients
+      ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;
+
+    ALTER TABLE cms_plants
       ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;
 
     CREATE INDEX IF NOT EXISTS idx_cms_service_reports_plant ON cms_service_reports(plant_id);

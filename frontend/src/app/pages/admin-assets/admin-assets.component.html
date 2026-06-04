@@ -168,6 +168,7 @@
               <th>Type</th>
               <th>Clients</th>
               <th>Devices</th>
+              <th class="actions-column"></th>
             </tr>
           </thead>
           <tbody>
@@ -182,6 +183,22 @@
                   }
                 </td>
                 <td>{{ plant.devices.length }}</td>
+                <td class="actions-column">
+                  <button
+                    nz-button
+                    nzType="text"
+                    nzDanger
+                    nzShape="circle"
+                    nz-popconfirm
+                    nzPopconfirmTitle="Delete this plant?"
+                    nzPopconfirmPlacement="left"
+                    [nzLoading]="deletingPlantId === plant.id"
+                    (nzOnConfirm)="deletePlant(plant.id)"
+                    aria-label="Delete plant"
+                  >
+                    <span nz-icon nzType="delete"></span>
+                  </button>
+                </td>
               </tr>
             }
           </tbody>
@@ -199,6 +216,7 @@
               <th>Name</th>
               <th>Address</th>
               <th>Assigned plants</th>
+              <th class="actions-column"></th>
             </tr>
           </thead>
           <tbody>
@@ -211,6 +229,22 @@
                   @for (plant of client.plants; track plant.id) {
                     <div>{{ plant.name }}</div>
                   }
+                </td>
+                <td class="actions-column">
+                  <button
+                    nz-button
+                    nzType="text"
+                    nzDanger
+                    nzShape="circle"
+                    nz-popconfirm
+                    nzPopconfirmTitle="Delete this client?"
+                    nzPopconfirmPlacement="left"
+                    [nzLoading]="deletingClientId === client.id"
+                    (nzOnConfirm)="deleteClient(client.id)"
+                    aria-label="Delete client"
+                  >
+                    <span nz-icon nzType="delete"></span>
+                  </button>
                 </td>
               </tr>
             }

@@ -6,7 +6,9 @@ import { RouterLink } from '@angular/router';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzTableModule } from 'ng-zorro-antd/table';
@@ -55,7 +57,9 @@ interface AdminClient {
     NzAlertModule,
     NzButtonModule,
     NzFormModule,
+    NzIconModule,
     NzInputModule,
+    NzPopconfirmModule,
     NzSelectModule,
     NzTabsModule,
     NzTableModule,
@@ -70,6 +74,8 @@ export class AdminAssetsComponent {
   isSavingPlant = false;
   isSavingDevice = false;
   isSavingClient = false;
+  deletingPlantId = '';
+  deletingClientId = '';
   errorMessage = '';
   successMessage = '';
   searchText = '';
@@ -184,6 +190,46 @@ export class AdminAssetsComponent {
         },
         error: (error) => {
           this.errorMessage = error?.error?.error || 'Failed to create client.';
+        },
+      });
+  }
+
+  deletePlant(plantId: string): void {
+    this.deletingPlantId = plantId;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.http
+      .delete(`${this.api.baseUrl}/admin/plants/${encodeURIComponent(plantId)}`)
+      .pipe(finalize(() => (this.deletingPlantId = '')))
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Plant deleted.';
+          this.plantsService.refreshPlants();
+          this.refresh$.next();
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.error || 'Failed to delete plant.';
+        },
+      });
+  }
+
+  deleteClient(clientId: string): void {
+    this.deletingClientId = clientId;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.http
+      .delete(`${this.api.baseUrl}/admin/clients/${encodeURIComponent(clientId)}`)
+      .pipe(finalize(() => (this.deletingClientId = '')))
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Client deleted.';
+          this.plantsService.refreshPlants();
+          this.refresh$.next();
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.error || 'Failed to delete client.';
         },
       });
   }
