@@ -10,9 +10,10 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { BehaviorSubject, finalize, Observable, shareReplay, startWith, switchMap } from 'rxjs';
+import { BehaviorSubject, finalize, map, Observable, shareReplay, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../../data/api';
 import { Plant } from '../../data/models';
+import { PlantsService } from '../../data/services/plants.service';
 
 interface PlantFormModel {
   id: string;
@@ -103,12 +104,9 @@ export class AdminAssetsComponent {
   constructor(
     private http: HttpClient,
     private api: ApiService,
+    private plantsService: PlantsService,
   ) {
-    this.plants$ = this.refresh$.pipe(
-      startWith(undefined),
-      switchMap(() => this.http.get<Plant[]>(`${this.api.baseUrl}/plants`)),
-      shareReplay(1),
-    );
+    this.plants$ = this.plantsService.getPlants().pipe(map((request) => request.data || []));
     this.clients$ = this.refresh$.pipe(
       startWith(undefined),
       switchMap(() => this.http.get<AdminClient[]>(`${this.api.baseUrl}/admin/clients`)),
@@ -132,6 +130,7 @@ export class AdminAssetsComponent {
         next: () => {
           this.successMessage = 'Plant created.';
           this.resetPlantForm(form);
+          this.plantsService.refreshPlants();
           this.refresh$.next();
         },
         error: (error) => {
@@ -156,6 +155,7 @@ export class AdminAssetsComponent {
         next: () => {
           this.successMessage = 'Device created.';
           this.resetDeviceForm(form);
+          this.plantsService.refreshPlants();
           this.refresh$.next();
         },
         error: (error) => {

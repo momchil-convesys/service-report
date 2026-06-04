@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+  BehaviorSubject,
   catchError,
   combineLatest,
   filter,
@@ -51,6 +52,7 @@ interface UsersById {
   providedIn: 'root',
 })
 export class PlantsService {
+  private readonly _refreshPlants$ = new BehaviorSubject<void>(undefined);
   private _plants: Observable<DataRequest<Plant[]>> | undefined;
 
   private _plantsById: PlantsByDeviceId | undefined;
@@ -73,10 +75,13 @@ export class PlantsService {
       return this._plants;
     }
 
-    this._plants = combineLatest([
-      this.api.fetchPlants(),
-      this.deviceMetadataService.getDeviceMetadataList(),
-    ]).pipe(
+    this._plants = this._refreshPlants$.pipe(
+      switchMap(() =>
+        combineLatest([
+          this.api.fetchPlants(),
+          this.deviceMetadataService.getDeviceMetadataList(),
+        ]),
+      ),
       // Collect possible device states
       tap(([plantsRequest, metadataListRequest]) => {
         const plants: Plant[] | undefined = plantsRequest.data;
@@ -149,6 +154,13 @@ export class PlantsService {
     );
 
     return this._plants;
+  }
+
+  refreshPlants(): void {
+    this._devicesById = undefined;
+    this._plantsByDeviceId = undefined;
+    this._plantsById = undefined;
+    this._refreshPlants$.next();
   }
 
   getPlant(id: string): Observable<DataRequest<Plant>> {
