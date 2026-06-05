@@ -145,7 +145,10 @@
                 <span nz-icon nzType="arrow-left"></span>
                 Plants
               </button>
-              <h2>Devices for {{ selectedPlant.name }}</h2>
+              <div class="drilldown-title">
+                <h2>Device list for plant</h2>
+                <div>{{ selectedPlant.name }}</div>
+              </div>
             </div>
             <nz-table
               #devicesTable
