@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
@@ -67,6 +67,8 @@ interface AdminClient {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminAssetsComponent {
+  @ViewChild('assetTabsHost', { read: ElementRef }) assetTabsHost?: ElementRef<HTMLElement>;
+
   plants$: Observable<Plant[]>;
   clients$: Observable<AdminClient[]>;
   isSavingPlant = false;
@@ -258,6 +260,11 @@ export class AdminAssetsComponent {
   selectPlant(plant: Plant): void {
     this.selectedPlantId = plant.id;
     this.deviceModel.plantId = plant.id;
+    setTimeout(() => this.assetTabsHost?.nativeElement.scrollIntoView({ block: 'start', behavior: 'smooth' }));
+  }
+
+  showPlantsTable(): void {
+    this.selectedPlantId = '';
   }
 
   getSelectedPlant(plants: Plant[]): Plant | undefined {
