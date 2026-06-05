@@ -31,6 +31,7 @@ export interface DeviceDTO {
   type?: string; // 'solar' | 'pump' | 'wind' | 'battery'
   currentFaults?: CurrentFaults | null;
   serialNumber?: string;
+  installedPowerKw?: string | null;
 
   powerLimit: PowerLimitDetails | null;
 
@@ -45,6 +46,7 @@ export interface PlantDTO {
 
   type: string; // 'solar' | 'pump' | 'wind'
   country: string | null | undefined;
+  installedPowerMwp?: string | null;
   timeZone: string | undefined;
 
   deviceIds: string[];

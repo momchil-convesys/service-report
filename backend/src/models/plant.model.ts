@@ -42,6 +42,7 @@ export interface DeviceDto {
   type: string;
   currentFaults: null;
   serialNumber: string;
+  installedPowerKw: string | null;
   powerLimit: null;
   deviceSpecificMetadata: Record<string, never>;
 }
@@ -51,6 +52,7 @@ export interface PlantDto {
   name: string;
   type: string;
   country: string | null;
+  installedPowerMwp: string | null;
   timeZone: string;
   deviceIds: string[];
   devices: DeviceDto[];
@@ -178,6 +180,7 @@ export class PlantModel {
       name: plant.name,
       type: plantType,
       country: plant.country || null,
+      installedPowerMwp: plant.installed_power_mwp,
       timeZone: 'Europe/Sofia',
       deviceIds: devices.map((device) => device.id),
       devices,
@@ -211,6 +214,7 @@ export class PlantModel {
       type: deviceType,
       currentFaults: null,
       serialNumber: device.serial_number || '',
+      installedPowerKw: device.installed_power_kw,
       powerLimit: null,
       deviceSpecificMetadata: {},
     };

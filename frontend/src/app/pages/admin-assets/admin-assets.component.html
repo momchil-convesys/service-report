@@ -15,7 +15,7 @@
 
   <div class="forms-grid">
     <form nz-form #plantForm="ngForm" (ngSubmit)="createPlant(plantForm)" class="asset-form">
-      <h2>Add plant</h2>
+      <h2>{{ editingPlantId ? 'Edit plant' : 'Add plant' }}</h2>
 
       <nz-form-item>
         <nz-form-label nzRequired nzFor="plant-name">Name</nz-form-label>
@@ -60,11 +60,16 @@
         </nz-form-control>
       </nz-form-item>
 
-      <button nz-button nzType="primary" [disabled]="plantForm.invalid" [nzLoading]="isSavingPlant">Add plant</button>
+      <button nz-button nzType="primary" [disabled]="plantForm.invalid" [nzLoading]="isSavingPlant">
+        {{ editingPlantId ? 'Update plant' : 'Add plant' }}
+      </button>
+      @if (editingPlantId) {
+        <button nz-button nzType="default" type="button" (click)="cancelPlantEdit(plantForm)">Cancel</button>
+      }
     </form>
 
     <form nz-form #deviceForm="ngForm" (ngSubmit)="createDevice(deviceForm)" class="asset-form">
-      <h2>Add device</h2>
+      <h2>{{ editingDeviceId ? 'Edit device' : 'Add device' }}</h2>
 
       <nz-form-item>
         <nz-form-label nzRequired nzFor="device-plant">Plant</nz-form-label>
@@ -109,11 +114,16 @@
         </nz-form-control>
       </nz-form-item>
 
-      <button nz-button nzType="primary" [disabled]="deviceForm.invalid" [nzLoading]="isSavingDevice">Add device</button>
+      <button nz-button nzType="primary" [disabled]="deviceForm.invalid" [nzLoading]="isSavingDevice">
+        {{ editingDeviceId ? 'Update device' : 'Add device' }}
+      </button>
+      @if (editingDeviceId) {
+        <button nz-button nzType="default" type="button" (click)="cancelDeviceEdit(deviceForm)">Cancel</button>
+      }
     </form>
 
     <form nz-form #clientForm="ngForm" (ngSubmit)="createClient(clientForm)" class="asset-form">
-      <h2>Add client</h2>
+      <h2>{{ editingClientId ? 'Edit client' : 'Add client' }}</h2>
 
       <nz-form-item>
         <nz-form-label nzRequired nzFor="client-name">Client</nz-form-label>
@@ -129,7 +139,12 @@
         </nz-form-control>
       </nz-form-item>
 
-      <button nz-button nzType="primary" [disabled]="clientForm.invalid" [nzLoading]="isSavingClient">Add client</button>
+      <button nz-button nzType="primary" [disabled]="clientForm.invalid" [nzLoading]="isSavingClient">
+        {{ editingClientId ? 'Update client' : 'Add client' }}
+      </button>
+      @if (editingClientId) {
+        <button nz-button nzType="default" type="button" (click)="cancelClientEdit(clientForm)">Cancel</button>
+      }
     </form>
   </div>
 
@@ -143,7 +158,6 @@
             <div class="list-header">
               <div class="drilldown-title">
                 <h2>Device list for plant: {{ selectedPlant.name }}</h2>
-                <div>{{ selectedPlant.id }}</div>
               </div>
               <button nz-button nzType="primary" class="back-to-plants-button" (click)="showPlantsTable()">
                 <span nz-icon nzType="arrow-left"></span>
@@ -171,6 +185,15 @@
                     <td>{{ device.name }}</td>
                     <td>{{ device.type }}</td>
                     <td class="actions-column">
+                      <button
+                        nz-button
+                        nzType="text"
+                        nzShape="circle"
+                        (click)="editDevice(device)"
+                        aria-label="Edit device"
+                      >
+                        <span nz-icon nzType="edit"></span>
+                      </button>
                       <button
                         nz-button
                         nzType="text"
@@ -229,6 +252,15 @@
                     <button
                       nz-button
                       nzType="text"
+                      nzShape="circle"
+                      (click)="editPlant(plant)"
+                      aria-label="Edit plant"
+                    >
+                      <span nz-icon nzType="edit"></span>
+                    </button>
+                    <button
+                      nz-button
+                      nzType="text"
                       nzDanger
                       nzShape="circle"
                       nz-popconfirm
@@ -274,6 +306,15 @@
                   }
                 </td>
                 <td class="actions-column">
+                  <button
+                    nz-button
+                    nzType="text"
+                    nzShape="circle"
+                    (click)="editClient(client)"
+                    aria-label="Edit client"
+                  >
+                    <span nz-icon nzType="edit"></span>
+                  </button>
                   <button
                     nz-button
                     nzType="text"

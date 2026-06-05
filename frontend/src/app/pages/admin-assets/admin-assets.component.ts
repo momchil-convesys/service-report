@@ -77,6 +77,9 @@ export class AdminAssetsComponent {
   deletingPlantId = '';
   deletingClientId = '';
   deletingDeviceId = '';
+  editingPlantId = '';
+  editingDeviceId = '';
+  editingClientId = '';
   selectedPlantId = '';
   errorMessage = '';
   successMessage = '';
@@ -125,6 +128,11 @@ export class AdminAssetsComponent {
       return;
     }
 
+    if (this.editingPlantId) {
+      this.updatePlant(form);
+      return;
+    }
+
     this.isSavingPlant = true;
     this.errorMessage = '';
     this.successMessage = '';
@@ -150,6 +158,11 @@ export class AdminAssetsComponent {
       return;
     }
 
+    if (this.editingDeviceId) {
+      this.updateDevice(form);
+      return;
+    }
+
     this.isSavingDevice = true;
     this.errorMessage = '';
     this.successMessage = '';
@@ -172,6 +185,11 @@ export class AdminAssetsComponent {
 
   createClient(form: NgForm): void {
     if (form.invalid) {
+      return;
+    }
+
+    if (this.editingClientId) {
+      this.updateClient(form);
       return;
     }
 
@@ -217,6 +235,44 @@ export class AdminAssetsComponent {
       });
   }
 
+  editPlant(plant: Plant): void {
+    this.editingPlantId = plant.id;
+    this.plantModel = {
+      name: plant.name,
+      type: plant.type,
+      country: plant.country || '',
+      installedPowerMwp: plant.installedPowerMwp || '',
+      clientId: plant.relatedClients?.[0]?.id || '',
+    };
+  }
+
+  cancelPlantEdit(form: NgForm): void {
+    this.editingPlantId = '';
+    this.resetPlantForm(form);
+  }
+
+  private updatePlant(form: NgForm): void {
+    this.isSavingPlant = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.http
+      .patch(`${this.api.baseUrl}/admin/plants/${encodeURIComponent(this.editingPlantId)}`, this.plantModel)
+      .pipe(finalize(() => (this.isSavingPlant = false)))
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Plant updated.';
+          this.editingPlantId = '';
+          this.resetPlantForm(form);
+          this.plantsService.refreshPlants();
+          this.refresh$.next();
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.error || 'Failed to update plant.';
+        },
+      });
+  }
+
   deleteClient(clientId: string): void {
     this.deletingClientId = clientId;
     this.errorMessage = '';
@@ -237,6 +293,41 @@ export class AdminAssetsComponent {
       });
   }
 
+  editClient(client: AdminClient): void {
+    this.editingClientId = client.id;
+    this.clientModel = {
+      clientName: client.name,
+      clientAddress: client.address || '',
+    };
+  }
+
+  cancelClientEdit(form: NgForm): void {
+    this.editingClientId = '';
+    this.resetClientForm(form);
+  }
+
+  private updateClient(form: NgForm): void {
+    this.isSavingClient = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.http
+      .patch(`${this.api.baseUrl}/admin/clients/${encodeURIComponent(this.editingClientId)}`, this.clientModel)
+      .pipe(finalize(() => (this.isSavingClient = false)))
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Client updated.';
+          this.editingClientId = '';
+          this.resetClientForm(form);
+          this.plantsService.refreshPlants();
+          this.refresh$.next();
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.error || 'Failed to update client.';
+        },
+      });
+  }
+
   deleteDevice(deviceId: string): void {
     this.deletingDeviceId = deviceId;
     this.errorMessage = '';
@@ -253,6 +344,45 @@ export class AdminAssetsComponent {
         },
         error: (error) => {
           this.errorMessage = error?.error?.error || 'Failed to delete device.';
+        },
+      });
+  }
+
+  editDevice(device: Device): void {
+    this.editingDeviceId = device.id;
+    this.selectedPlantId = device.plantId;
+    this.deviceModel = {
+      plantId: device.plantId,
+      name: device.name,
+      type: device.type,
+      serialNumber: device.serialNumber || '',
+      installedPowerKw: device.installedPowerKw || '',
+    };
+  }
+
+  cancelDeviceEdit(form: NgForm): void {
+    this.editingDeviceId = '';
+    this.resetDeviceForm(form);
+  }
+
+  private updateDevice(form: NgForm): void {
+    this.isSavingDevice = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    this.http
+      .patch(`${this.api.baseUrl}/admin/devices/${encodeURIComponent(this.editingDeviceId)}`, this.deviceModel)
+      .pipe(finalize(() => (this.isSavingDevice = false)))
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Device updated.';
+          this.editingDeviceId = '';
+          this.resetDeviceForm(form);
+          this.plantsService.refreshPlants();
+          this.refresh$.next();
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.error || 'Failed to update device.';
         },
       });
   }

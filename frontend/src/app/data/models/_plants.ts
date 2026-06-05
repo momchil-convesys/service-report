@@ -13,6 +13,8 @@ export interface Device {
   plantId: string;
   deviceMetadataId: string; // Predefined templates
   type: DeviceType;
+  serialNumber?: string | null;
+  installedPowerKw?: string | null;
 
   state: ExtendedDeviceState;
   stateSubject: BehaviorSubject<ExtendedDeviceState>;
@@ -41,6 +43,7 @@ export interface Plant {
 
   type: DeviceType;
   country: string | null | undefined;
+  installedPowerMwp?: string | null;
   timeZone: string | undefined; // IANA Time Zone
 
   deviceIds: string[];

@@ -8,11 +8,14 @@ router.use(requireAuth);
 router.use(requirePermission('admin:manage'));
 
 router.post('/plants', AdminAssetsController.createPlant);
+router.patch('/plants/:plantId', AdminAssetsController.updatePlant);
 router.delete('/plants/:plantId', AdminAssetsController.deletePlant);
 router.post('/devices', AdminAssetsController.createDevice);
+router.patch('/devices/:deviceId', AdminAssetsController.updateDevice);
 router.delete('/devices/:deviceId', AdminAssetsController.deleteDevice);
 router.get('/clients', AdminAssetsController.listClients);
 router.post('/clients', AdminAssetsController.createClient);
+router.patch('/clients/:clientId', AdminAssetsController.updateClient);
 router.delete('/clients/:clientId', AdminAssetsController.deleteClient);
 router.post('/plant-clients', AdminAssetsController.addClientToPlant);
 

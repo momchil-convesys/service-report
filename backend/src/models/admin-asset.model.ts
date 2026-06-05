@@ -168,6 +168,108 @@ export class AdminAssetModel {
     return result.rows[0];
   }
 
+  static async updatePlant(plantId: string, input: AdminPlantInput): Promise<AdminPlantInput | null> {
+    await initializeServiceReportDatabase();
+
+    const result = await query(
+      `UPDATE cms_plants
+       SET
+         name = $2,
+         type = $3,
+         country = $4,
+         installed_power_mwp = $5,
+         updated_at = now()
+       WHERE id = $1 AND deleted_at IS NULL
+       RETURNING
+         id,
+         name,
+         type,
+         country,
+         installed_power_mwp AS "installedPowerMwp"`,
+      [
+        plantId,
+        input.name,
+        input.type,
+        input.country || '',
+        input.installedPowerMwp || null,
+      ],
+    );
+
+    if (!result.rows[0]) {
+      return null;
+    }
+
+    await query(`DELETE FROM cms_plant_clients WHERE plant_id = $1`, [plantId]);
+    if (input.clientId?.trim()) {
+      await this.linkClientToPlant(plantId, input.clientId.trim());
+    }
+
+    return result.rows[0];
+  }
+
+  static async updateDevice(deviceId: string, input: AdminDeviceInput): Promise<AdminDeviceInput | null> {
+    await initializeServiceReportDatabase();
+
+    const plantResult = await query(
+      `SELECT id FROM cms_plants WHERE id = $1 AND deleted_at IS NULL`,
+      [input.plantId],
+    );
+
+    if (!plantResult.rows[0]) {
+      throw Object.assign(new Error('Plant id does not exist.'), { code: '23503' });
+    }
+
+    const result = await query(
+      `UPDATE cms_devices
+       SET
+         plant_id = $2,
+         name = $3,
+         type = $4,
+         serial_number = $5,
+         installed_power_kw = $6,
+         updated_at = now()
+       WHERE id = $1 AND deleted_at IS NULL
+       RETURNING
+         id,
+         plant_id AS "plantId",
+         name,
+         type,
+         serial_number AS "serialNumber",
+         installed_power_kw AS "installedPowerKw"`,
+      [
+        deviceId,
+        input.plantId,
+        input.name,
+        input.type,
+        input.serialNumber || '',
+        input.installedPowerKw || null,
+      ],
+    );
+
+    return result.rows[0] || null;
+  }
+
+  static async updateClient(clientId: string, input: AdminClientInput): Promise<{
+    id: string;
+    name: string;
+    address: string;
+  } | null> {
+    await initializeServiceReportDatabase();
+
+    const result = await query(
+      `UPDATE cms_clients
+       SET
+         name = $2,
+         address = $3,
+         updated_at = now()
+       WHERE id = $1 AND deleted_at IS NULL
+       RETURNING id, name, address`,
+      [clientId, input.clientName, input.clientAddress || ''],
+    );
+
+    return result.rows[0] || null;
+  }
+
   static async addClientToPlant(input: AdminPlantClientInput): Promise<{
     id: string;
     name: string;

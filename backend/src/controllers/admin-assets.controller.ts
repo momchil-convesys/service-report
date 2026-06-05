@@ -77,6 +77,74 @@ export class AdminAssetsController {
     }
   }
 
+  static async updatePlant(req: Request, res: Response): Promise<void> {
+    try {
+      const { plantId } = req.params;
+      const { name, type, country, installedPowerMwp, clientId } = req.body || {};
+
+      if (
+        !isValidId(plantId) ||
+        typeof name !== 'string' ||
+        !name.trim() ||
+        typeof type !== 'string' ||
+        !type.trim()
+      ) {
+        res.status(400).json({ error: 'Plant id, name, and type are required.' });
+        return;
+      }
+
+      const plant = await AdminAssetModel.updatePlant(plantId.trim(), {
+        name: name.trim(),
+        type: type.trim(),
+        country: typeof country === 'string' ? country.trim() : '',
+        installedPowerMwp: typeof installedPowerMwp === 'string' ? installedPowerMwp.trim() : null,
+        clientId: typeof clientId === 'string' ? clientId.trim() : null,
+      });
+
+      if (!plant) {
+        res.status(404).json({ error: 'Plant not found.' });
+        return;
+      }
+
+      res.json(plant);
+    } catch (error: any) {
+      if (error?.code === '23503') {
+        res.status(400).json({ error: 'Client id does not exist.' });
+        return;
+      }
+
+      console.error('Update admin plant error:', error);
+      res.status(500).json({ error: 'Failed to update plant.' });
+    }
+  }
+
+  static async updateClient(req: Request, res: Response): Promise<void> {
+    try {
+      const { clientId } = req.params;
+      const { clientName, clientAddress } = req.body || {};
+
+      if (!isValidId(clientId) || typeof clientName !== 'string' || !clientName.trim()) {
+        res.status(400).json({ error: 'Client id and name are required.' });
+        return;
+      }
+
+      const client = await AdminAssetModel.updateClient(clientId.trim(), {
+        clientName: clientName.trim(),
+        clientAddress: typeof clientAddress === 'string' ? clientAddress.trim() : '',
+      });
+
+      if (!client) {
+        res.status(404).json({ error: 'Client not found.' });
+        return;
+      }
+
+      res.json(client);
+    } catch (error) {
+      console.error('Update admin client error:', error);
+      res.status(500).json({ error: 'Failed to update client.' });
+    }
+  }
+
   static async createDevice(req: Request, res: Response): Promise<void> {
     try {
       const { id, plantId, name, type, serialNumber, installedPowerKw } = req.body || {};
@@ -138,6 +206,48 @@ export class AdminAssetsController {
     } catch (error) {
       console.error('Delete admin plant error:', error);
       res.status(500).json({ error: 'Failed to delete plant.' });
+    }
+  }
+
+  static async updateDevice(req: Request, res: Response): Promise<void> {
+    try {
+      const { deviceId } = req.params;
+      const { plantId, name, type, serialNumber, installedPowerKw } = req.body || {};
+
+      if (
+        !isValidId(deviceId) ||
+        !isValidId(plantId) ||
+        typeof name !== 'string' ||
+        !name.trim() ||
+        typeof type !== 'string' ||
+        !type.trim()
+      ) {
+        res.status(400).json({ error: 'Device id, plant, name, and type are required.' });
+        return;
+      }
+
+      const device = await AdminAssetModel.updateDevice(deviceId.trim(), {
+        plantId: plantId.trim(),
+        name: name.trim(),
+        type: type.trim(),
+        serialNumber: typeof serialNumber === 'string' ? serialNumber.trim() : '',
+        installedPowerKw: typeof installedPowerKw === 'string' ? installedPowerKw.trim() : null,
+      });
+
+      if (!device) {
+        res.status(404).json({ error: 'Device not found.' });
+        return;
+      }
+
+      res.json(device);
+    } catch (error: any) {
+      if (error?.code === '23503') {
+        res.status(400).json({ error: 'Plant id does not exist.' });
+        return;
+      }
+
+      console.error('Update admin device error:', error);
+      res.status(500).json({ error: 'Failed to update device.' });
     }
   }
 
