@@ -141,14 +141,14 @@
         @if (getSelectedPlant(plants); as selectedPlant) {
           <section class="devices-list">
             <div class="list-header">
-              <button nz-button nzType="default" (click)="showPlantsTable()">
-                <span nz-icon nzType="arrow-left"></span>
-                Plants
-              </button>
               <div class="drilldown-title">
                 <h2>Device list for plant: {{ selectedPlant.name }}</h2>
                 <div>{{ selectedPlant.id }}</div>
               </div>
+              <button nz-button nzType="primary" class="back-to-plants-button" (click)="showPlantsTable()">
+                <span nz-icon nzType="arrow-left"></span>
+                Back to plants
+              </button>
             </div>
             <nz-table
               #devicesTable
