@@ -29,6 +29,7 @@ export interface DeviceDTO {
 
   deviceMetadataId: string; // Predefined templates
   type?: string; // 'solar' | 'pump' | 'wind' | 'battery'
+  assetType?: string;
   currentFaults?: CurrentFaults | null;
   serialNumber?: string;
   installedPowerKw?: string | null;
@@ -45,6 +46,7 @@ export interface PlantDTO {
   name: string; // Display name
 
   type: string; // 'solar' | 'pump' | 'wind'
+  assetType?: string;
   country: string | null | undefined;
   installedPowerMwp?: string | null;
   timeZone: string | undefined;

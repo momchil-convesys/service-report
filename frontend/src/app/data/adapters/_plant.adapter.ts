@@ -24,6 +24,7 @@ class PlantAdapterClass extends DataAdapter<PlantDTO, Plant> {
     return {
       ...dto,
       type,
+      assetType: dto.assetType || dto.type,
       timeZone: dto.timeZone,
       devices: dto.devices?.map((deviceDto) => DeviceAdapter.dtoToModel(deviceDto)) || [],
       activePowerLimitSchedule$: new BehaviorSubject<null | ActivePowerLimitSchedule>(

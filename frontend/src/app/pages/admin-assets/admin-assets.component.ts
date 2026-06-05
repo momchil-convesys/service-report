@@ -108,6 +108,14 @@ export class AdminAssetsComponent {
 
   readonly plantTypes = ['solar', 'battery', 'wind', 'pump', 'other'];
   readonly deviceTypes = ['inverter', 'battery', 'meter', 'sensor', 'gateway', 'other'];
+  readonly deviceTypeIcon: Record<string, string> = {
+    inverter: 'thunderbolt',
+    battery: 'battery',
+    meter: 'dashboard',
+    sensor: 'radar-chart',
+    gateway: 'apartment',
+    other: 'appstore',
+  };
   private readonly refresh$ = new BehaviorSubject<void>(undefined);
 
   constructor(
@@ -239,7 +247,7 @@ export class AdminAssetsComponent {
     this.editingPlantId = plant.id;
     this.plantModel = {
       name: plant.name,
-      type: plant.type,
+      type: plant.assetType || plant.type,
       country: plant.country || '',
       installedPowerMwp: plant.installedPowerMwp || '',
       clientId: plant.relatedClients?.[0]?.id || '',
@@ -354,7 +362,7 @@ export class AdminAssetsComponent {
     this.deviceModel = {
       plantId: device.plantId,
       name: device.name,
-      type: device.type,
+      type: device.assetType || device.type,
       serialNumber: device.serialNumber || '',
       installedPowerKw: device.installedPowerKw || '',
     };
@@ -405,6 +413,10 @@ export class AdminAssetsComponent {
     return this.getSelectedPlant(plants)?.devices || [];
   }
 
+  getAssetType(value: { assetType?: string; type: string }): string {
+    return value.assetType || value.type;
+  }
+
   filterPlants(plants: Plant[]): Plant[] {
     const query = this.searchText.trim().toLowerCase();
     if (!query) {
@@ -416,9 +428,10 @@ export class AdminAssetsComponent {
         .map((client) => `${client.name} ${client.address}`)
         .join(' ');
       const deviceText = plant.devices
-        .map((device) => `${device.id} ${device.name}`)
+        .map((device) => `${device.id} ${device.name} ${device.assetType || device.type}`)
         .join(' ');
-      const haystack = `${plant.id} ${plant.name} ${plant.type} ${clientText} ${deviceText}`.toLowerCase();
+      const haystack =
+        `${plant.id} ${plant.name} ${plant.assetType || plant.type} ${clientText} ${deviceText}`.toLowerCase();
 
       return haystack.includes(query);
     });

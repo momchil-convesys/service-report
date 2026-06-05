@@ -183,7 +183,12 @@
                   <tr>
                     <td>{{ device.id }}</td>
                     <td>{{ device.name }}</td>
-                    <td>{{ device.type }}</td>
+                    <td>
+                      <span class="asset-type" [ngClass]="'asset-type-' + getAssetType(device)">
+                        <span nz-icon [nzType]="deviceTypeIcon[getAssetType(device)] || deviceTypeIcon.other"></span>
+                        {{ getAssetType(device) }}
+                      </span>
+                    </td>
                     <td class="actions-column">
                       <button
                         nz-button
@@ -241,7 +246,7 @@
                 <tr class="selectable-row" (click)="selectPlant(plant)">
                   <td>{{ plant.id }}</td>
                   <td>{{ plant.name }}</td>
-                  <td>{{ plant.type }}</td>
+                  <td>{{ plant.assetType || plant.type }}</td>
                   <td>
                     @for (client of plant.relatedClients || []; track client.id) {
                       <div>{{ client.name }}</div>

@@ -40,6 +40,7 @@ export interface DeviceDto {
   intermediateStateCode: number | null;
   deviceMetadataId: string;
   type: string;
+  assetType: string;
   currentFaults: null;
   serialNumber: string;
   installedPowerKw: string | null;
@@ -51,6 +52,7 @@ export interface PlantDto {
   id: string;
   name: string;
   type: string;
+  assetType: string;
   country: string | null;
   installedPowerMwp: string | null;
   timeZone: string;
@@ -179,6 +181,7 @@ export class PlantModel {
       id: plant.id,
       name: plant.name,
       type: plantType,
+      assetType: plant.type,
       country: plant.country || null,
       installedPowerMwp: plant.installed_power_mwp,
       timeZone: 'Europe/Sofia',
@@ -212,6 +215,7 @@ export class PlantModel {
       intermediateStateCode: null,
       deviceMetadataId: 'mock-inverter-metadata',
       type: deviceType,
+      assetType: device.type,
       currentFaults: null,
       serialNumber: device.serial_number || '',
       installedPowerKw: device.installed_power_kw,

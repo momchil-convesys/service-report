@@ -45,6 +45,9 @@ class DeviceAdapterClass extends DataAdapter<DeviceDTO, Device> {
       deviceMetadataId: dto.deviceMetadataId,
       state,
       type,
+      assetType: dto.assetType || dto.type,
+      serialNumber: dto.serialNumber || '',
+      installedPowerKw: dto.installedPowerKw || '',
       stateSubject: new BehaviorSubject<ExtendedDeviceState>(state),
       currentFaults: dto.currentFaults || undefined,
       currentFaultsSubject: new BehaviorSubject<CurrentFaults | undefined>(
