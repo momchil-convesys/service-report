@@ -222,18 +222,6 @@ export class ServiceReportPostgresStore {
   }
 
   private static async seedIfEmpty(): Promise<void> {
-    const count = await query('SELECT COUNT(*)::int AS count FROM cms_service_reports');
-    if (count.rows[0].count === 0) {
-      const done = ServiceReportCmsModel.getById('1001');
-      const draft = ServiceReportCmsModel.getById('1002');
-      if (done) {
-        await this.createWithFixedId(done);
-      }
-      if (draft) {
-        await this.createWithFixedId(draft);
-      }
-    }
-
     const schemas = ServiceReportCmsModel.getSchemas();
     await query('DELETE FROM inverter_schemas WHERE NOT (id = ANY($1::int[]))', [
       schemas.map((schema) => schema.id),

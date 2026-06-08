@@ -29,7 +29,7 @@ const users: AppUser[] = [
     displayName: 'User',
     role: 'user',
     permissions: serviceReportPermissions,
-    relatedPlantIds: ['mock-plant-1'],
+    relatedPlantIds: ['plant-1'],
   },
   {
     id: 'superuser',
@@ -38,7 +38,7 @@ const users: AppUser[] = [
     displayName: 'Superuser',
     role: 'superuser',
     permissions: [...serviceReportPermissions, 'service-reports:delete', 'admin:manage'],
-    relatedPlantIds: ['mock-plant-1'],
+    relatedPlantIds: ['plant-1'],
   },
 ];
 

@@ -72,19 +72,18 @@ export interface ServiceReportDto {
 
 const relatedClients = [
   {
-    id: '1',
-    name: 'Demo Client',
-    address: 'Demo service address',
+    id: 'client-1',
+    name: 'Client 1',
+    address: 'Service address',
   },
 ];
 
 function createPlantDevices(plantId: string, serialPrefix: string): StrippedDevice[] {
   return Array.from({ length: 5 }, (_, index) => {
     const ordinal = index + 1;
-    const deviceId = plantId === 'mock-plant-1' ? `mock-inverter-${ordinal}` : `${plantId}-inverter-${ordinal}`;
 
     return {
-      id: deviceId,
+      id: `${plantId}-inverter-${ordinal}`,
       name: `Inverter ${ordinal}`,
       type: 'inverter',
       serialNumber: `${serialPrefix}-INV-${String(ordinal).padStart(3, '0')}`,
@@ -95,42 +94,42 @@ function createPlantDevices(plantId: string, serialPrefix: string): StrippedDevi
 }
 
 const devices: StrippedDevice[] = [
-  ...createPlantDevices('mock-plant-1', 'P1'),
-  ...createPlantDevices('demo-plant-2', 'P2'),
-  ...createPlantDevices('demo-plant-3', 'P3'),
+  ...createPlantDevices('plant-1', 'P1'),
+  ...createPlantDevices('plant-2', 'P2'),
+  ...createPlantDevices('plant-3', 'P3'),
 ];
 
 const userPlants: StrippedPlant[] = [
   {
-    id: 'mock-plant-1',
-    name: 'Demo Plant 1',
+    id: 'plant-1',
+    name: 'Plant 1',
     type: 'solar',
     country: 'BG',
-    devices: devices.filter((device) => device.plantId === 'mock-plant-1'),
+    devices: devices.filter((device) => device.plantId === 'plant-1'),
     relatedClients,
   },
   {
-    id: 'demo-plant-2',
-    name: 'Demo Plant 2',
+    id: 'plant-2',
+    name: 'Plant 2',
     type: 'battery',
     country: 'BG',
-    devices: devices.filter((device) => device.plantId === 'demo-plant-2'),
+    devices: devices.filter((device) => device.plantId === 'plant-2'),
     relatedClients,
   },
   {
-    id: 'demo-plant-3',
-    name: 'Demo Plant 3',
+    id: 'plant-3',
+    name: 'Plant 3',
     type: 'wind',
     country: 'BG',
-    devices: devices.filter((device) => device.plantId === 'demo-plant-3'),
+    devices: devices.filter((device) => device.plantId === 'plant-3'),
     relatedClients,
   },
 ];
 
 const userClient = {
-  id: '1',
-  name: 'Demo Client',
-  address: 'Demo service address',
+  id: 'client-1',
+  name: 'Client 1',
+  address: 'Service address',
 };
 
 const user = {
@@ -154,8 +153,8 @@ function findDevice(deviceId?: string, plantId?: string): StrippedDevice {
 }
 
 function createReport(id: number, statusReport: ReportStatus): ServiceReportDto {
-  const plant = findPlant('mock-plant-1');
-  const device = findDevice('mock-inverter-1', plant.id);
+  const plant = findPlant('plant-1');
+  const device = findDevice('plant-1-inverter-1', plant.id);
 
   return {
     id,
@@ -212,11 +211,11 @@ function createReport(id: number, statusReport: ReportStatus): ServiceReportDto 
     warrantyStatus: 'Yes',
     installedPowerMwp: '1.2',
     installedPowerKw: device.installedPowerKw,
-    contractNumber: 'CN-DEMO-001',
+    contractNumber: 'CN-001',
   };
 }
 
-let reports: ServiceReportDto[] = [createReport(1001, 'Done'), createReport(1002, 'Draft')];
+let reports: ServiceReportDto[] = [];
 
 export interface InverterSchemaDto {
   id: number;
@@ -334,7 +333,7 @@ export class ServiceReportCmsModel {
     return {
       ...report,
       statusReport: report.statusReport || 'Draft',
-      plantId: report.plantId || 'mock-plant-1',
+      plantId: report.plantId || 'plant-1',
       plant: findPlant(report.plantId),
       deviceId: report.deviceId || findDevice(undefined, report.plantId).id,
       device: findDevice(report.deviceId, report.plantId),

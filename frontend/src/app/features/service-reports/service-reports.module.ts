@@ -84,7 +84,7 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'mock-plant-1',
+        redirectTo: 'plant-1',
       },
       {
         path: ':plantId',

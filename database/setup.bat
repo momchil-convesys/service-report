@@ -27,9 +27,9 @@ echo Running migrations...
 
 REM Run migration files
 psql -h %DB_HOST% -p %DB_PORT% -U %DB_USER% -d %DB_NAME% -f ./migrations/001_init.sql
-psql -h %DB_HOST% -p %DB_PORT% -U %DB_USER% -d %DB_NAME% -f ./migrations/002_seed_data.sql
-psql -h %DB_HOST% -p %DB_PORT% -U %DB_USER% -d %DB_NAME% -f ./migrations/003_devices_seed.sql
 psql -h %DB_HOST% -p %DB_PORT% -U %DB_USER% -d %DB_NAME% -f ./migrations/004_service_report_cms.sql
+psql -h %DB_HOST% -p %DB_PORT% -U %DB_USER% -d %DB_NAME% -f ./migrations/005_seed_cms_plants.sql
+psql -h %DB_HOST% -p %DB_PORT% -U %DB_USER% -d %DB_NAME% -f ./migrations/006_soft_delete_assets.sql
 
 echo Database setup completed successfully!
 pause

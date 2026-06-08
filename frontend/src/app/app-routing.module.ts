@@ -40,10 +40,10 @@ const routes: Routes = [
         redirectTo: 'admin/assets',
         pathMatch: 'full',
       },
-      { path: '', pathMatch: 'full', redirectTo: '/service-reports/mock-plant-1' },
+      { path: '', pathMatch: 'full', redirectTo: '/service-reports/plant-1' },
       { path: '404', component: NotFoundComponent },
       { path: '403', component: NotAuthorizedComponent },
-      { path: '**', redirectTo: '/service-reports/mock-plant-1' },
+      { path: '**', redirectTo: '/service-reports/plant-1' },
     ],
   },
 ];

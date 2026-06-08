@@ -73,7 +73,7 @@ const fakeDelay = 0;
 
 const mockDeviceMetadataDTOs: DeviceMetadataDTO[] = [
   {
-    id: 'mock-inverter-metadata',
+    id: 'inverter-metadata',
     manufacturer: 'Demo',
     softwareVersion: '1.0.0',
     faultsTemplateId: 'mock-faults-template',

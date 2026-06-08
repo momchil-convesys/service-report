@@ -36,7 +36,7 @@ export class LoginComponent {
       .login(this.username, this.password)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: () => this.router.navigate(['/service-reports/mock-plant-1']),
+        next: () => this.router.navigate(['/service-reports/plant-1']),
         error: () => {
           this.error = 'Invalid username or password.';
         },

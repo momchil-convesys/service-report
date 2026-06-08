@@ -74,7 +74,7 @@ export class ReportTemplateService {
       return undefined;
     }
 
-    return ServiceReportCmsModel.createTemplate(plantId || 'mock-plant-1', deviceId);
+    return ServiceReportCmsModel.createTemplate(plantId || 'plant-1', deviceId);
   }
 
   private static async getReportSummaries(
